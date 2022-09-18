@@ -21,9 +21,16 @@ import {
 } from "react-native";
 import * as Location from "expo-location";
 import { LocationObject } from "expo-location";
+import useDebounce from "../../src/libs/useDebounce";
+import GeoapifyAPI from "../../src/apis/geoapify";
 
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
+
+type LocationInfo = {
+  name: string;
+  address: string;
+};
 
 export default function RandomRestaurantsScreen() {
   const [region, setRegion] = useState<Region>({
@@ -38,6 +45,29 @@ export default function RandomRestaurantsScreen() {
   });
   const [errorMsg, setErrorMsg] = useState(null);
   const mapRef = useRef<MapView>(null);
+  const [locationInfo, setLocationInfo] = useState<LocationInfo>({
+    name: "",
+    address: "",
+  });
+
+  const debouncedPinCoordinate = useDebounce<LatLng>(pinCoordinate, 1000);
+
+  async function getLocationName() {
+    try {
+      const { data } = await GeoapifyAPI.ReverseGeocode(debouncedPinCoordinate);
+      const locationProperties = data?.features[0]?.properties;
+      setLocationInfo({
+        name: locationProperties.name,
+        address: locationProperties.address_line2,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getLocationName().catch(console.error);
+  }, [debouncedPinCoordinate]);
 
   async function updateLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -85,7 +115,11 @@ export default function RandomRestaurantsScreen() {
           }}
         />
       </MapView>
-      {/* <Button title="test" onPress={updateLocation} /> */}
+      <View>
+        <Text>{locationInfo.name}</Text>
+        <Text>{locationInfo.address}</Text>
+      </View>
+      <Button title="Confirm" />
     </View>
   );
 }
