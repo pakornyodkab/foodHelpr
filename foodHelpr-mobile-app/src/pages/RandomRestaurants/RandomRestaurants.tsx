@@ -3,7 +3,6 @@ import MapView, {
   AnimatedRegion,
   LatLng,
   MapEvent,
-  Marker,
   MarkerAnimated,
   Region,
 } from "react-native-maps";
@@ -11,28 +10,29 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
   Button,
   Platform,
-  Image,
-  Modal,
-  Alert,
   Pressable,
 } from "react-native";
 import * as Location from "expo-location";
-import { LocationObject } from "expo-location";
-import useDebounce from "../../src/libs/useDebounce";
-import GeoapifyAPI from "../../src/apis/geoapify";
+import useDebounce from "../../../src/libs/useDebounce";
+import GeoapifyAPI from "../../../src/apis/geoapify";
+import RestauratMarker from "../../../src/components/restaurants/RestaurantMarker";
+import NumberSelector from "../../components/restaurants/NumberSelector";
+import { FontAwesome } from "@expo/vector-icons";
 
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
+
+const MIN_RANDOM_AMOUNT = 1;
+const MAX_RANDOM_AMOUNT = 10;
 
 type LocationInfo = {
   name: string;
   address: string;
 };
 
-export default function RandomRestaurantsScreen() {
+export default function RandomRestaurantsScreen({ navigation }) {
   const [region, setRegion] = useState<Region>({
     latitude: INITIAL_LAT,
     longitude: INITIAL_LNG,
@@ -49,6 +49,10 @@ export default function RandomRestaurantsScreen() {
     name: "",
     address: "",
   });
+  const [locationInfoLoading, setLocationInfoLoading] =
+    useState<boolean>(false);
+
+  const [randomAmount, setRandomAmount] = useState<number>(3);
 
   const debouncedPinCoordinate = useDebounce<LatLng>(pinCoordinate, 1000);
 
@@ -66,7 +70,11 @@ export default function RandomRestaurantsScreen() {
   }
 
   useEffect(() => {
-    getLocationName().catch(console.error);
+    getLocationName()
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => setLocationInfoLoading(false));
   }, [debouncedPinCoordinate]);
 
   async function updateLocation() {
@@ -87,6 +95,7 @@ export default function RandomRestaurantsScreen() {
 
   function onMapPress(event: MapEvent) {
     setPinCoordinate(event.nativeEvent.coordinate);
+    setLocationInfoLoading(true);
   }
 
   useEffect(() => {
@@ -97,44 +106,77 @@ export default function RandomRestaurantsScreen() {
     mapRef.current.animateToRegion(region);
   }, [region]);
 
+  function onIncreaseRandomAmount() {
+    setRandomAmount(Math.min(MAX_RANDOM_AMOUNT, randomAmount + 1));
+  }
+
+  function onDecreaseRandomAmount() {
+    setRandomAmount(Math.max(MIN_RANDOM_AMOUNT, randomAmount - 1));
+  }
+
   return (
-    <View style={styles.container}>
+    <View className="relative inset-0 flex-1">
       <MapView
         ref={mapRef}
+        className="absolute h-full w-full"
         initialRegion={region}
         showsUserLocation={true}
         showsMyLocationButton={true}
-        style={styles.map}
         onPress={onMapPress}
       >
         <PinMarker coordinate={pinCoordinate} />
         <RestauratMarker
+          name="Test Restaurants"
           coordinate={{
             latitude: INITIAL_LAT - 0.01,
             longitude: INITIAL_LNG - 0.01,
           }}
         />
       </MapView>
-      <View>
-        <Text>{locationInfo.name}</Text>
-        <Text>{locationInfo.address}</Text>
+      <Pressable
+        className="top-10 left-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+        onPress={() => navigation.goBack()}
+      >
+        <Text className="text-center text-2xl font-semibold text-white">
+          <FontAwesome name="arrow-left" />
+        </Text>
+      </Pressable>
+      <View className="mx-4 mt-auto mb-4 flex items-center">
+        <NumberSelector
+          number={randomAmount}
+          onIncrease={onIncreaseRandomAmount}
+          onDecrease={onDecreaseRandomAmount}
+        />
+        <Text className="text-center font-semibold text-green-500">
+          Restaurants
+        </Text>
+
+        <View className="my-2 w-10/12 rounded-lg border-[1px] border-green-500 bg-white px-2 py-1">
+          {locationInfoLoading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <>
+              <Text className="text-center font-semibold text-green-500">
+                {locationInfo.name}
+              </Text>
+              <Text className="font-sm text-green-500">
+                {locationInfo.address}
+              </Text>
+            </>
+          )}
+        </View>
+
+        <Pressable className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700">
+          <Text className="text-center text-lg font-semibold text-white">
+            Confirm
+          </Text>
+        </Pressable>
       </View>
-      <Button title="Confirm" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    flex: 1,
-  },
   map: {
     ...StyleSheet.absoluteFillObject,
   },
@@ -184,47 +226,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
-const RestauratMarker = ({ coordinate }: { coordinate: LatLng }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  return (
-    <>
-      <Marker coordinate={coordinate} onPress={() => setModalVisible(true)}>
-        <View style={styles.restaurantMarker}>
-          <Image
-            source={{
-              uri: "https://play-lh.googleusercontent.com/aFWiT2lTa9CYBpyPjfgfNHd0r5puwKRGj2rHpdPTNrz2N9LXgN_MbLjePd1OTc0E8Rl1",
-            }}
-            style={{ width: "100%", height: "100%" }}
-            resizeMode="contain"
-          />
-        </View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hello World!</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-      </Marker>
-    </>
-  );
-};
 
 const PinMarker = ({ coordinate }: { coordinate: LatLng }) => {
   const DURATION = 4000;
