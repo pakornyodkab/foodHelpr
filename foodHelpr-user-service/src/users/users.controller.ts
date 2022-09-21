@@ -1,34 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { MessagePattern } from '@nestjs/microservices';
+import { UpdateUserRequest } from './update-user-request';
 
-@Controller('users')
+@Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
+  @MessagePattern({ cmd: 'createUser' })
+  createUser(createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
-  @Get()
+  @MessagePattern({ cmd: 'getUsers' })
   getUsers() {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  getUser(@Param('id') id: string) {
+  @MessagePattern({ cmd: 'getUserById' })
+  getUser(id: string) {
     return this.usersService.findOne(id);
   }
 
-  @Patch(':id')
-  editUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @MessagePattern({ cmd: 'editUserById' })
+  editUser(updateUserRequest: UpdateUserRequest) {
+    return this.usersService.update(
+      updateUserRequest.id,
+      updateUserRequest.updateUserDto,
+    );
   }
 
-  @Delete(':id')
-  deleteUser(@Param('id') id: string) {
+  @MessagePattern({ cmd: 'deleteUserById' })
+  deleteUser(id: string) {
     return this.usersService.remove(+id);
   }
 }
