@@ -1,26 +1,45 @@
 import { useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { LatLng, Marker } from "react-native-maps";
 import RestaurantModal from "./RestaurantModal";
 import { Ionicons } from "@expo/vector-icons";
 
 type RestaurantMarkerProp = {
-  name?: string;
+  restaurantName: string;
+  tags: string[];
+  imageUrls: string[];
+  rating: number;
+  recommendedDishes: string[];
+  address: string;
   coordinate: LatLng;
 };
 
-const RestauratMarker = ({ name = "", coordinate }: RestaurantMarkerProp) => {
+const RestaurantMarker = ({
+  restaurantName,
+  tags,
+  imageUrls,
+  rating,
+  recommendedDishes,
+  address,
+  coordinate,
+}: RestaurantMarkerProp) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <Marker coordinate={coordinate} onPress={() => setModalVisible(true)}>
       <View className="flex items-center">
-      <Text className="text-green-700">{name}</Text>
-      <Text className="text-green-700">
-        <Ionicons name="restaurant" size={32} />
-      </Text>
+        <Text className="text-green-700">{restaurantName}</Text>
+        <Text className="text-green-700">
+          <Ionicons name="restaurant" size={32} />
+        </Text>
       </View>
       <RestaurantModal
+        restaurantName={restaurantName}
+        tags={tags}
+        imageUrls={imageUrls}
+        rating={rating}
+        recommendedDishes={recommendedDishes}
+        address={address}
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
       />
@@ -28,4 +47,4 @@ const RestauratMarker = ({ name = "", coordinate }: RestaurantMarkerProp) => {
   );
 };
 
-export default RestauratMarker;
+export default RestaurantMarker;
