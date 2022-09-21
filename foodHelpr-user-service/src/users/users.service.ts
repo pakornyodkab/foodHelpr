@@ -7,14 +7,13 @@ import { User } from '../typeorm/entities/user.entity';
 
 @Injectable()
 export class UsersService {
-
   constructor(
-    @InjectRepository(User) 
-    private readonly userRepository: Repository<User> ) {
-  }
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
   create(createUserDto: CreateUserDto) {
-    const newUser = this.userRepository.create(createUserDto)
+    const newUser = this.userRepository.create(createUserDto);
     return this.userRepository.save(newUser);
   }
 
@@ -23,11 +22,11 @@ export class UsersService {
   }
 
   findOne(id: string) {
-    return this.userRepository.findOne({where: { user_id: +id}});
+    return this.userRepository.findOne({ where: { user_id: +id } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id,updateUserDto);
+    return this.userRepository.update(id, updateUserDto);
   }
 
   remove(id: number) {
