@@ -7,25 +7,41 @@ import MapView, {
   Region,
 } from "react-native-maps";
 import {
-  StyleSheet,
   Text,
   View,
-  Button,
-  Platform,
   Pressable,
 } from "react-native";
 import * as Location from "expo-location";
 import useDebounce from "../../../src/libs/useDebounce";
 import GeoapifyAPI from "../../../src/apis/geoapify";
-import RestauratMarker from "../../../src/components/restaurants/RestaurantMarker";
+import RestaurantMarker from "../../../src/components/restaurants/RestaurantMarker";
 import NumberSelector from "../../components/restaurants/NumberSelector";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
 
 const MIN_RANDOM_AMOUNT = 1;
 const MAX_RANDOM_AMOUNT = 10;
+
+const mockData = [
+  {
+    id: "1123",
+    restaurantName: "test restaurant",
+    tags: ["Thai food", "Spicy"],
+    imageUrls: [
+      "https://media-cdn.tripadvisor.com/media/photo-s/17/75/3f/d1/restaurant-in-valkenswaard.jpg",
+      "https://i.ytimg.com/vi/djSC4TrTn4c/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDBN7cmYolqC3r8rzRPhFmkFXINiw",
+    ],
+    rating: 4.65,
+    recommendedDishes: ["a dish", "b dish", "c dish"],
+    address: "124123 asdfolkjasdklfg",
+    coordinate: {
+      latitude: INITIAL_LAT - 0.01,
+      longitude: INITIAL_LNG - 0.01,
+    },
+  },
+];
 
 type LocationInfo = {
   name: string;
@@ -58,8 +74,9 @@ export default function RandomRestaurantsScreen({ navigation }) {
 
   async function getLocationName() {
     try {
-      const { data } = await GeoapifyAPI.ReverseGeocode(debouncedPinCoordinate);
+      const { data } = await GeoapifyAPI.ReverseGeocode(pinCoordinate);
       const locationProperties = data?.features[0]?.properties;
+      console.log(JSON.stringify(data.features[0]));
       setLocationInfo({
         name: locationProperties.name,
         address: locationProperties.address_line2,
@@ -70,14 +87,10 @@ export default function RandomRestaurantsScreen({ navigation }) {
   }
 
   useEffect(() => {
-    getLocationName()
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => setLocationInfoLoading(false));
+    getLocationName().finally(() => setLocationInfoLoading(false));
   }, [debouncedPinCoordinate]);
 
-  async function updateLocation() {
+  async function updateLocation(movePin: boolean = false) {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       setErrorMsg("Permission to access location was denied");
@@ -88,9 +101,12 @@ export default function RandomRestaurantsScreen({ navigation }) {
     setRegion({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
-      latitudeDelta: 0.0421,
-      longitudeDelta: 0.0421,
+      latitudeDelta: 0.00421,
+      longitudeDelta: 0.00421,
     });
+    if (movePin) {
+      setPinCoordinate(location.coords);
+    }
   }
 
   function onMapPress(event: MapEvent) {
@@ -99,7 +115,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
   }
 
   useEffect(() => {
-    updateLocation();
+    updateLocation(true);
   }, []);
 
   useEffect(() => {
@@ -121,29 +137,43 @@ export default function RandomRestaurantsScreen({ navigation }) {
         className="absolute h-full w-full"
         initialRegion={region}
         showsUserLocation={true}
-        showsMyLocationButton={true}
         onPress={onMapPress}
       >
         <PinMarker coordinate={pinCoordinate} />
-        <RestauratMarker
-          name="Test Restaurants"
-          coordinate={{
-            latitude: INITIAL_LAT - 0.01,
-            longitude: INITIAL_LNG - 0.01,
-          }}
-        />
+        {mockData.map((restaurant) => (
+          <RestaurantMarker
+            key={restaurant.id}
+            restaurantName={restaurant.restaurantName}
+            tags={restaurant.tags}
+            imageUrls={restaurant.imageUrls}
+            rating={restaurant.rating}
+            recommendedDishes={restaurant.recommendedDishes}
+            address={restaurant.address}
+            coordinate={restaurant.coordinate}
+          />
+        ))}
       </MapView>
       <Pressable
-        className="top-10 left-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+        className="absolute top-10 right-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+        onPress={() => updateLocation()}
+      >
+        <Text className="text-center font-semibold text-white">
+          <MaterialIcons name="my-location" size={24} />
+        </Text>
+      </Pressable>
+      <Pressable
+        className="absolute top-10 left-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
         onPress={() => navigation.goBack()}
       >
-        <Text className="text-center text-2xl font-semibold text-white">
-          <FontAwesome name="arrow-left" />
+        <Text className="text-center font-semibold text-white">
+          <FontAwesome name="arrow-left" size={16} />
         </Text>
       </Pressable>
       <View className="mx-4 mt-auto mb-4 flex items-center">
         <NumberSelector
           number={randomAmount}
+          canIncrease={randomAmount < MAX_RANDOM_AMOUNT}
+          canDecrease={randomAmount > MIN_RANDOM_AMOUNT}
           onIncrease={onIncreaseRandomAmount}
           onDecrease={onDecreaseRandomAmount}
         />
@@ -176,62 +206,12 @@ export default function RandomRestaurantsScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  restaurantMarker: {
-    width: 40,
-    height: 40,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
-});
-
 const PinMarker = ({ coordinate }: { coordinate: LatLng }) => {
-  const DURATION = 4000;
+  const DURATION = 200;
   const LATITUDE_DELTA = 0.0421;
   const LONGITUDE_DELTA = 0.0421;
-  const [marker, setMarker] = useState(null);
+  const marker = useRef<MarkerAnimated>(null);
+  // const [marker, setMarker] = useState<MarkerAnimated>(null);
   const [coords, setCoordinate] = useState<AnimatedRegion>(
     new AnimatedRegion({
       latitude: coordinate.latitude || INITIAL_LAT,
@@ -240,43 +220,27 @@ const PinMarker = ({ coordinate }: { coordinate: LatLng }) => {
       longitudeDelta: LATITUDE_DELTA,
     })
   );
-  console.log("hey", coordinate, coords);
 
-  useEffect(() => {
-    setCoordinate(
-      new AnimatedRegion({
-        latitude: coordinate.latitude || INITIAL_LAT,
-        longitude: coordinate.longitude || INITIAL_LNG,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LATITUDE_DELTA,
-      })
-    );
-  }, [coordinate]);
+  // useEffect(() => {
+  //   setCoordinate(
+  //     new AnimatedRegion({
+  //       latitude: coordinate.latitude || INITIAL_LAT,
+  //       longitude: coordinate.longitude || INITIAL_LNG,
+  //       latitudeDelta: LATITUDE_DELTA,
+  //       longitudeDelta: LATITUDE_DELTA,
+  //     })
+  //   );
+  // }, [coordinate]);
 
   function animationMarker() {
-    const newCoordinate = {
-      latitude: coordinate.latitude,
-      longitude: coordinate.longitude,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
-    };
-
-    console.log(newCoordinate);
-    if (Platform.OS === "android") {
-      if (marker) {
-        console.log("test", coords);
-        marker?.current?.animateMarkerToCoordinate(coordinate, DURATION);
-      }
-    } else {
-      coords
-        .timing({
-          latitude: coordinate.latitude,
-          longitude: coordinate.longitude,
-          duration: DURATION,
-          useNativeDriver: true,
-        })
-        .start();
-    }
+    coords
+      .timing({
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude,
+        duration: DURATION,
+        useNativeDriver: false,
+      })
+      .start();
   }
 
   useEffect(() => {
@@ -285,9 +249,13 @@ const PinMarker = ({ coordinate }: { coordinate: LatLng }) => {
 
   return (
     <MarkerAnimated
-      ref={(marker) => setMarker(marker)}
+      ref={marker}
       coordinate={coords}
       anchor={{ x: 0.5, y: 0.5 }}
-    />
+    >
+      <Text className="text-green-500">
+        <Ionicons name="location-sharp" size={38} />
+      </Text>
+    </MarkerAnimated>
   );
 };
