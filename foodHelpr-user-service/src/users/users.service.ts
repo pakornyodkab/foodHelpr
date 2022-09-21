@@ -14,7 +14,6 @@ export class UsersService {
 
   create(createUserDto: CreateUserDto) {
     const newUser = this.userRepository.create(createUserDto);
-    console.log(`Create user id: ${newUser.user_id}`);
     return this.userRepository.save(newUser);
   }
 
