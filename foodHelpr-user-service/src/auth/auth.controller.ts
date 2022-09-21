@@ -2,16 +2,17 @@ import { Controller, Get, Req, UseGuards , Res} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleOauthGuard } from './google/google.guard';
 import { JwtAuthGuard } from './jwt/jwt.guard';
+import { MessagePattern } from '@nestjs/microservices';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('google/login')
+  @MessagePattern({ cmd: 'googleAuth' })
   @UseGuards(GoogleOauthGuard)
-  async googleAuth(@Req() req) {}
+  async googleAuth() {}
 
-  @Get('google/redirect')
+  @MessagePattern({ cmd: 'googleRedirect' })
   @UseGuards(GoogleOauthGuard)
   googleAuthRedirect(@Req() req) {
     // req.user => email , firstname , lastname , picture , accessToken
@@ -19,9 +20,9 @@ export class AuthController {
     return token;
   }
 
-  @Get('profile')
-  @UseGuards(JwtAuthGuard)
-  getProfile(@Req() req) {
-    return req.user
-  }
+  // @Get('profile')
+  // @UseGuards(JwtAuthGuard)
+  // getProfile(@Req() req) {
+  //   return req.user
+  // }
 }

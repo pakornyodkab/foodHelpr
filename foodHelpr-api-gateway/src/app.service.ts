@@ -9,4 +9,12 @@ export class AppService {
   createUser(data: CreateUserDto) {
     return this.userService.send<CreateUserDto>({ cmd: 'createUser' }, data);
   }
+
+  googleAuth(){
+    return this.userService.send({cmd: 'googleAuth'},{})
+  }
+
+  googleLogin(req){
+    return this.userService.send<Request>({cmd:'googleRedirect'},req)
+  }
 }

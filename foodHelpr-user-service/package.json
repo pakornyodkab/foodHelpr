@@ -24,11 +24,8 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/mapped-types": "*",
-<<<<<<< HEAD
     "@nestjs/passport": "^9.0.0",
-=======
     "@nestjs/microservices": "^9.1.1",
->>>>>>> 40c1f1571fce7d64c4951dbfe39dd2b537c74ab1
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",
     "class-validator": "^0.13.2",
