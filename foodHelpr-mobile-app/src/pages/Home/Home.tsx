@@ -4,9 +4,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { ANDROID_CLIENT_ID, EXPO_CLIENT_ID } from "@env";
+import * as AuthSession from "expo-auth-session";
 import GoogleApis from "../../apis/googleapis";
 
 WebBrowser.maybeCompleteAuthSession();
+const discovery = {
+  authorizationEndpoint: "http://10.0.2.2:3000/auth/google/login",
+  tokenEndpoint: "http://10.0.2.2:3000/auth/google/redirect",
+};
 
 export default function HomeScreen({ navigation }) {
   // const [username, onChangeUsername] = React.useState("")
@@ -25,9 +30,10 @@ export default function HomeScreen({ navigation }) {
     }
   }, [response]);
 
+  //!
   const getUserData = async () => {
     const { data } = await GoogleApis.GetUserData(accessToken);
-    setUserInfo(data.data);
+    setUserInfo(data);
   };
 
   return (
@@ -108,7 +114,7 @@ export default function HomeScreen({ navigation }) {
           // </View>
           <Pressable
             className="top-48 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-            onPress={() => promptAsync()} //{showInRecents: true}
+            onPress={() => promptAsync()}
           >
             <Text className="text-center font-normal text-white">
               Sign In With Google
