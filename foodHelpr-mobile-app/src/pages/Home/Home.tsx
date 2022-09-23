@@ -53,7 +53,7 @@ export default function HomeScreen({ navigation }) {
               />
             </View>
             <Text className='text-right bottom-16'>Welcome back,</Text>
-            <Text className='text-right bottom-16 text-green-500 text-2xl'>{userInfo ? userInfo.name: 'Pakorn Knogkrit'}</Text>
+            <Text className='text-right bottom-16 text-green-500 text-2xl'>{userInfo?.name}</Text>
           </View>
         }
         <Image
@@ -164,7 +164,9 @@ export default function HomeScreen({ navigation }) {
             <Pressable
               className="top-36 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-green-500 bg-white active:scale-95 active:bg-gray-300"
               // onPress={() => setIsLoggedIn(false)}
-              onPress={() => setAccessToken("")}
+              onPress={() => {
+                setAccessToken("")
+              }}
             >
               <Text className="text-center font-normal text-green-500">
                 Sign Out
