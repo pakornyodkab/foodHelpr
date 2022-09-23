@@ -1,15 +1,17 @@
 import * as React from 'react';
-import { View, Text, Button, Image, Pressable } from 'react-native';
+import { View, Text, Image, Pressable, TextInput } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function HomeScreen({ navigation }) {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false)
+  const [username, onChangeUsername] = React.useState("")
+  const [password, onChangePassword] = React.useState("")
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Image
         source={require('../../../assets/topBanner.png')}
-        style={{ height: 200, width: 400, flex: isLoggedIn ? 1 : 1.5 }}
+        style={{ height: 200, width: 400, flex: isLoggedIn ? 1 : 1.2 }}
       />
       <View style={{ flex: 3 }}>
         {isLoggedIn &&
@@ -20,31 +22,64 @@ export default function HomeScreen({ navigation }) {
                 style={{ height: 100, width: 100, top: -70 }}
                 className="rounded-full"
               />
-              </View>
-              <Text className='text-right bottom-16'>Welcome back,</Text>
-              <Text className='text-right bottom-16 text-green-500 text-2xl'>Pakorn Kongrit</Text>
+            </View>
+            <Text className='text-right bottom-16'>Welcome back,</Text>
+            <Text className='text-right bottom-16 text-green-500 text-2xl'>Pakorn Kongrit</Text>
           </View>
         }
         <Image
-          className={`${isLoggedIn ? 'bottom-4' : 'top-28'}`}
+          className={`${isLoggedIn ? 'bottom-4' : 'top-16'}`}
           source={require('../../../assets/FoodHelprLogo.png')}
         // style={{ height: '10%', width: '90%'}}
         />
         {!isLoggedIn &&
-          // <Button
-          //   color='#2CBB54'
-
-          //   title="Login With Google oAuth"
-          //   onPress={() => setIsLoggedIn(true)} 
-          // />
-          <Pressable
-            className="top-48 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-            onPress={() => setIsLoggedIn(true)}
-          >
-            <Text className="text-center font-semibold text-white">
-              Sign In With Google
-            </Text>
-          </Pressable>
+          <View>
+            <TextInput 
+              style={{ paddingHorizontal: 20 }}
+              className="top-28 h-10 border-2 text-left border-green-500 rounded-full"
+              onChangeText={onChangeUsername}
+              value={username}
+              placeholder='Username'
+              textContentType='username'
+            />
+            <TextInput 
+              style={{ paddingHorizontal: 20 }}
+              className="top-32 h-10 border-2 text-left border-green-500 rounded-full"
+              onChangeText={onChangePassword}
+              value={password}
+              placeholder='Password'
+              textContentType='password'
+              secureTextEntry
+            />
+            <Pressable
+              className="top-40 flex h-10 w-28 justify-center self-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+              onPress={() => setIsLoggedIn(true)}
+            >
+              <Text className="text-center font-normal text-white">
+                Sign In
+              </Text>
+            </Pressable>
+            <Pressable
+              className="top-52 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+              onPress={() => setIsLoggedIn(true)}
+            >
+              <Text className="text-center font-normal text-white">
+                Sign In With Google
+              </Text>
+            </Pressable>
+            <View 
+              // style={{paddingTop: 270}}
+              className="top-64 flex-row justify-end text-right font-normal text-black"
+            >
+              <Text>Need an account? </Text>
+              <Pressable
+                  // className="top-1"
+                  onPress={() => setIsLoggedIn(true)}
+                >
+                  <Text className='text-green-500 underline'>Sign Up</Text>
+                </Pressable>
+              </View>
+          </View>
         }
         {isLoggedIn &&
           <View>
@@ -56,7 +91,7 @@ export default function HomeScreen({ navigation }) {
                 <Text className=" text-white">
                   <MaterialIcons name="restaurant" size={24} />
                 </Text>
-                <Text className="text-center font-semibold text-white">
+                <Text className="text-center font-normal text-white">
                   Find your restaurants
                 </Text>
               </View>
@@ -70,7 +105,7 @@ export default function HomeScreen({ navigation }) {
                 <Text className=" text-white">
                   <MaterialIcons name="microwave" size={24} />
                 </Text>
-                <Text className="text-center font-semibold text-white">
+                <Text className="text-center font-normal text-white">
                   Find your recipes
                 </Text>
               </View>
@@ -84,7 +119,7 @@ export default function HomeScreen({ navigation }) {
                 <Text className=" text-white">
                   <MaterialIcons name="people" size={24} />
                 </Text>
-                <Text className="text-center font-semibold text-white">
+                <Text className="text-center font-normal text-white">
                   Find your food friends
                 </Text>
               </View>
