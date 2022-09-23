@@ -2,7 +2,7 @@ import { Controller, Get, Req, UseGuards , Res} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleOauthGuard } from './google/google.guard';
 import { JwtAuthGuard } from './jwt/jwt.guard';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern, MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class AuthController {

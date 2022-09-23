@@ -11,7 +11,9 @@ export class AppService {
   }
 
   googleAuth(){
-    return this.userService.send({cmd: 'googleAuth'},{})
+    console.log(this.userService.send({cmd: 'googleAuth'},{}).subscribe());
+    
+    //return this.userService.send({cmd: 'googleAuth'},{})
   }
 
   googleLogin(req){
