@@ -1,11 +1,10 @@
 
-import { BadRequestException, Inject, Injectable, Req } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InternalServerErrorException } from '@nestjs/common';
-import { AppService } from '../app.service';
 import { ClientProxy } from '@nestjs/microservices';
-import { filter, map, take } from 'rxjs';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { Request, Response } from 'express';
 
 let mockData = 
     {
@@ -25,48 +24,72 @@ export class AuthService {
     constructor( 
         private jwtService: JwtService,
         @Inject('USER') private readonly userService: ClientProxy
-        // private appService: AppService
     ) {}
 
   generateJwt(payload: any) {
     return this.jwtService.sign(payload)
   }
 
-  async googleLogin(user: any) {
+  async googleLogin(user: any,res: Response) {
     if (!user) {
       throw new BadRequestException('Unauthenticated');
     }
+    
+    console.log(`User email: ${user.email}`);
+    
 
-    let existingUsers = []
+    let existingUsers = [];
     await this.userService.send({ cmd: 'getUsers' }, {}).forEach(exUser => existingUsers.push(exUser))
-    const existingUser = existingUsers.find((e) => { e.email == user.email })
+    existingUsers = existingUsers[0]
+    const existingUser = existingUsers.find(e => e.email === user.email )
+    
+    console.log(`Existing Users: ${existingUsers}`);
+    
+    
     
     console.log(`ExistingUser : ${existingUser}`);
     
     
     if (!existingUser) {
-        return this.googleRegister(user)
+        return this.googleRegister(user,res)
     }
 
-    return this.generateJwt({
+    const token = this.generateJwt({
       sub: existingUser.user_id,
       email: existingUser.email
     })
+
+    if (!token) {
+      throw new ForbiddenException('Could not signin');
+    }
+
+    res.cookie('token',token,{})
+
+    return res.send({ message: 'Logged in successfully' });
   }
 
-  async googleRegister(user: any) {
+  async googleRegister(user: any,res: Response) {
     try {
 
       mockData.email = user.email
-      let newUser;
+      let newUser: any;
       await this.userService.send<CreateUserDto>({ cmd: 'createUser' }, mockData).forEach(e => newUser = e);
 
       console.log(`Create New User : ${newUser}`);
+
       
-      return this.generateJwt({
+      const token = this.generateJwt({
         sub: newUser.user_id,
-        email: newUser.email,
-      });
+        email: newUser.email
+      })
+  
+      if (!token) {
+        throw new ForbiddenException('Could not signin');
+      }
+  
+      res.cookie('token',token,{})
+  
+      return res.send({ message: 'Registered successfully' });
     } catch {
       throw new InternalServerErrorException();
     }

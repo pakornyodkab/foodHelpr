@@ -18,6 +18,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       let token = null;
       if (req && req.cookies) {
         token = req.cookies['access_token'];
+        console.log(`token: ${token}`);
+        
       }
       return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req);
     };
@@ -30,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    let user;
+    let user: any;
     await this.userService
       .send({ cmd: 'getUserById' }, +payload.sub)
       .forEach((e) => (user = e));
