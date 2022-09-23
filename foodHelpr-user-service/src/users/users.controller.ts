@@ -23,6 +23,11 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @MessagePattern({ cmd: 'getUserByEmail' })
+  getUserByEmail(email: string) {
+    return this.usersService.findOneByEmail(email);
+  }
+
   @MessagePattern({ cmd: 'editUserById' })
   editUser(updateUserRequest: UpdateUserRequest) {
     return this.usersService.update(
