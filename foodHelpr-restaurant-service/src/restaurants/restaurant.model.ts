@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Coordinate } from './dto/coordinate.dto';
 
 export const RestaurantSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -7,7 +8,7 @@ export const RestaurantSchema = new mongoose.Schema({
   recommendedDish: { type: [String] },
   tag: { type: [String] },
   coordinate: {
-    type: { latitude: Number, longitude: Number },
+    type: { Latitude: Number, Longitude: Number },
     required: true,
   },
   rating: { type: Number },
@@ -21,7 +22,7 @@ export interface Restaurant {
   restaurantPictureLink: Array<string>;
   recommendedDish: Array<string>;
   tag: Array<string>;
-  coordinate: { latitude: number; longitude: number };
+  coordinate: { Latitude: Number; Longitude: Number };
   rating: number;
   deliveryInfo: Array<{ platform: string; link: string }>;
 }

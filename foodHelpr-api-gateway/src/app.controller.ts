@@ -3,11 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
+  Patch,
   Post,
-  Put,
-  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { AppService } from './app.service';
+import { JwtAuthGuard } from './auth/jwt/jwt.guard';
 import { CreateRestaurantBanListDto } from './dto/create-restaurantBanList.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -17,30 +19,36 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('create-user')
+  @UseGuards(JwtAuthGuard)
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.appService.createUser(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('get-users')
   getUser() {
     return this.appService.getUsers();
   }
 
-  @Get('get-user-by-id')
-  getUserById(@Query('id') id: string) {
+  @UseGuards(JwtAuthGuard)
+  @Get('get-user-by-id/:id')
+  getUserById(@Param('id') id: string) {
     return this.appService.getUserById(id);
   }
 
-  @Put('edit-user-by-id')
-  editUserById(@Query('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  @UseGuards(JwtAuthGuard)
+  @Patch('update-user-by-id/:id')
+  editUserById(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.appService.editUserById(id, updateUserDto);
   }
 
-  @Delete('delete-user-by-id')
-  deleteUserById(@Query('id') id: number) {
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete-user-by-id/:id')
+  deleteUserById(@Param('id') id: number) {
     return this.appService.deleteUserById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('create-restaurant-ban-list')
   createRestaurantBanList(
     @Body() createRestaurantBanListDto: CreateRestaurantBanListDto,
@@ -48,18 +56,21 @@ export class AppController {
     return this.appService.createRestaurantBanList(createRestaurantBanListDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('find-restaurant-ban-lists')
   findRestaurantBanLists() {
     return this.appService.findRestaurantBanLists();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('delete-restaurant-ban-list-by-id')
-  deleteRestaurantBanList(@Query('id') id: number) {
+  deleteRestaurantBanList(@Param('id') id: number) {
     return this.appService.deleteRestaurantBanList(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('find-restaurant-ban-lists-by-user-id')
-  findRestaurantBanListsByUserId(@Query('user_id') user_id: number) {
+  findRestaurantBanListsByUserId(@Param('user_id') user_id: number) {
     return this.appService.findRestaurantBanListsByUserId(user_id);
   }
 }

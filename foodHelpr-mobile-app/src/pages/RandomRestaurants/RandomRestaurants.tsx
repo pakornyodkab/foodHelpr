@@ -6,17 +6,16 @@ import MapView, {
   MarkerAnimated,
   Region,
 } from "react-native-maps";
-import {
-  Text,
-  View,
-  Pressable,
-} from "react-native";
+import { Text, View, Pressable, ActivityIndicator, Dimensions } from "react-native";
 import * as Location from "expo-location";
 import useDebounce from "../../../src/libs/useDebounce";
-import GeoapifyAPI from "../../../src/apis/geoapify";
 import RestaurantMarker from "../../../src/components/restaurants/RestaurantMarker";
 import NumberSelector from "../../components/restaurants/NumberSelector";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import GoogleMapsApi from "../../apis/googlemaps";
+import { LocationAccuracy } from "expo-location";
+import IRestaurant from "../../models/Restaurant";
+import MapStyle from "../../constants/MapStyle";
 
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
@@ -24,7 +23,11 @@ const INITIAL_LNG = 100.5;
 const MIN_RANDOM_AMOUNT = 1;
 const MAX_RANDOM_AMOUNT = 10;
 
-const mockData = [
+const RESTAURANT_LOAD_DELAY = 1000;
+
+const window = Dimensions.get('window');
+
+const mockData: IRestaurant[] = [
   {
     id: "1123",
     restaurantName: "test restaurant",
@@ -59,6 +62,10 @@ export default function RandomRestaurantsScreen({ navigation }) {
     latitude: INITIAL_LAT,
     longitude: INITIAL_LNG,
   });
+  const currentCoordinate = useRef<LatLng>({
+    latitude: INITIAL_LAT,
+    longitude: INITIAL_LNG,
+  });
   const [errorMsg, setErrorMsg] = useState(null);
   const mapRef = useRef<MapView>(null);
   const [locationInfo, setLocationInfo] = useState<LocationInfo>({
@@ -72,25 +79,38 @@ export default function RandomRestaurantsScreen({ navigation }) {
 
   const debouncedPinCoordinate = useDebounce<LatLng>(pinCoordinate, 1000);
 
+  const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
+  const [restaurantsLoading, setRestaurantsLoading] = useState<boolean>(false);
+
   async function getLocationName() {
     try {
-      const { data } = await GeoapifyAPI.ReverseGeocode(pinCoordinate);
-      const locationProperties = data?.features[0]?.properties;
-      console.log(JSON.stringify(data.features[0]));
+      const { data } = await GoogleMapsApi.ReverseGeocode(pinCoordinate);
+      const locationProperties = data?.results[0];
       setLocationInfo({
-        name: locationProperties.name,
-        address: locationProperties.address_line2,
+        name: `${locationProperties.address_components[0].long_name} ${locationProperties.address_components[1].long_name}`,
+        address: locationProperties.formatted_address,
       });
     } catch (error) {
       console.error(error);
     }
   }
 
+  async function subscribeCurrentLocation() {
+    await Location.watchPositionAsync(
+      { accuracy: LocationAccuracy.Balanced },
+      (location) => (currentCoordinate.current = location.coords)
+    );
+  }
+
+  useEffect(() => {
+    subscribeCurrentLocation();
+  }, []);
+
   useEffect(() => {
     getLocationName().finally(() => setLocationInfoLoading(false));
   }, [debouncedPinCoordinate]);
 
-  async function updateLocation(movePin: boolean = false) {
+  async function setInitialCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       setErrorMsg("Permission to access location was denied");
@@ -104,9 +124,16 @@ export default function RandomRestaurantsScreen({ navigation }) {
       latitudeDelta: 0.00421,
       longitudeDelta: 0.00421,
     });
-    if (movePin) {
-      setPinCoordinate(location.coords);
-    }
+    setPinCoordinate(location.coords);
+  }
+
+  function updateCurrentRegion() {
+    setRegion({
+      latitude: currentCoordinate.current.latitude,
+      longitude: currentCoordinate.current.longitude,
+      latitudeDelta: 0.00421,
+      longitudeDelta: 0.00421,
+    });
   }
 
   function onMapPress(event: MapEvent) {
@@ -115,7 +142,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
   }
 
   useEffect(() => {
-    updateLocation(true);
+    setInitialCurrentLocation();
   }, []);
 
   useEffect(() => {
@@ -130,6 +157,30 @@ export default function RandomRestaurantsScreen({ navigation }) {
     setRandomAmount(Math.max(MIN_RANDOM_AMOUNT, randomAmount - 1));
   }
 
+  async function getRandomRestaurants() {
+    // request something
+    setRestaurantsLoading(true);
+    await Promise.resolve();
+    setRestaurants(mockData);
+    setTimeout(() => setRestaurantsLoading(false), RESTAURANT_LOAD_DELAY);
+  }
+
+  useEffect(() => {
+    setTimeout(
+      () =>
+        mapRef.current.fitToElements({
+          animated: true,
+          edgePadding: {
+            top: window.width * 0.2,
+            bottom: window.width * 0.4,
+            left: window.width * 0.2,
+            right: window.width * 0.2,
+          },
+        }),
+      RESTAURANT_LOAD_DELAY
+    );
+  }, [restaurants]);
+
   return (
     <View className="relative inset-0 flex-1">
       <MapView
@@ -137,10 +188,13 @@ export default function RandomRestaurantsScreen({ navigation }) {
         className="absolute h-full w-full"
         initialRegion={region}
         showsUserLocation={true}
+        showsMyLocationButton={false}
+        toolbarEnabled={false}
         onPress={onMapPress}
+        customMapStyle={MapStyle}
       >
         <PinMarker coordinate={pinCoordinate} />
-        {mockData.map((restaurant) => (
+        {restaurants.map((restaurant) => (
           <RestaurantMarker
             key={restaurant.id}
             restaurantName={restaurant.restaurantName}
@@ -155,7 +209,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
       </MapView>
       <Pressable
         className="absolute top-10 right-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-        onPress={() => updateLocation()}
+        onPress={() => updateCurrentRegion()}
       >
         <Text className="text-center font-semibold text-white">
           <MaterialIcons name="my-location" size={24} />
@@ -181,25 +235,33 @@ export default function RandomRestaurantsScreen({ navigation }) {
           Restaurants
         </Text>
 
-        <View className="my-2 w-10/12 rounded-lg border-[1px] border-green-500 bg-white px-2 py-1">
+        <View className="my-2 w-full rounded-lg border-[1px] border-green-500 bg-white px-2 py-1">
           {locationInfoLoading ? (
-            <Text>Loading...</Text>
+            <ActivityIndicator size="large" color="rgb(34, 197, 94)" />
           ) : (
             <>
-              <Text className="text-center font-semibold text-green-500">
+              <Text className="text-center text-lg font-semibold text-green-500">
                 {locationInfo.name}
               </Text>
-              <Text className="font-sm text-green-500">
+              <Text className="text-sm text-green-500">
                 {locationInfo.address}
               </Text>
             </>
           )}
         </View>
 
-        <Pressable className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700">
-          <Text className="text-center text-lg font-semibold text-white">
-            Confirm
-          </Text>
+        <Pressable
+          className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+          onPress={async () => await getRandomRestaurants()}
+          disabled={restaurantsLoading}
+        >
+          {restaurantsLoading ? (
+            <ActivityIndicator size="large" color="white" />
+          ) : (
+            <Text className="text-center text-lg font-semibold text-white">
+              Confirm
+            </Text>
+          )}
         </Pressable>
       </View>
     </View>

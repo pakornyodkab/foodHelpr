@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Restaurant } from './restaurant.model';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { CreateRestaurantDto } from './dto/create-restaurant.dto';
+import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 
 @Injectable()
 export class RestaurantService {
@@ -23,56 +25,44 @@ export class RestaurantService {
     if (result.deletedCount === 0) {
       throw new NotFoundException('Delete Fail');
     }
-    return id;
+    return { message: `Delete id:${id} complete` };
   }
 
-  async updateRestaurant(
-    id: string,
-    name,
-    address,
-    restaurantPictureLink,
-    recommendedDish,
-    tag,
-    coordinate,
-    rating,
-    deliveryInfo,
-  ) {
+  async updateRestaurant(id: string, updateRestaurantDto: UpdateRestaurantDto) {
     const restaurant = await this.restaurantModel.findById(id);
     if (!restaurant) {
       throw new NotFoundException('Restaurant Not Found');
     }
 
-    restaurant.name = name;
-    restaurant.address = address;
-    restaurant.restaurantPictureLink = restaurantPictureLink;
-    restaurant.recommendedDish = recommendedDish;
-    restaurant.tag = tag;
-    restaurant.coordinate = coordinate;
-    restaurant.rating = rating;
-    restaurant.deliveryInfo = deliveryInfo;
+    restaurant.name = updateRestaurantDto.name;
+    restaurant.address = updateRestaurantDto.address;
+    restaurant.restaurantPictureLink =
+      updateRestaurantDto.restaurantPictureLink;
+    restaurant.recommendedDish = updateRestaurantDto.recommendedDish;
+    restaurant.tag = updateRestaurantDto.tag;
+    restaurant.coordinate = {
+      Latitude: updateRestaurantDto.coordinate.Latitude,
+      Longitude: updateRestaurantDto.coordinate.Longitude,
+    };
+    restaurant.rating = updateRestaurantDto.rating;
+    restaurant.deliveryInfo = updateRestaurantDto.deliveryInfo;
     await restaurant.save();
     return restaurant;
   }
 
-  async createRestaurant(
-    name,
-    address,
-    restaurantPictureLink,
-    recommendedDish,
-    tag,
-    coordinate,
-    rating,
-    deliveryInfo,
-  ) {
+  async createRestaurant(createRestaurantDto: CreateRestaurantDto) {
     const restaurant = new this.restaurantModel({
-      name,
-      address,
-      restaurantPictureLink,
-      recommendedDish,
-      tag,
-      coordinate,
-      rating,
-      deliveryInfo,
+      name: createRestaurantDto.name,
+      address: createRestaurantDto.address,
+      restaurantPictureLink: createRestaurantDto.restaurantPictureLink,
+      recommendedDish: createRestaurantDto.recommendedDish,
+      tag: createRestaurantDto.tag,
+      coordinate: {
+        Latitude: createRestaurantDto.coordinate.Latitude,
+        Longitude: createRestaurantDto.coordinate.Longitude,
+      },
+      rating: createRestaurantDto.rating,
+      deliveryInfo: createRestaurantDto.deliveryInfo,
     });
     await restaurant.save();
     return restaurant;
