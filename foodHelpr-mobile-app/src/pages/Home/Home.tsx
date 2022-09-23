@@ -3,9 +3,10 @@ import { View, Text, Image, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import { ANDROID_CLIENT_ID, EXPO_CLIENT_ID } from "@env";
+import { ANDROID_CLIENT_ID, EXPO_CLIENT_ID, MY_SECURE_AUTH_STATE_KEY } from "@env";
 import * as AuthSession from "expo-auth-session";
 import GoogleApis from "../../apis/googleapis";
+import {saveToken, getToken} from '../../libs/token'
 
 WebBrowser.maybeCompleteAuthSession();
 const discovery = {
@@ -24,10 +25,18 @@ export default function HomeScreen({ navigation }) {
     expoClientId: EXPO_CLIENT_ID,
   });
 
-  React.useEffect(() => {
+  const handleSignInResponse = async () => {
     if (response?.type === "success") {
       setAccessToken(response.authentication.accessToken);
+      await saveToken(response.authentication.accessToken)
+      // SecureStore.setItemAsync(MY_SECURE_AUTH_STATE_KEY, response.authentication.accessToken);
+      // console.log(response.authentication.accessToken)
+      // console.log(await getToken())
     }
+  }
+
+  React.useEffect(() => {
+    handleSignInResponse();
   }, [response]);
 
   //!
