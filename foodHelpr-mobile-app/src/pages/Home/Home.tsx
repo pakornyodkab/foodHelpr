@@ -7,10 +7,9 @@ import * as WebBrowser from 'expo-web-browser'
 WebBrowser.maybeCompleteAuthSession()
 
 export default function HomeScreen({ navigation }) {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
   // const [username, onChangeUsername] = React.useState("")
   // const [password, onChangePassword] = React.useState("")
-  const [accessToken, setAccessToken] = React.useState("")
+  const [accessToken, setAccessToken] = React.useState<string>("")
   const [userInfo, setUserInfo] = React.useState<any>()
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -135,7 +134,7 @@ export default function HomeScreen({ navigation }) {
             </Pressable>
             <Pressable
               className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700 opacity-40"
-              onPress={() => setIsLoggedIn(true)}
+              onPress={() => console.log('comming soon')}
               disabled
             >
               <View className="relative h-full flex justify-center">
@@ -149,7 +148,7 @@ export default function HomeScreen({ navigation }) {
             </Pressable>
             <Pressable
               className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700 opacity-40"
-              onPress={() => setIsLoggedIn(true)}
+              onPress={() => console.log('comming soon')}
               disabled
             >
               <View className="relative h-full flex justify-center">
@@ -163,7 +162,6 @@ export default function HomeScreen({ navigation }) {
             </Pressable>
             <Pressable
               className="top-36 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-green-500 bg-white active:scale-95 active:bg-gray-300"
-              // onPress={() => setIsLoggedIn(false)}
               onPress={() => {
                 setAccessToken("")
               }}
