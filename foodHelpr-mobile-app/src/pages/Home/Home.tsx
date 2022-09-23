@@ -1,68 +1,66 @@
-import * as React from 'react';
-import { View, Text, Image, Pressable, TextInput } from 'react-native';
+import * as React from "react";
+import { View, Text, Image, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as Google from 'expo-auth-session/providers/google'
-import * as WebBrowser from 'expo-web-browser'
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import { ANDROID_CLIENT_ID, EXPO_CLIENT_ID } from "@env";
+import GoogleApis from "../../apis/googleapis";
 
-WebBrowser.maybeCompleteAuthSession()
+WebBrowser.maybeCompleteAuthSession();
 
 export default function HomeScreen({ navigation }) {
   // const [username, onChangeUsername] = React.useState("")
   // const [password, onChangePassword] = React.useState("")
-  const [accessToken, setAccessToken] = React.useState<string>("")
-  const [userInfo, setUserInfo] = React.useState<any>()
+  const [accessToken, setAccessToken] = React.useState<string>("");
+  const [userInfo, setUserInfo] = React.useState<any>();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: "1089522380741-kbnf41snq90sgvdiidsdhsspjj25l1lf.apps.googleusercontent.com",
-    expoClientId: "750278734395-2chutsqvl628cqjmdlv10j20gaela8to.apps.googleusercontent.com"
-  })
+    androidClientId: ANDROID_CLIENT_ID,
+    expoClientId: EXPO_CLIENT_ID,
+  });
 
   React.useEffect(() => {
-    if (response?.type==="success"){
-      setAccessToken(response.authentication.accessToken)
+    if (response?.type === "success") {
+      setAccessToken(response.authentication.accessToken);
     }
-  }, [response])
+  }, [response]);
 
   const getUserData = async () => {
-    let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-      headers: { Authorization: `Bearer ${accessToken}`}
-    })
-
-    userInfoResponse.json().then(data => {
-      setUserInfo(data)
-    })
-    console.log(userInfo)
-  }
+    const { data } = await GoogleApis.GetUserData(accessToken);
+    setUserInfo(data.data);
+  };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Image
-        source={require('../../../assets/topBanner.png')}
+        source={require("../../../assets/topBanner.png")}
         style={{ height: 200, width: 400, flex: accessToken ? 1 : 1.2 }}
       />
       <View style={{ flex: 3 }}>
-        {accessToken && getUserData() &&
+        {accessToken && getUserData() && (
           <View>
-            <View className='flex-row-reverse'>
+            <View className="flex-row-reverse">
               <Image
                 // source={require('../../../assets/Yod_oh_yes.jpg')}
-                source={{uri: userInfo?.picture}}
+                source={{ uri: userInfo?.picture }}
                 style={{ height: 100, width: 100, top: -70 }}
                 className="rounded-full"
               />
             </View>
-            <Text className='text-right bottom-16'>Welcome back,</Text>
-            <Text className='text-right bottom-16 text-green-500 text-2xl'>{userInfo?.name}</Text>
+            <Text className="bottom-16 text-right">Welcome back,</Text>
+            <Text className="bottom-16 text-right text-2xl text-green-500">
+              {userInfo?.name}
+            </Text>
           </View>
-        }
+        )}
         <Image
-          className={`${accessToken ? 'bottom-4' : 'top-16'}`}
-          source={require('../../../assets/FoodHelprLogo.png')}
-        // style={{ height: '10%', width: '90%'}}
+          className={`${accessToken ? "bottom-4" : "top-16"}`}
+          source={require("../../../assets/FoodHelprLogo.png")}
+          // style={{ height: '10%', width: '90%'}}
         />
-        {!accessToken &&
+        {!accessToken && (
           // <View>
-          //   <TextInput 
+          //   <TextInput
           //     style={{ paddingHorizontal: 20 }}
           //     className="top-28 h-10 border-2 text-left border-green-500 rounded-full"
           //     onChangeText={onChangeUsername}
@@ -70,7 +68,7 @@ export default function HomeScreen({ navigation }) {
           //     placeholder='Username'
           //     textContentType='username'
           //   />
-          //   <TextInput 
+          //   <TextInput
           //     style={{ paddingHorizontal: 20 }}
           //     className="top-32 h-10 border-2 text-left border-green-500 rounded-full"
           //     onChangeText={onChangePassword}
@@ -95,7 +93,7 @@ export default function HomeScreen({ navigation }) {
           //       Sign In With Google
           //     </Text>
           //   </Pressable>
-          //   <View 
+          //   <View
           //     // style={{paddingTop: 270}}
           //     className="top-64 flex-row justify-end text-right font-normal text-black"
           //   >
@@ -116,15 +114,15 @@ export default function HomeScreen({ navigation }) {
               Sign In With Google
             </Text>
           </Pressable>
-        }
-        {accessToken &&
-          <View className="flex justify-center items-center gap-1">
+        )}
+        {accessToken && (
+          <View className="flex items-center justify-center gap-1">
             <Pressable
               className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-              onPress={() => navigation.navigate('Random Restaurants')}
+              onPress={() => navigation.navigate("Random Restaurants")}
             >
-              <View className="relative h-full flex justify-center">
-                <Text className="left-4 absolute text-white">
+              <View className="relative flex h-full justify-center">
+                <Text className="absolute left-4 text-white">
                   <MaterialIcons name="restaurant" size={24} />
                 </Text>
                 <Text className="text-center font-normal text-white">
@@ -133,12 +131,12 @@ export default function HomeScreen({ navigation }) {
               </View>
             </Pressable>
             <Pressable
-              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700 opacity-40"
-              onPress={() => console.log('comming soon')}
+              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 opacity-40 active:scale-95 active:bg-green-700"
+              onPress={() => console.log("comming soon")}
               disabled
             >
-              <View className="relative h-full flex justify-center">
-                <Text className="left-4 absolute text-white">
+              <View className="relative flex h-full justify-center">
+                <Text className="absolute left-4 text-white">
                   <MaterialIcons name="microwave" size={24} />
                 </Text>
                 <Text className="text-center font-normal text-white">
@@ -147,12 +145,12 @@ export default function HomeScreen({ navigation }) {
               </View>
             </Pressable>
             <Pressable
-              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700 opacity-40"
-              onPress={() => console.log('comming soon')}
+              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 opacity-40 active:scale-95 active:bg-green-700"
+              onPress={() => console.log("comming soon")}
               disabled
             >
-              <View className="relative h-full flex justify-center">
-                <Text className="left-4 absolute text-white">
+              <View className="relative flex h-full justify-center">
+                <Text className="absolute left-4 text-white">
                   <MaterialIcons name="people" size={24} />
                 </Text>
                 <Text className="text-center font-normal text-white">
@@ -163,14 +161,15 @@ export default function HomeScreen({ navigation }) {
             <Pressable
               className="top-36 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-green-500 bg-white active:scale-95 active:bg-gray-300"
               onPress={() => {
-                setAccessToken("")
+                setAccessToken("");
               }}
             >
               <Text className="text-center font-normal text-green-500">
                 Sign Out
               </Text>
             </Pressable>
-          </View>}
+          </View>
+        )}
       </View>
     </View>
   );
