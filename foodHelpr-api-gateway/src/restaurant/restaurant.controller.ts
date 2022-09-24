@@ -7,15 +7,23 @@ import {
   Post,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
+import { AuthService } from 'src/auth/auth.service';
+import { GetCurrentUserId } from 'src/auth/decorator/get-current-user-id.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
+import { Coordinate } from 'src/dto/coordinate.dto';
 import { CreateRestaurantDto } from 'src/dto/create-restaurant.dto';
+import { RandomRequest } from 'src/dto/randomRequest.dto';
 import { UpdateRestaurantDto } from 'src/dto/update-restaurant.dto';
 import { RestaurantService } from './restaurant.service';
 
 @Controller('restaurant')
 export class RestaurantController {
-  constructor(private readonly restaurantService: RestaurantService) {}
+  constructor(
+    private readonly restaurantService: RestaurantService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Get('get-restaurants')
   @UseGuards(JwtAuthGuard)
@@ -42,5 +50,23 @@ export class RestaurantController {
     @Body() updateRestaurantDto: UpdateRestaurantDto,
   ) {
     return this.restaurantService.updateRestaurant(id, updateRestaurantDto);
+  }
+
+  @Post('calculate-coordinates')
+  @UseGuards(JwtAuthGuard)
+  calculateDistances(
+    @Body('coordinate1') coordinate1: Coordinate,
+    @Body('coordinate2') coordinate2: Coordinate,
+  ) {
+    return this.restaurantService.calculateDistances(coordinate1, coordinate2);
+  }
+
+  @Post('get-random-restaurant')
+  @UseGuards(JwtAuthGuard)
+  getRandomRestaurant(
+    @GetCurrentUserId() userId: number,
+    @Body() randomRequest: RandomRequest,
+  ) {
+    return this.restaurantService.getRandomRestaurant(userId, randomRequest);
   }
 }

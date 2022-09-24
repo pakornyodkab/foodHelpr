@@ -4,6 +4,9 @@ import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantRequest } from './dto/update-restaurant-request';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { RestaurantService } from './restaurant.service';
+import { Coordinate } from './dto/coordinate.dto';
+import { RandomRequest } from './dto/randomRequest.dto';
+import { RandomReqWithBanList } from './dto/randomReqWithBanList.dto';
 
 @Controller()
 export class RestaurantController {
@@ -36,73 +39,22 @@ export class RestaurantController {
   deleteRestaurantById(id: string) {
     return this.restaurantService.deleteRestaurant(id);
   }
+
+  @MessagePattern({ cmd: 'calculateDistance' })
+  calculateDist(coordinate: any) {
+    return this.restaurantService.calculateDistance(
+      coordinate.c1,
+      coordinate.c2,
+    );
+  }
+
+  @MessagePattern({ cmd: 'get-random-restaurant' })
+  getRandomRestaurant(randomRequest: RandomReqWithBanList) {
+    return this.restaurantService.getRandomRestaurant(
+      randomRequest.req.coordinate,
+      randomRequest.req.randomNumber,
+      randomRequest.userBanListId,
+      randomRequest.req.range,
+    );
+  }
 }
-
-/*
-  @Get('getById')
-  async getRestautantById(@Query('id') id: string) {
-    return await this.restaurantService.getRestaurantById(id);
-  }
-  */
-
-/*
-  @Get()
-  async getRestautants() {
-    return await this.restaurantService.getRestaurants();
-  }
-  */
-
-// @Post('create')
-// async createRestaurant(
-//   @Body('name') name: string,
-//   @Body('address') address: string,
-//   @Body('restaurantPictureLink') restaurantPictureLink: Array<string>,
-//   @Body('recommendedDish') recommendedDish: Array<string>,
-//   @Body('tag') tag: Array<string>,
-//   @Body('coordinate') coordinate: string,
-//   @Body('rating') rating: number,
-//   @Body('deliveryInfo') deliveryInfo: Array<string>,
-// ) {
-//   return await this.restaurantService.createRestaurant(
-//     name,
-//     address,
-//     restaurantPictureLink,
-//     recommendedDish,
-//     tag,
-//     coordinate,
-//     rating,
-//     deliveryInfo,
-//   );
-// }
-
-// @Put('updateById')
-// async updateRestaurant(
-//   @Query('id') id: string,
-//   @Body('name') name: string,
-//   @Body('address') address: string,
-//   @Body('restaurantPictureLink') restaurantPictureLink: Array<string>,
-//   @Body('recommendedDish') recommendedDish: Array<string>,
-//   @Body('tag') tag: Array<string>,
-//   @Body('coordinate') coordinate: string,
-//   @Body('rating') rating: number,
-//   @Body('deliveryInfo') deliveryInfo: Array<string>,
-// ) {
-//   const updatedRestaurant = await this.restaurantService.updateRestaurant(
-//     id,
-//     name,
-//     address,
-//     restaurantPictureLink,
-//     recommendedDish,
-//     tag,
-//     coordinate,
-//     rating,
-//     deliveryInfo,
-//   );
-//   return updatedRestaurant;
-// }
-
-// @Delete('deleteById')
-// async deleteRestaurantById(@Query('id') id: string) {
-//   const deletedId = await this.restaurantService.deleteRestaurant(id);
-//   return `Delete restaurantId:${deletedId} complete`;
-// }

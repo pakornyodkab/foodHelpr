@@ -33,28 +33,19 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
+  getUserId(req: any) {
+    return req.user.id;
+  }
+
   async googleLogin(user: any, res: Response) {
     if (!user) {
       throw new BadRequestException('Unauthenticated');
     }
 
-    //console.log(`User email: ${user.email}`);
-
-    // let existingUsers = [];
-    // await this.userService
-    //   .send({ cmd: 'getUsers' }, {})
-    //   .forEach((exUser) => existingUsers.push(exUser));
-    // existingUsers = existingUsers[0];
-    // const existingUser = existingUsers.find((e) => e.email === user.email);
-
     let existingUser: any;
     await this.userService
       .send({ cmd: 'getUserByEmail' }, user.email)
-      .forEach(exUser => existingUser = exUser);
-
-    //existingUser = existingUser[0]
-    //console.log(`Existing Users: ${existingUsers}`);
-    //console.log(`ExistingUser : ${existingUser}`);
+      .forEach((exUser) => (existingUser = exUser));
 
     if (!existingUser) {
       return this.googleRegister(user, res);

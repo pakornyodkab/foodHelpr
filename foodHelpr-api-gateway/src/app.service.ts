@@ -17,7 +17,7 @@ export class AppService {
     return this.userService.send({ cmd: 'getUsers' }, {});
   }
 
-  getUserById(id: string) {
+  getUserById(id: number) {
     return this.userService.send({ cmd: 'getUserById' }, id);
   }
 

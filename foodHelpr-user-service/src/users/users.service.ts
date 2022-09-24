@@ -21,8 +21,8 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findOne(id: string) {
-    return this.userRepository.findOne({ where: { user_id: +id } });
+  findOne(id: number) {
+    return this.userRepository.findOne({ where: { user_id: id } });
   }
 
   findOneByEmail(inputEmail: string) {
@@ -30,7 +30,8 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
+    this.userRepository.update(id, updateUserDto)
+    return { message: 'Updated!!!' };
   }
 
   async remove(id: number) {

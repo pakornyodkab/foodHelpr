@@ -36,7 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     await this.userService
       .send({ cmd: 'getUserById' }, +payload.sub)
       .forEach((e) => (user = e));
-    console.log(user);
+    //console.log(user);
 
     if (!user) throw new UnauthorizedException('Please log in to continue');
 

@@ -19,7 +19,7 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: 'getUserById' })
-  getUser(id: string) {
+  getUser(id: number) {
     return this.usersService.findOne(id);
   }
 
@@ -37,7 +37,7 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: 'deleteUserById' })
-  deleteUser(id: string) {
-    return this.usersService.remove(+id);
+  deleteUser(id: number) {
+    return this.usersService.remove(id);
   }
 }

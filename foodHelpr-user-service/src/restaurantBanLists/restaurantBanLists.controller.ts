@@ -26,7 +26,7 @@ export class RestaurantBanListsController {
     return this.restaurantBanListsService.remove(id);
   }
 
-  @MessagePattern({cmd: 'findRestaurantBanListByUserId'})
+  @MessagePattern({ cmd: 'findRestaurantBanListByUserId' })
   findRestaurantBanListByUserId(user_id: number) {
     return this.restaurantBanListsService.findBanListById(user_id);
   }

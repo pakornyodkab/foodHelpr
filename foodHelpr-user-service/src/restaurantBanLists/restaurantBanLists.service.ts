@@ -23,7 +23,8 @@ export class RestaurantBanListsService {
   }
 
   remove(id: number) {
-    return this.restaurantBanListRepository.delete(id);
+    this.restaurantBanListRepository.delete(id);
+    return { message : "Deleted!!!"}
   }
 
   findBanListById(user_id: number) {
