@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "expo-secure-store": "^11.3.0"
+  }
+}
