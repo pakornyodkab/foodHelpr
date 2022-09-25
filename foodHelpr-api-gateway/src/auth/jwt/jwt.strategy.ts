@@ -7,7 +7,7 @@ import { ClientProxy } from '@nestjs/microservices';
 config();
 
 export type JwtPayload = {
-  sub: String;
+  sub: number;
   email: string;
 };
 
@@ -19,7 +19,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       if (req && req.cookies) {
         token = req.cookies['access_token'];
         console.log(`token: ${token}`);
-        
       }
       return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req);
     };

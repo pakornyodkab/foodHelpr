@@ -44,16 +44,24 @@ export class RestaurantService {
     );
   }
 
-  async getRandomRestaurant(userId: number, randomRequest: RandomRequest) {
+  async getRandomRestaurant(
+    userId: number,
+    lat: number,
+    lng: number,
+    randomNumber: number,
+    range: number,
+  ) {
     let userBanList = [];
     await this.appService
       .findRestaurantBanListsByUserId(userId)
       .forEach((e) => userBanList.push(e));
     userBanList = userBanList[0];
     const userBanListId = this.getRestaurantIdFromUserBanList(userBanList);
+    const coordinate = new Coordinate(lat, lng);
+    const randomReq = new RandomRequest(coordinate, randomNumber, range);
     return this.restaurantService.send(
       { cmd: 'get-random-restaurant' },
-      new RandomReqWithBanList(randomRequest, userBanListId),
+      new RandomReqWithBanList(randomReq, userBanListId),
     );
   }
 

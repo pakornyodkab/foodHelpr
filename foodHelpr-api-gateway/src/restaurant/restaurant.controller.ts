@@ -8,6 +8,7 @@ import {
   Patch,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { GetCurrentUserId } from 'src/auth/decorator/get-current-user-id.decorator';
@@ -61,12 +62,21 @@ export class RestaurantController {
     return this.restaurantService.calculateDistances(coordinate1, coordinate2);
   }
 
-  @Post('get-random-restaurant')
+  @Get('get-random-restaurant')
   @UseGuards(JwtAuthGuard)
   getRandomRestaurant(
     @GetCurrentUserId() userId: number,
-    @Body() randomRequest: RandomRequest,
+    @Query('lat') lat: number,
+    @Query('lng') lng: number,
+    @Query('random_number') randomNumber: number,
+    @Query('range') range: number,
   ) {
-    return this.restaurantService.getRandomRestaurant(userId, randomRequest);
+    return this.restaurantService.getRandomRestaurant(
+      userId,
+      lat,
+      lng,
+      randomNumber,
+      range,
+    );
   }
 }

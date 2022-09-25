@@ -1,4 +1,3 @@
 export class Coordinate {
-  Latitude: number;
-  Longitude: number;
+  constructor(public Latitude: number, public Longitude: number) {}
 }

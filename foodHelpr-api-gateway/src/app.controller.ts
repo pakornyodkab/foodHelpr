@@ -7,10 +7,14 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
+  Response,
 } from '@nestjs/common';
 import { AppService } from './app.service';
+import { AuthService } from './auth/auth.service';
 import { GetCurrentUserId } from './auth/decorator';
+import { GoogleOauthGuard } from './auth/google/google.guard';
 import { JwtAuthGuard } from './auth/jwt/jwt.guard';
 import { CreateRestaurantBanListDto } from './dto/create-restaurantBanList.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,7 +22,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('create-user')
   @UseGuards(JwtAuthGuard)
@@ -36,6 +43,12 @@ export class AppController {
   @Get('get-user-by-id/:id')
   getUserById(@Param('id') id: number) {
     return this.appService.getUserById(id);
+  }
+
+  // @UseGuards(GoogleOauthGuard)
+  @Get('user-jwt-token/:googleToken')
+  getUserJwtToken(@Param('googleToken') googleToken: string, @Response() res) {
+    return this.authService.googleLogin(googleToken, res);
   }
 
   @UseGuards(JwtAuthGuard)
