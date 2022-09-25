@@ -9,4 +9,9 @@ export default interface IRestaurant {
   recommendedDishes: string[];
   address: string;
   coordinate: LatLng;
+  deliveryInfo: {
+    _id: string;
+    platform: string;
+    link: string;
+  }[];
 }

@@ -35,25 +35,6 @@ const RESTAURANT_LOAD_DELAY = 1000;
 
 const window = Dimensions.get("window");
 
-const mockData: IRestaurant[] = [
-  {
-    id: "1123",
-    restaurantName: "test restaurant",
-    tags: ["Thai food", "Spicy"],
-    imageUrls: [
-      "https://media-cdn.tripadvisor.com/media/photo-s/17/75/3f/d1/restaurant-in-valkenswaard.jpg",
-      "https://i.ytimg.com/vi/djSC4TrTn4c/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDBN7cmYolqC3r8rzRPhFmkFXINiw",
-    ],
-    rating: 4.65,
-    recommendedDishes: ["a dish", "b dish", "c dish"],
-    address: "124123 asdfolkjasdklfg",
-    coordinate: {
-      latitude: INITIAL_LAT - 0.01,
-      longitude: INITIAL_LNG - 0.01,
-    },
-  },
-];
-
 type LocationInfo = {
   name: string;
   address: string;
@@ -190,6 +171,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
             latitude: restaurant.coordinate.Latitude,
             longitude: restaurant.coordinate.Longitude,
           },
+          deliveryInfo: restaurant.deliveryInfo
         };
       });
       setRestaurants(restaurantData);
@@ -242,6 +224,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
             recommendedDishes={restaurant.recommendedDishes}
             address={restaurant.address}
             coordinate={restaurant.coordinate}
+            deliveryInfo={restaurant.deliveryInfo}
           />
         ))}
       </MapView>
