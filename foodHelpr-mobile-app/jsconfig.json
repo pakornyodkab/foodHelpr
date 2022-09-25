@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "paths": {
+            "@apis/*": ["src/apis/*"],
+            "@pages/*": ["src/pages/*"],
+            "@models/*": ["src/models/*"],
+            "@libs/*": ["src/libs/*"],
+            "@constants/*": ["src/constants/*"],
+        }
+    }
+}
