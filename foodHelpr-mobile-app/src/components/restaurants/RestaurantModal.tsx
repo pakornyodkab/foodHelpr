@@ -3,6 +3,7 @@ import { Image, Modal, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Carousel from "react-native-reanimated-carousel";
 import Button from "../common/Button";
+import * as Linking from "expo-linking";
 
 type RestaurantModalProp = {
   isVisible: boolean;
@@ -13,7 +14,11 @@ type RestaurantModalProp = {
   rating: number;
   recommendedDishes: string[];
   address: string;
-  // orderUrls: string[]
+  deliveryInfo: {
+    _id: string;
+    platform: string;
+    link: string;
+  }[];
 };
 
 const RestaurantModal = ({
@@ -25,6 +30,7 @@ const RestaurantModal = ({
   rating,
   recommendedDishes,
   address,
+  deliveryInfo,
 }: RestaurantModalProp) => {
   function renderRestaurantImage({ item, index }) {
     console.log(item, index);
@@ -47,13 +53,6 @@ const RestaurantModal = ({
     >
       <View className="flex h-screen w-screen items-center justify-center">
         <View className="flex h-fit w-10/12 items-center rounded-xl border-[1px] border-green-500 bg-white p-4">
-          {/* <Image
-            source={{
-              uri: "https://media-cdn.tripadvisor.com/media/photo-s/17/75/3f/d1/restaurant-in-valkenswaard.jpg",
-            }}
-            className="h-48 w-full"
-            resizeMode="contain"
-          /> */}
           <GestureHandlerRootView className="flex-1">
             <Carousel
               loop
@@ -97,6 +96,16 @@ const RestaurantModal = ({
             <Text className="font-semibold text-green-500">Address:</Text>
             <Text className="ml-2">{address}</Text>
           </View>
+
+          {deliveryInfo.map((info) => (
+            <Button
+              key={info._id}
+              className="mt-4 h-10 w-24"
+              onPress={() => Linking.openURL(info.link)}
+            >
+              <Text className="text-center text-white">{info.platform}</Text>
+            </Button>
+          ))}
 
           <Button className="mt-4 h-10 w-10" onPress={() => onClose()}>
             <Text className="text-center text-white">

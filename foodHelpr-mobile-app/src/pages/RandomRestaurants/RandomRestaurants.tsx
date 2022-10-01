@@ -6,16 +6,24 @@ import MapView, {
   MarkerAnimated,
   Region,
 } from "react-native-maps";
-import { Text, View, Pressable, ActivityIndicator, Dimensions } from "react-native";
+import {
+  Text,
+  View,
+  Pressable,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
 import * as Location from "expo-location";
+import { LocationAccuracy } from "expo-location";
 import useDebounce from "../../../src/libs/useDebounce";
 import RestaurantMarker from "../../../src/components/restaurants/RestaurantMarker";
 import NumberSelector from "../../components/restaurants/NumberSelector";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import GoogleMapsApi from "../../apis/googlemaps";
-import { LocationAccuracy } from "expo-location";
 import IRestaurant from "../../models/Restaurant";
 import MapStyle from "../../constants/MapStyle";
+import RestaurantService from "../../apis/restaurant";
+import { saveToken, getToken } from "../../libs/token";
 
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
@@ -25,26 +33,7 @@ const MAX_RANDOM_AMOUNT = 10;
 
 const RESTAURANT_LOAD_DELAY = 1000;
 
-const window = Dimensions.get('window');
-
-const mockData: IRestaurant[] = [
-  {
-    id: "1123",
-    restaurantName: "test restaurant",
-    tags: ["Thai food", "Spicy"],
-    imageUrls: [
-      "https://media-cdn.tripadvisor.com/media/photo-s/17/75/3f/d1/restaurant-in-valkenswaard.jpg",
-      "https://i.ytimg.com/vi/djSC4TrTn4c/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDBN7cmYolqC3r8rzRPhFmkFXINiw",
-    ],
-    rating: 4.65,
-    recommendedDishes: ["a dish", "b dish", "c dish"],
-    address: "124123 asdfolkjasdklfg",
-    coordinate: {
-      latitude: INITIAL_LAT - 0.01,
-      longitude: INITIAL_LNG - 0.01,
-    },
-  },
-];
+const window = Dimensions.get("window");
 
 type LocationInfo = {
   name: string;
@@ -160,10 +149,40 @@ export default function RandomRestaurantsScreen({ navigation }) {
 
   async function getRandomRestaurants() {
     // request something
-    setRestaurantsLoading(true);
-    await Promise.resolve();
-    setRestaurants(mockData);
-    setTimeout(() => setRestaurantsLoading(false), RESTAURANT_LOAD_DELAY);
+    try {
+      setRestaurantsLoading(true);
+      const accessToken = await getToken();
+      const res = await RestaurantService.GetRandomRestaurant(accessToken, {
+        amount: randomAmount,
+        latitude: pinCoordinate.latitude,
+        longitude: pinCoordinate.longitude,
+        range: 5,
+      });
+      const restaurantData: IRestaurant[] = res.data.map((restaurant) => {
+        return {
+          id: restaurant._id,
+          restaurantName: restaurant.name,
+          tags: restaurant.tag,
+          imageUrls: restaurant.restaurantPictureLink,
+          rating: restaurant.rating,
+          recommendedDishes: restaurant.recommendedDish,
+          address: restaurant.address,
+          coordinate: {
+            latitude: restaurant.coordinate.Latitude,
+            longitude: restaurant.coordinate.Longitude,
+          },
+          deliveryInfo: restaurant.deliveryInfo
+        };
+      });
+      setRestaurants(restaurantData);
+    }
+    catch(error) {
+      console.error(error)
+      throw error
+    }
+    finally {
+      setTimeout(() => setRestaurantsLoading(false), RESTAURANT_LOAD_DELAY);
+    }
   }
 
   useEffect(() => {
@@ -172,8 +191,8 @@ export default function RandomRestaurantsScreen({ navigation }) {
         mapRef.current.fitToElements({
           animated: true,
           edgePadding: {
-            top: window.width * 0.2,
-            bottom: window.width * 0.4,
+            top: window.height * 0.2,
+            bottom: window.height * 0.4,
             left: window.width * 0.2,
             right: window.width * 0.2,
           },
@@ -205,6 +224,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
             recommendedDishes={restaurant.recommendedDishes}
             address={restaurant.address}
             coordinate={restaurant.coordinate}
+            deliveryInfo={restaurant.deliveryInfo}
           />
         ))}
       </MapView>

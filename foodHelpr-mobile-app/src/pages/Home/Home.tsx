@@ -3,37 +3,78 @@ import { View, Text, Image, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import { ANDROID_CLIENT_ID, EXPO_CLIENT_ID, MY_SECURE_AUTH_STATE_KEY } from "@env";
+import {
+  ANDROID_CLIENT_ID,
+  EXPO_CLIENT_ID,
+  MY_SECURE_AUTH_STATE_KEY,
+} from "@env";
 import * as AuthSession from "expo-auth-session";
 import GoogleApis from "../../apis/googleapis";
-import {saveToken, getToken} from '../../libs/token'
+import { saveToken, getToken } from "../../libs/token";
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import * as Linking from "expo-linking";
+import AuthService from "../../apis/auth";
 
 WebBrowser.maybeCompleteAuthSession();
-const discovery = {
-  authorizationEndpoint: "http://10.0.2.2:3000/auth/google/login",
-  tokenEndpoint: "http://10.0.2.2:3000/auth/google/redirect",
-};
+// const discovery = {
+//   authorizationEndpoint: "http://10.0.2.2.nip.io:3000/auth/google/login",
+//   tokenEndpoint: "http://10.0.2.2.nip.io:3000/auth/google/redirect",
+// };
 
 export default function HomeScreen({ navigation }) {
   // const [username, onChangeUsername] = React.useState("")
   // const [password, onChangePassword] = React.useState("")
   const [accessToken, setAccessToken] = React.useState<string>("");
   const [userInfo, setUserInfo] = React.useState<any>();
+  const [stealCheckenToken, setStealChickenToken] = React.useState<string>("");
+
+  // console.log('hello',discovery);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: ANDROID_CLIENT_ID,
     expoClientId: EXPO_CLIENT_ID,
   });
 
-  const handleSignInResponse = async () => {
-    if (response?.type === "success") {
-      setAccessToken(response.authentication.accessToken);
-      await saveToken(response.authentication.accessToken)
-      // SecureStore.setItemAsync(MY_SECURE_AUTH_STATE_KEY, response.authentication.accessToken);
-      // console.log(response.authentication.accessToken)
-      // console.log(await getToken())
+  // const [request, response, promptAsync] = useAuthRequest(
+  //   {
+  //     clientId: "1089522380741-kbnf41snq90sgvdiidsdhsspjj25l1lf.apps.googleusercontent.com",
+  //     scopes: ['email', 'profile'],
+  //     redirectUri: "http://10.0.2.2.nip.io:3000/auth/google/redirect",
+  //   },
+  //   discovery
+  // );
+
+  const getFoodHelprToken = async (googleToken: string) => {
+    try {
+      return await AuthService.GetToken(googleToken);
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
-  }
+  };
+
+  const handleSignInResponse = async () => {
+    try {
+      if (response?.type === "success") {
+        console.log("haha", response.authentication.accessToken);
+        setStealChickenToken(response.authentication.accessToken);
+        const tokenResponse = await getFoodHelprToken(
+          response.authentication.accessToken
+        );
+        console.log("hoho", tokenResponse);
+        const token = tokenResponse.data.access_token;
+        setAccessToken(token);
+        await saveToken(token);
+        // SecureStore.setItemAsync(MY_SECURE_AUTH_STATE_KEY, response.authentication.accessToken);
+        // console.log(response.authentication.accessToken);
+
+        // console.log(await getToken())
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 
   React.useEffect(() => {
     handleSignInResponse();
@@ -41,9 +82,14 @@ export default function HomeScreen({ navigation }) {
 
   //!
   const getUserData = async () => {
-    const { data } = await GoogleApis.GetUserData(accessToken);
+    const { data } = await GoogleApis.GetUserData(stealCheckenToken);
+    // console.log(data)
     setUserInfo(data);
   };
+
+  React.useEffect(() => {
+    getUserData();
+  }, [stealCheckenToken]);
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -52,7 +98,7 @@ export default function HomeScreen({ navigation }) {
         style={{ height: 200, width: 400, flex: accessToken ? 1 : 1.2 }}
       />
       <View style={{ flex: 3 }}>
-        {accessToken && getUserData() && (
+        {accessToken && userInfo && (
           <View>
             <View className="flex-row-reverse">
               <Image
@@ -123,7 +169,9 @@ export default function HomeScreen({ navigation }) {
           // </View>
           <Pressable
             className="top-48 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-            onPress={() => promptAsync()}
+            onPress={() => {
+              promptAsync();
+            }}
           >
             <Text className="text-center font-normal text-white">
               Sign In With Google

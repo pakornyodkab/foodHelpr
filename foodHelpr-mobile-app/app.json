@@ -29,8 +29,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "expo": {
-      "scheme": "foodhelpr"
-    }
+    "scheme": "foodhelpr"
   }
 }

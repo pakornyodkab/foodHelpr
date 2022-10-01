@@ -12,6 +12,11 @@ type RestaurantMarkerProp = {
   recommendedDishes: string[];
   address: string;
   coordinate: LatLng;
+  deliveryInfo: {
+    _id: string;
+    platform: string;
+    link: string;
+  }[];
 };
 
 const RestaurantMarker = ({
@@ -22,6 +27,7 @@ const RestaurantMarker = ({
   recommendedDishes,
   address,
   coordinate,
+  deliveryInfo,
 }: RestaurantMarkerProp) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -40,6 +46,7 @@ const RestaurantMarker = ({
         rating={rating}
         recommendedDishes={recommendedDishes}
         address={address}
+        deliveryInfo={deliveryInfo}
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
       />
