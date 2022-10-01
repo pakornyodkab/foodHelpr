@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package ingredient;
+
+service IngredientService {
+  rpc Create(Ingredient) returns (Ingredient) {}
+  rpc UpdateById(Ingredient) returns (Ingredient) {}
+  rpc GetById(IngredientId) returns (Ingredient) {}
+  rpc GetAll(Empty) returns (IngredientList) {}
+  rpc DeleteById(IngredientId) returns (Empty) {}
+}
+
+enum DeliveryType {
+  DELIVERY_TYPE_UNSPECIFIED = 0;
+  DELIVERY_TYPE_BIG_C = 1;
+  DELIVERY_TYPE_LOTUS = 2;
+}
+
+message DeliveryInfo {
+  DeliveryType type = 1;
+  string url = 2;
+}
+
+message Empty {}
+
+message Ingredient {
+  IngredientId ingredient_id = 1;
+  string name = 2;
+  repeated string picture_url = 3;
+  repeated DeliveryInfo delivery_info = 4;
+}
+
+message IngredientId { string ingredient_id = 1; }
+
+message IngredientList { repeated Ingredient ingredient_list = 1; }

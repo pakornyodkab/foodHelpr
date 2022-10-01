@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package recipe;
+
+option go_package = "proto";
+
+import "./ingredient.proto";
+
+service RecipeService {
+  rpc Create(Recipe) returns (Recipe) {}
+  rpc UpdateById(Recipe) returns (Recipe) {}
+  rpc GetById(RecipeId) returns (Recipe) {}
+  rpc GetAll(Empty) returns (RecipeList) {}
+  rpc DeleteById(RecipeId) returns (Empty) {}
+  rpc GetRecipeViewModel(Empty) returns (RecipeViewModel) {}
+  rpc GetRandomRecipes(RandomRecipesRequest) returns (RecipeList) {}
+}
+
+enum Tag {
+  TAG_UNSPECIFIED = 0;
+  TAG_THAI_FOOD = 1;
+  TAG_DESSERT = 2;
+  TAG_KOREAN_FOOD = 3;
+  TAG_JAPANESE_FOOD = 4;
+  TAG_CHINESE_FOOD = 5;
+  TAG_SEA_FOOD = 6;
+  TAG_VEGAN_FOOD = 7;
+  TAG_HEALTHY_FOOD = 8;
+  TAG_BEVERAGE = 9;
+  TAG_ESAN_FOOD = 10;
+}
+
+message Empty {}
+
+message Recipe {
+  string recipe_id = 1;
+  string name = 2;
+  repeated Tag tags = 3;
+  int32 kcal = 4;
+  repeated Ingredient ingredients = 5;
+  repeated string method = 6;
+  repeated string kitchen_tools = 7;
+  repeated string tutorial_links = 8;
+  repeated string picture_url = 9;
+}
+
+message RecipeId { string recipe_id = 1; }
+
+message RecipeList { repeated Recipe recipe_list = 1; }
+
+message RecipeViewModel {
+  repeated Tag tags = 1;
+  repeated Ingredient ingredients = 2;
+  repeated string utensils = 4;
+}
+
+message RandomRecipesRequest {
+  repeated Tag tags = 1;
+  repeated Ingredient include_ingredients = 2;
+  repeated Ingredient exclude_ingredients = 3;
+  repeated string exclude_utensils = 4;
+  int32 calories_min = 5;
+  int32 calories_max = 6;
+  int32 recipe_number = 7;
+}
+
+message DeleteMessage { string delete_true = 1; }
