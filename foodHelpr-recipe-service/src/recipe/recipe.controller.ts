@@ -24,15 +24,15 @@ interface Ingredient {
 }
 
 interface IRecipe {
-  recipe_id: string;
+  recipeId: string;
   name: string;
-  tag: Tag[];
+  tags: Tag[];
   kcal: Number;
   ingredients: Ingredient[];
   method: string[];
-  kitchen_tools: string[];
-  tutorial_links: string[];
-  picture_url: string[];
+  kitchenTools: string[];
+  tutorialLinks: string[];
+  pictureUrl: string[];
 }
 
 @Controller()
@@ -40,12 +40,12 @@ export class RecipeController {
   @GrpcMethod('RecipeService', 'GetById')
   get(recipeId: IRecipeId): IRecipe {
     return {
-      kitchen_tools: ['Pot', 'Oven'],
-      tutorial_links: ['tutorial_path'],
-      picture_url: ['picture_pathee'],
-      recipe_id: '1',
+      kitchenTools: ['Pot', 'Oven'],
+      tutorialLinks: ['tutorial_path'],
+      pictureUrl: ['picture_pathee'],
+      recipeId: '1',
       name: 'Krapao',
-      tag: [Tag.TAG_THAI_FOOD],
+      tags: [Tag.TAG_THAI_FOOD],
       kcal: 99991,
       ingredients: [{ name: 'wow' }],
       method: ['1.asdshdjkfshikefu', '2.sdfefiujeiofjioe2223'],
