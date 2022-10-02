@@ -81,6 +81,10 @@ const DistancePanel = ({
   randomDistance: number;
   onRandomDistanceChange: (newRandomDistance: number) => void;
 }) => {
+  function handleRandomDistanceChange(distances: number[]) {
+    if (distances.length > 0) onRandomDistanceChange(distances[0]);
+  }
+
   return (
     <View className={`mx-auto w-11/12 ${className}`}>
       <Text className="text-center text-lg font-semibold text-green-500">
@@ -88,7 +92,7 @@ const DistancePanel = ({
       </Text>
       <StyledSlider
         value={randomDistance}
-        onValueChange={onRandomDistanceChange}
+        onValueChange={handleRandomDistanceChange}
         minimumValue={1}
         maximumValue={10}
         step={1}
