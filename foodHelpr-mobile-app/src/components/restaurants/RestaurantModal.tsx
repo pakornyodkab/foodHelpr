@@ -33,7 +33,6 @@ const RestaurantModal = ({
   deliveryInfo,
 }: RestaurantModalProp) => {
   function renderRestaurantImage({ item, index }) {
-    console.log(item, index);
     return (
       <Image
         key={index}
@@ -56,7 +55,6 @@ const RestaurantModal = ({
           <GestureHandlerRootView className="flex-1">
             <Carousel
               loop
-              // autoPlay
               pagingEnabled
               snapEnabled
               data={imageUrls}
