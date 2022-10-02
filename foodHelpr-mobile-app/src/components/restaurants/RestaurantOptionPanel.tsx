@@ -1,7 +1,6 @@
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import React from "react";
-import { Dimensions, ScrollView, Text, View } from "react-native";
-import SectionedMultiSelect from "react-native-sectioned-multi-select";
+import { FontAwesome } from "@expo/vector-icons";
+import React, { useEffect, useRef } from "react";
+import { Animated, Dimensions, ScrollView, Text, View } from "react-native";
 import SlidingUpPanel from "rn-sliding-up-panel";
 import ColorScheme from "../../constants/ColorScheme";
 import MultiSelectPanel from "../common/MultiSelectPanel";
@@ -20,6 +19,9 @@ type RestaurantOptionPanelProp = {
   onDeliveryOptionsChange: (newOptions: {}[]) => void;
 };
 
+const MIN_PANEL_HEIGHT = 20;
+const MAX_PANEL_HEIGHT = Math.round(window.height * 0.7);
+
 function RestaurantOptionPanel({
   randomDistance,
   onRandomDistanceChange,
@@ -30,21 +32,48 @@ function RestaurantOptionPanel({
   selectedDeliveryOptions,
   onDeliveryOptionsChange,
 }: RestaurantOptionPanelProp) {
+  const panelAnimatedValue = useRef<Animated.Value>(new Animated.Value(0));
+
+  useEffect(() => {
+    const listener = panelAnimatedValue?.current?.addListener(
+      onPanelAnimatedValueChange
+    );
+    return () => panelAnimatedValue?.current?.removeListener(listener);
+  }, []);
+
+  function onPanelAnimatedValueChange({ value }) {
+    console.log(value, panelAnimatedValue?.current, MAX_PANEL_HEIGHT);
+  }
+
   return (
     <View className="absolute h-full w-full">
       <SlidingUpPanel
-        snappingPoints={[window.height * 0.7]}
-        draggableRange={{ top: window.height * 0.7, bottom: 20 }}
+        snappingPoints={[MAX_PANEL_HEIGHT]}
+        draggableRange={{ top: MAX_PANEL_HEIGHT, bottom: MIN_PANEL_HEIGHT }}
         height={window.height}
         friction={0.5}
+        animatedValue={panelAnimatedValue?.current}
       >
         <>
           <View className="mx-auto h-5 w-14 rounded-t-lg bg-white">
-            <Text className="text-center font-semibold text-green-500">
-              <FontAwesome name="angle-up" size={20} />
-            </Text>
+            <Animated.View
+              style={{
+                transform: [
+                  {
+                    rotate: panelAnimatedValue?.current?.interpolate({
+                      inputRange: [MIN_PANEL_HEIGHT, MAX_PANEL_HEIGHT],
+                      outputRange: ["0deg", "180deg"], // 0 : 150, 0.5 : 75, 1 : 0
+                    }),
+                  },
+                ],
+              }}
+            >
+              <Text className="text-center font-semibold text-green-500">
+                <FontAwesome name="angle-up" size={20} />
+              </Text>
+            </Animated.View>
           </View>
-          <ScrollView className={`h-full w-full rounded-t-lg bg-white p-4`}>
+          <ScrollView className="h-full w-full rounded-t-lg bg-white p-4">
             <DistancePanel
               randomDistance={randomDistance}
               onRandomDistanceChange={onRandomDistanceChange}
