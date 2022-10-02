@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import MapView, {
   AnimatedRegion,
+  Circle,
   LatLng,
   MapEvent,
   MarkerAnimated,
@@ -24,6 +25,7 @@ import MapStyle from "../../constants/MapStyle";
 import RestaurantService from "../../apis/restaurant";
 import { getToken } from "../../libs/token";
 import RestaurantOptionPanel from "../../components/restaurants/RestaurantOptionPanel";
+import ColorScheme from "../../constants/ColorScheme";
 
 const mockTags = Array.from({ length: 22 }, (_, idx) => {
   return {
@@ -42,6 +44,9 @@ const mockOptions = Array.from({ length: 22 }, (_, idx) => {
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
 
+const DELTA_LAT = 0.00521;
+const DELTA_LNG = 0.00521;
+
 const MIN_RANDOM_AMOUNT = 1;
 const MAX_RANDOM_AMOUNT = 10;
 
@@ -58,8 +63,8 @@ export default function RandomRestaurantsScreen({ navigation }) {
   const [region, setRegion] = useState<Region>({
     latitude: INITIAL_LAT,
     longitude: INITIAL_LNG,
-    latitudeDelta: 0.001,
-    longitudeDelta: 0.001,
+    latitudeDelta: DELTA_LAT,
+    longitudeDelta: DELTA_LNG,
   });
   const [pinCoordinate, setPinCoordinate] = useState<LatLng>({
     latitude: INITIAL_LAT,
@@ -128,8 +133,8 @@ export default function RandomRestaurantsScreen({ navigation }) {
     setRegion({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
-      latitudeDelta: 0.00421,
-      longitudeDelta: 0.00421,
+      latitudeDelta: DELTA_LAT,
+      longitudeDelta: DELTA_LNG,
     });
     setPinCoordinate(location.coords);
   }
@@ -138,8 +143,8 @@ export default function RandomRestaurantsScreen({ navigation }) {
     setRegion({
       latitude: currentCoordinate.current.latitude,
       longitude: currentCoordinate.current.longitude,
-      latitudeDelta: 0.00421,
-      longitudeDelta: 0.00421,
+      latitudeDelta: DELTA_LAT,
+      longitudeDelta: DELTA_LNG,
     });
   }
 
@@ -231,14 +236,21 @@ export default function RandomRestaurantsScreen({ navigation }) {
     </View>
   );
 
-  function handleRandomDistanceChange(distance) {
+  function handleRandomDistanceChange(distance: number) {
     setRandomDistance(distance);
   }
-  function handleSelectedTagsChange(tags) {
+  function handleSelectedTagsChange(tags: any[]) {
     setSelectedTags(tags);
   }
-  function handleDeliveryOptionsChange(options) {
+  function handleDeliveryOptionsChange(options: any[]) {
     setDeliveryOptions(options);
+  }
+
+  function handleOnPressBack() {
+    if (restaurants.length > 0) {
+      setRestaurants([]);
+    }
+    navigation.goBack();
   }
 
   return (
@@ -254,6 +266,14 @@ export default function RandomRestaurantsScreen({ navigation }) {
         customMapStyle={MapStyle}
       >
         <PinMarker coordinate={pinCoordinate} />
+        {restaurants.length === 0 && (
+          <Circle
+            center={pinCoordinate}
+            radius={randomDistance * 1000}
+            strokeColor={ColorScheme.primary}
+            fillColor={"rgba(34, 197, 94, 0.1)"}
+          />
+        )}
         {restaurants.map((restaurant) => (
           <RestaurantMarker
             key={restaurant.id}
@@ -278,79 +298,70 @@ export default function RandomRestaurantsScreen({ navigation }) {
       </Pressable>
       <Pressable
         className="absolute top-10 left-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-        onPress={navigation.goBack}
+        onPress={handleOnPressBack}
       >
         <Text className="text-center font-semibold text-white">
           <FontAwesome name="arrow-left" size={16} />
         </Text>
       </Pressable>
-      <View className="mx-4 mt-auto mb-4 flex items-center">
-        <NumberSelector
-          number={randomAmount}
-          canIncrease={randomAmount < MAX_RANDOM_AMOUNT}
-          canDecrease={randomAmount > MIN_RANDOM_AMOUNT}
-          onIncrease={onIncreaseRandomAmount}
-          onDecrease={onDecreaseRandomAmount}
-        />
-        <Text className="text-center font-semibold text-green-500">
-          Restaurants
-        </Text>
-
-        <CurrentLocationPanel />
-
-        <Pressable
-          className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-          onPress={getRandomRestaurants}
-          disabled={restaurantsLoading}
-        >
-          {restaurantsLoading ? (
-            <ActivityIndicator size="large" color="white" />
-          ) : (
-            <Text className="text-center text-lg font-semibold text-white">
-              Confirm
+      {restaurants.length === 0 && (
+        <>
+          <View className="mx-4 mt-auto mb-4 flex items-center">
+            <NumberSelector
+              number={randomAmount}
+              canIncrease={randomAmount < MAX_RANDOM_AMOUNT}
+              canDecrease={randomAmount > MIN_RANDOM_AMOUNT}
+              onIncrease={onIncreaseRandomAmount}
+              onDecrease={onDecreaseRandomAmount}
+            />
+            <Text className="text-center font-semibold text-green-500">
+              Restaurants
             </Text>
-          )}
-        </Pressable>
-      </View>
-      <RestaurantOptionPanel
-        randomDistance={randomDistance}
-        onRandomDistanceChange={handleRandomDistanceChange}
-        tags={mockTags}
-        selectedTags={selectedTags}
-        onSelectedTagsChange={handleSelectedTagsChange}
-        deliveryOptions={mockOptions}
-        selectedDeliveryOptions={deliveryOptions}
-        onDeliveryOptionsChange={handleDeliveryOptionsChange}
-      />
+
+            <CurrentLocationPanel />
+
+            <Pressable
+              className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+              onPress={getRandomRestaurants}
+              disabled={restaurantsLoading}
+            >
+              {restaurantsLoading ? (
+                <ActivityIndicator size="large" color="white" />
+              ) : (
+                <Text className="text-center text-lg font-semibold text-white">
+                  Confirm
+                </Text>
+              )}
+            </Pressable>
+          </View>
+          <RestaurantOptionPanel
+            randomDistance={randomDistance}
+            onRandomDistanceChange={handleRandomDistanceChange}
+            tags={mockTags}
+            selectedTags={selectedTags}
+            onSelectedTagsChange={handleSelectedTagsChange}
+            deliveryOptions={mockOptions}
+            selectedDeliveryOptions={deliveryOptions}
+            onDeliveryOptionsChange={handleDeliveryOptionsChange}
+          />
+        </>
+      )}
     </View>
   );
 }
 
 const PinMarker = ({ coordinate }: { coordinate: LatLng }) => {
   const DURATION = 200;
-  const LATITUDE_DELTA = 0.0421;
-  const LONGITUDE_DELTA = 0.0421;
   const marker = useRef<MarkerAnimated>(null);
   // const [marker, setMarker] = useState<MarkerAnimated>(null);
   const [coords, setCoordinate] = useState<AnimatedRegion>(
     new AnimatedRegion({
       latitude: coordinate.latitude || INITIAL_LAT,
       longitude: coordinate.longitude || INITIAL_LNG,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LATITUDE_DELTA,
+      latitudeDelta: DELTA_LAT,
+      longitudeDelta: DELTA_LNG,
     })
   );
-
-  // useEffect(() => {
-  //   setCoordinate(
-  //     new AnimatedRegion({
-  //       latitude: coordinate.latitude || INITIAL_LAT,
-  //       longitude: coordinate.longitude || INITIAL_LNG,
-  //       latitudeDelta: LATITUDE_DELTA,
-  //       longitudeDelta: LATITUDE_DELTA,
-  //     })
-  //   );
-  // }, [coordinate]);
 
   function animationMarker() {
     coords
