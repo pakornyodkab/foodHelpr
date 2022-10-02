@@ -19,11 +19,25 @@ import useDebounce from "../../../src/libs/useDebounce";
 import RestaurantMarker from "../../../src/components/restaurants/RestaurantMarker";
 import NumberSelector from "../../components/restaurants/NumberSelector";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
-import GoogleMapsApi from "../../apis/googlemaps";
 import IRestaurant from "../../models/Restaurant";
 import MapStyle from "../../constants/MapStyle";
 import RestaurantService from "../../apis/restaurant";
-import { saveToken, getToken } from "../../libs/token";
+import { getToken } from "../../libs/token";
+import RestaurantOptionPanel from "../../components/restaurants/RestaurantOptionPanel";
+
+const mockTags = Array.from({ length: 22 }, (_, idx) => {
+  return {
+    _id: idx,
+    name: "test" + idx,
+  };
+});
+
+const mockOptions = Array.from({ length: 22 }, (_, idx) => {
+  return {
+    _id: idx,
+    name: "test" + idx,
+  };
+});
 
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
@@ -65,6 +79,9 @@ export default function RandomRestaurantsScreen({ navigation }) {
     useState<boolean>(false);
 
   const [randomAmount, setRandomAmount] = useState<number>(3);
+  const [randomDistance, setRandomDistance] = useState<number>(5);
+  const [selectedTags, setSelectedTags] = useState<any[]>([]);
+  const [deliveryOptions, setDeliveryOptions] = useState<any[]>([]);
 
   const debouncedPinCoordinate = useDebounce<LatLng>(pinCoordinate, 1000);
 
@@ -171,16 +188,14 @@ export default function RandomRestaurantsScreen({ navigation }) {
             latitude: restaurant.coordinate.Latitude,
             longitude: restaurant.coordinate.Longitude,
           },
-          deliveryInfo: restaurant.deliveryInfo
+          deliveryInfo: restaurant.deliveryInfo,
         };
       });
       setRestaurants(restaurantData);
-    }
-    catch(error) {
-      console.error(error)
-      throw error
-    }
-    finally {
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
       setTimeout(() => setRestaurantsLoading(false), RESTAURANT_LOAD_DELAY);
     }
   }
@@ -200,6 +215,31 @@ export default function RandomRestaurantsScreen({ navigation }) {
       RESTAURANT_LOAD_DELAY
     );
   }, [restaurants]);
+
+  const CurrentLocationPanel = () => (
+    <View className="my-2 w-full rounded-lg border-[1px] border-green-500 bg-white px-2 py-1">
+      {locationInfoLoading ? (
+        <ActivityIndicator size="large" color="rgb(34, 197, 94)" />
+      ) : (
+        <>
+          <Text className="text-center text-lg font-semibold text-green-500">
+            {locationInfo.name}
+          </Text>
+          <Text className="text-sm text-green-500">{locationInfo.address}</Text>
+        </>
+      )}
+    </View>
+  );
+
+  function handleRandomDistanceChange(distance) {
+    setRandomDistance(distance);
+  }
+  function handleSelectedTagsChange(tags) {
+    setSelectedTags(tags);
+  }
+  function handleDeliveryOptionsChange(options) {
+    setDeliveryOptions(options);
+  }
 
   return (
     <View className="relative inset-0 flex-1">
@@ -230,7 +270,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
       </MapView>
       <Pressable
         className="absolute top-10 right-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-        onPress={() => updateCurrentRegion()}
+        onPress={updateCurrentRegion}
       >
         <Text className="text-center font-semibold text-white">
           <MaterialIcons name="my-location" size={24} />
@@ -238,7 +278,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
       </Pressable>
       <Pressable
         className="absolute top-10 left-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-        onPress={() => navigation.goBack()}
+        onPress={navigation.goBack}
       >
         <Text className="text-center font-semibold text-white">
           <FontAwesome name="arrow-left" size={16} />
@@ -256,24 +296,11 @@ export default function RandomRestaurantsScreen({ navigation }) {
           Restaurants
         </Text>
 
-        <View className="my-2 w-full rounded-lg border-[1px] border-green-500 bg-white px-2 py-1">
-          {locationInfoLoading ? (
-            <ActivityIndicator size="large" color="rgb(34, 197, 94)" />
-          ) : (
-            <>
-              <Text className="text-center text-lg font-semibold text-green-500">
-                {locationInfo.name}
-              </Text>
-              <Text className="text-sm text-green-500">
-                {locationInfo.address}
-              </Text>
-            </>
-          )}
-        </View>
+        <CurrentLocationPanel />
 
         <Pressable
           className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-          onPress={async () => await getRandomRestaurants()}
+          onPress={getRandomRestaurants}
           disabled={restaurantsLoading}
         >
           {restaurantsLoading ? (
@@ -285,6 +312,16 @@ export default function RandomRestaurantsScreen({ navigation }) {
           )}
         </Pressable>
       </View>
+      <RestaurantOptionPanel
+        randomDistance={randomDistance}
+        onRandomDistanceChange={handleRandomDistanceChange}
+        tags={mockTags}
+        selectedTags={selectedTags}
+        onSelectedTagsChange={handleSelectedTagsChange}
+        deliveryOptions={mockOptions}
+        selectedDeliveryOptions={deliveryOptions}
+        onDeliveryOptionsChange={handleDeliveryOptionsChange}
+      />
     </View>
   );
 }
