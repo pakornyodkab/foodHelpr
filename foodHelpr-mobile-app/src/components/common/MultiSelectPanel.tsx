@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import SectionedMultiSelect, {
   Colors as MultiSelectColors,
 } from "react-native-sectioned-multi-select";
-import ColorScheme from "../../constants/Color";
+import ColorScheme from "../../constants/ColorScheme";
 
 const MultiSelectPanel = React.memo(
   <T extends unknown>({
