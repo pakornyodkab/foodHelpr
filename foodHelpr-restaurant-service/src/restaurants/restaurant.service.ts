@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Restaurant } from './restaurant.model';
@@ -14,10 +15,13 @@ import { Coordinate } from './dto/coordinate.dto';
 
 @Injectable()
 export class RestaurantService {
+  private LOGGER: Logger;
   constructor(
     @InjectModel('Restaurant')
     private readonly restaurantModel: Model<Restaurant>,
-  ) {}
+  ) {
+    this.LOGGER = new Logger();
+  }
 
   async getRestaurantById(id: string) {
     return await this.restaurantModel.findById(id);
@@ -36,24 +40,21 @@ export class RestaurantService {
   }
 
   async updateRestaurant(id: string, updateRestaurantDto: UpdateRestaurantDto) {
-    const restaurant = await this.restaurantModel.findById(id);
-    if (!restaurant) {
-      throw new NotFoundException('Restaurant Not Found');
-    }
+    const restaurant = await this.restaurantModel.findByIdAndUpdate(
+      { _id: id },
+      updateRestaurantDto,
+      { new: true },
+    );
 
-    restaurant.name = updateRestaurantDto.name;
-    restaurant.address = updateRestaurantDto.address;
-    restaurant.restaurantPictureLink =
-      updateRestaurantDto.restaurantPictureLink;
-    restaurant.recommendedDish = updateRestaurantDto.recommendedDish;
-    restaurant.tag = updateRestaurantDto.tag;
-    restaurant.coordinate = {
-      Latitude: updateRestaurantDto.coordinate.Latitude,
-      Longitude: updateRestaurantDto.coordinate.Longitude,
-    };
-    restaurant.rating = updateRestaurantDto.rating;
-    restaurant.deliveryInfo = updateRestaurantDto.deliveryInfo;
-    await restaurant.save();
+    if (!restaurant) {
+      return new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Restaurant Not Found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
     return restaurant;
   }
 
@@ -104,7 +105,15 @@ export class RestaurantService {
     randomNumber: number,
     userBanListId: String[],
     range: number,
+    tags: string[],
+    deliveryPlatforms: string[],
   ) {
+    this.LOGGER.log(
+      `Filter option In Random Restaurant : tags ${JSON.stringify(
+        tags,
+      )} deliveryPlatforms ${JSON.stringify(deliveryPlatforms)}`,
+    );
+
     if (randomNumber <= 0) {
       return new HttpException(
         {
@@ -119,8 +128,22 @@ export class RestaurantService {
       return new BadRequestException('Range cannot equal or less than zero');
     }
 
+    let filter = {};
+
+    if (tags?.length > 0) {
+      filter['tag'] = { $in: tags };
+    }
+
+    if (deliveryPlatforms?.length > 0) {
+      filter['deliveryInfo'] = {
+        $elemMatch: { platform: { $in: deliveryPlatforms } },
+      };
+    }
+
+    console.log(`filter: ${JSON.stringify(filter)}`);
+
     const restaurant = JSON.parse(
-      JSON.stringify(await this.restaurantModel.find()),
+      JSON.stringify(await this.restaurantModel.find(filter).exec()),
     );
 
     const bannedRestaurant = userBanListId;

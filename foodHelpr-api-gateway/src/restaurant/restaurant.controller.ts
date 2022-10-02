@@ -70,6 +70,8 @@ export class RestaurantController {
     @Query('lng') lng: number,
     @Query('random_number') randomNumber: number,
     @Query('range') range: number,
+    @Query('tags') tags: string[],
+    @Query('delivery_platforms') deliveryPlatforms: string[],
   ) {
     return this.restaurantService.getRandomRestaurant(
       userId,
@@ -77,6 +79,8 @@ export class RestaurantController {
       lng,
       randomNumber,
       range,
+      tags,
+      deliveryPlatforms,
     );
   }
 }
