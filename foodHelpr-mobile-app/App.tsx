@@ -13,6 +13,8 @@ import * as SplashScreen from "expo-splash-screen";
 import RandomRestaurantsScreen from "./src/pages/RandomRestaurants/RandomRestaurants";
 import HomeScreen from "./src/pages/Home/Home";
 import { Platform, View } from "react-native";
+import MainRoutes from "./src/routes/main";
+import RandomRecipesIndex from "./src/pages/RandomRecipes";
 
 const Stack = createStackNavigator();
 
@@ -46,19 +48,17 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <View
-        className="h-full w-full flex-1"
-        onLayout={onLayoutRootView}
-      >
+      <View className="h-full w-full flex-1" onLayout={onLayoutRootView}>
         <Stack.Navigator
-          initialRouteName="Home"
+          initialRouteName={MainRoutes.home}
           screenOptions={{ headerShown: false }}
         >
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name={MainRoutes.home} component={HomeScreen} />
           <Stack.Screen
-            name="Random Restaurants"
+            name={MainRoutes.restaurant}
             component={RandomRestaurantsScreen}
           />
+          <Stack.Screen name={MainRoutes.recipe} component={RandomRecipesIndex} />
         </Stack.Navigator>
       </View>
     </NavigationContainer>
