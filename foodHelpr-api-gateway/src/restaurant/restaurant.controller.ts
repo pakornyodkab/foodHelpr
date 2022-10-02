@@ -32,6 +32,12 @@ export class RestaurantController {
     return this.restaurantService.getRestaurants();
   }
 
+  @Get('get-restaurant-by-id/:id')
+  @UseGuards(JwtAuthGuard)
+  getRestaurantById(@Param('id') id: string) {
+    return this.restaurantService.getRestaurantById(id);
+  }
+
   @Post('create-restaurant')
   @UseGuards(JwtAuthGuard)
   createRestaurant(@Body() createRestaurantDto: CreateRestaurantDto) {

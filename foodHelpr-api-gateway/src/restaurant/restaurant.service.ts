@@ -19,6 +19,10 @@ export class RestaurantService {
     return this.restaurantService.send({ cmd: 'getRestautants' }, {});
   }
 
+  getRestaurantById(id: string) {
+    return this.restaurantService.send({ cmd: 'getById' }, id);
+  }
+
   createRestaurant(createRestaurantDto: CreateRestaurantDto) {
     return this.restaurantService.send<CreateRestaurantDto>(
       { cmd: 'create' },
