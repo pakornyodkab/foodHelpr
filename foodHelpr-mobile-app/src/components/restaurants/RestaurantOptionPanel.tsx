@@ -34,17 +34,6 @@ function RestaurantOptionPanel({
 }: RestaurantOptionPanelProp) {
   const panelAnimatedValue = useRef<Animated.Value>(new Animated.Value(0));
 
-  useEffect(() => {
-    const listener = panelAnimatedValue?.current?.addListener(
-      onPanelAnimatedValueChange
-    );
-    return () => panelAnimatedValue?.current?.removeListener(listener);
-  }, []);
-
-  function onPanelAnimatedValueChange({ value }) {
-    console.log(value, panelAnimatedValue?.current, MAX_PANEL_HEIGHT);
-  }
-
   return (
     <View className="absolute h-full w-full">
       <SlidingUpPanel
