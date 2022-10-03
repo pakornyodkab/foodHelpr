@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
+import { RecipeModule } from './recipe/recipe.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 
 @Module({
@@ -31,6 +32,7 @@ import { RestaurantModule } from './restaurant/restaurant.module';
     ]),
     AuthModule,
     RestaurantModule,
+    RecipeModule,
   ],
   controllers: [AppController],
   providers: [JwtService, AppService, AuthService],

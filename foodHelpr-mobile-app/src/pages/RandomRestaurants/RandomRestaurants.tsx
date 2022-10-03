@@ -125,7 +125,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
       longitudeDelta: 0.00421,
     });
   }
-
+ 
   function onMapPress(event: MapEvent) {
     setPinCoordinate(event.nativeEvent.coordinate);
     setLocationInfoLoading(true);

@@ -17,14 +17,14 @@ enum DeliveryType {
 }
 
 message DeliveryInfo {
-  DeliveryType type = 1;
+  DeliveryType delivery_type = 1;
   string url = 2;
 }
 
 message Empty {}
 
 message Ingredient {
-  IngredientId ingredient_id = 1;
+  string ingredient_id = 1;
   string name = 2;
   repeated string picture_url = 3;
   repeated DeliveryInfo delivery_info = 4;

@@ -25,8 +25,13 @@
     "@grpc/proto-loader": "^0.7.3",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/mapped-types": "^1.2.0",
     "@nestjs/microservices": "^9.1.2",
+    "@nestjs/mongoose": "^9.2.0",
     "@nestjs/platform-express": "^8.0.0",
+    "class-validator": "^0.13.2",
+    "dotenv": "^16.0.3",
+    "mongoose": "^6.6.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
