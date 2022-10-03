@@ -1,6 +1,6 @@
-import { Pressable } from "react-native";
+import { Pressable, PressableProps } from "react-native";
 
-function Button(props) {
+function Button(props: PressableProps) {
   return (
     <Pressable
       {...props}

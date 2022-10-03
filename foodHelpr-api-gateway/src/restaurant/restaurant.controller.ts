@@ -32,6 +32,12 @@ export class RestaurantController {
     return this.restaurantService.getRestaurants();
   }
 
+  @Get('get-restaurant-by-id/:id')
+  @UseGuards(JwtAuthGuard)
+  getRestaurantById(@Param('id') id: string) {
+    return this.restaurantService.getRestaurantById(id);
+  }
+
   @Post('create-restaurant')
   @UseGuards(JwtAuthGuard)
   createRestaurant(@Body() createRestaurantDto: CreateRestaurantDto) {
@@ -70,6 +76,8 @@ export class RestaurantController {
     @Query('lng') lng: number,
     @Query('random_number') randomNumber: number,
     @Query('range') range: number,
+    @Query('tags') tags: string[],
+    @Query('delivery_platforms') deliveryPlatforms: string[],
   ) {
     return this.restaurantService.getRandomRestaurant(
       userId,
@@ -77,6 +85,8 @@ export class RestaurantController {
       lng,
       randomNumber,
       range,
+      tags,
+      deliveryPlatforms,
     );
   }
 }

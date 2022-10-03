@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantRequest } from './dto/update-restaurant-request';
@@ -10,7 +10,11 @@ import { RandomReqWithBanList } from './dto/randomReqWithBanList.dto';
 
 @Controller()
 export class RestaurantController {
-  constructor(private readonly restaurantService: RestaurantService) {}
+  private LOGGER: Logger;
+
+  constructor(private readonly restaurantService: RestaurantService) {
+    this.LOGGER = new Logger();
+  }
 
   @MessagePattern({ cmd: 'getById' })
   getRestautantsById(id: string) {
@@ -50,11 +54,14 @@ export class RestaurantController {
 
   @MessagePattern({ cmd: 'get-random-restaurant' })
   getRandomRestaurant(randomRequest: RandomReqWithBanList) {
+    this.LOGGER.log('Call Random Restaurant Function');
     return this.restaurantService.getRandomRestaurant(
       randomRequest.req.coordinate,
       randomRequest.req.randomNumber,
       randomRequest.userBanListId,
       randomRequest.req.range,
+      randomRequest.req.tags,
+      randomRequest.req.deliveryPlatforms,
     );
   }
 }

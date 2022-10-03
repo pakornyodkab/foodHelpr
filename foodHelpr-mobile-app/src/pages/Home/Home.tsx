@@ -14,6 +14,7 @@ import { saveToken, getToken } from "../../libs/token";
 import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import * as Linking from "expo-linking";
 import AuthService from "../../apis/auth";
+import MainRoutes from "../../routes/main";
 
 WebBrowser.maybeCompleteAuthSession();
 // const discovery = {
@@ -182,8 +183,8 @@ export default function HomeScreen({ navigation }) {
           <View className="flex items-center justify-center gap-1">
             <Pressable
               className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-              onPress={() => navigation.navigate("Random Restaurants")}
-            >
+              onPress={() => navigation.navigate(MainRoutes.restaurant)}
+              >
               <View className="relative flex h-full justify-center">
                 <Text className="absolute left-4 text-white">
                   <MaterialIcons name="restaurant" size={24} />
@@ -194,9 +195,8 @@ export default function HomeScreen({ navigation }) {
               </View>
             </Pressable>
             <Pressable
-              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 opacity-40 active:scale-95 active:bg-green-700"
-              onPress={() => console.log("comming soon")}
-              disabled
+              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+              onPress={() => navigation.navigate(MainRoutes.recipe)}
             >
               <View className="relative flex h-full justify-center">
                 <Text className="absolute left-4 text-white">

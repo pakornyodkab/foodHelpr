@@ -5,5 +5,7 @@ export class RandomRequest {
     public coordinate: Coordinate,
     public randomNumber: number,
     public range: number,
+    public tags: string[],
+    public deliveryPlatforms: string[],
   ) {}
 }

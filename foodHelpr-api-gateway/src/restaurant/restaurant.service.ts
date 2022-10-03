@@ -19,6 +19,10 @@ export class RestaurantService {
     return this.restaurantService.send({ cmd: 'getRestautants' }, {});
   }
 
+  getRestaurantById(id: string) {
+    return this.restaurantService.send({ cmd: 'getById' }, id);
+  }
+
   createRestaurant(createRestaurantDto: CreateRestaurantDto) {
     return this.restaurantService.send<CreateRestaurantDto>(
       { cmd: 'create' },
@@ -44,21 +48,36 @@ export class RestaurantService {
     );
   }
 
-  async getRandomRestaurant(
+  getRandomRestaurant(
     userId: number,
     lat: number,
     lng: number,
     randomNumber: number,
     range: number,
+    tags: string[],
+    deliveryPlatforms: string[],
   ) {
-    let userBanList = [];
-    await this.appService
-      .findRestaurantBanListsByUserId(userId)
-      .forEach((e) => userBanList.push(e));
-    userBanList = userBanList[0];
+    let userBanList: any;
+    this.appService.findRestaurantBanListsByUserId(userId).subscribe({
+      next: (value: any) => {
+        userBanList = value;
+      },
+      error: (err: any) => {
+        console.log(err);
+      },
+      complete: () => {
+        console.log('Random Restaurant Work Complete');
+      },
+    });
     const userBanListId = this.getRestaurantIdFromUserBanList(userBanList);
     const coordinate = new Coordinate(lat, lng);
-    const randomReq = new RandomRequest(coordinate, randomNumber, range);
+    const randomReq = new RandomRequest(
+      coordinate,
+      randomNumber,
+      range,
+      tags,
+      deliveryPlatforms,
+    );
     return this.restaurantService.send(
       { cmd: 'get-random-restaurant' },
       new RandomReqWithBanList(randomReq, userBanListId),
