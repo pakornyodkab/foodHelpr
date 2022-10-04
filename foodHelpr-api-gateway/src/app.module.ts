@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
+import { IngredientModule } from './ingredient/ingredient.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 
@@ -33,6 +34,7 @@ import { RestaurantModule } from './restaurant/restaurant.module';
     AuthModule,
     RestaurantModule,
     RecipeModule,
+    IngredientModule,
   ],
   controllers: [AppController],
   providers: [JwtService, AppService, AuthService],

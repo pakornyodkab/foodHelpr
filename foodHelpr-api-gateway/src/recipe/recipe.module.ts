@@ -12,6 +12,9 @@ import { RecipeController } from './recipe.controller';
         options: {
           package: 'recipe',
           protoPath: join(__dirname, '../../../proto/recipe.proto'),
+          loader: {
+            includeDirs: [join(__dirname, '../../../proto')],
+          },
           url: 'localhost:3003',
         },
       },

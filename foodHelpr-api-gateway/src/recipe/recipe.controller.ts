@@ -15,7 +15,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { Recipe, RecipeList } from '../utils/recipe.interface';
 
-@Controller()
+@Controller('recipe')
 export class RecipeController implements OnModuleInit {
   private recipeService: any;
 
@@ -25,15 +25,15 @@ export class RecipeController implements OnModuleInit {
     this.recipeService = this.client.getService('RecipeService');
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('get-recipes')
   async getRecipes(): Promise<RecipeList> {
-    let recipeList: any;
+    let recipeList: RecipeList;
     await this.recipeService.getAll({}).forEach((res) => (recipeList = res));
     return recipeList;
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('get-recipe-by-id/:id')
   async getRecipeById(@Param('id') id: string): Promise<Recipe> {
     let recipe: any;
@@ -47,14 +47,14 @@ export class RecipeController implements OnModuleInit {
     return recipe;
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('create-recipe')
   async createRecipe(@Body() recipe: Recipe): Promise<Recipe> {
     const newRecipe = await this.recipeService.create(recipe);
     return newRecipe;
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch('update-recipe/:id')
   async updateRecipeById(
     @Param('id') id: string,
@@ -71,7 +71,7 @@ export class RecipeController implements OnModuleInit {
     return newRecipe;
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete('delete-recipe/:id')
   async deleteRecipeById(@Param('id') id: string): Promise<object> {
     await this.recipeService

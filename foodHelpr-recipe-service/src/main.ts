@@ -6,10 +6,11 @@ import { AppModule } from './app.module';
 const MicroserviceOptions = {
   transport: Transport.GRPC,
   options: {
-    package: 'recipe',
-    //package: 'ingredient',
-    protoPath: join(__dirname, '../../proto/recipe.proto'),
-    //protoPath: join(__dirname, '../../proto/ingredient.proto'),
+    package: ['recipe', 'ingredient'],
+    protoPath: [
+      join(__dirname, '../../proto/ingredient.proto'),
+      join(__dirname, '../../proto/recipe.proto'),
+    ],
     url: 'localhost:3003',
   },
 };
