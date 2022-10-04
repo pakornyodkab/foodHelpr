@@ -64,4 +64,10 @@ export class RestaurantController {
       randomRequest.req.deliveryPlatforms,
     );
   }
+
+  @MessagePattern({cmd:'get-random-restaurant-view-model'})
+  getRandomRestaurantViewModel(){
+    this.LOGGER.log('Call Get Random Restaurant View Model')
+    return this.restaurantService.getRandomRestaurantViewModel()
+  }
 }

@@ -84,6 +84,13 @@ export class RestaurantService {
     );
   }
 
+  getRandomRestaurantViewModel() {
+    return this.restaurantService.send(
+      { cmd: 'get-random-restaurant-view-model' },
+      {},
+    );
+  }
+
   private getRestaurantIdFromUserBanList(userBanList: any) {
     if (!userBanList) {
       return [];

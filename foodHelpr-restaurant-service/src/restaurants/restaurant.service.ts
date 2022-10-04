@@ -16,6 +16,11 @@ import { Coordinate } from './dto/coordinate.dto';
 @Injectable()
 export class RestaurantService {
   private LOGGER: Logger;
+  private MIN_RESTAURANT_DISTANCE = 0;
+  private MAX_RESTAURANT_DISTANCE = 10;
+  private MIN_RESTAURANT_RANDOM_NUMBER = 1;
+  private MAX_RESTAURANT_RANDOM_NUMBER = 10;
+
   constructor(
     @InjectModel('Restaurant')
     private readonly restaurantModel: Model<Restaurant>,
@@ -140,8 +145,6 @@ export class RestaurantService {
       };
     }
 
-    console.log(`filter: ${JSON.stringify(filter)}`);
-
     const restaurant = JSON.parse(
       JSON.stringify(await this.restaurantModel.find(filter).exec()),
     );
@@ -170,5 +173,20 @@ export class RestaurantService {
         .sort(() => Math.random() - Math.random())
         .slice(0, randomNumber);
     }
+  }
+
+  async getRandomRestaurantViewModel() {
+    const allTags = await this.restaurantModel.distinct('tag');
+    const allDeliveryPlatforms = await this.restaurantModel.distinct(
+      'deliveryInfo.platform',
+    );
+    return {
+      tag: allTags,
+      deliveryPlatform: allDeliveryPlatforms,
+      minDistance: this.MIN_RESTAURANT_DISTANCE,
+      maxDistance: this.MAX_RESTAURANT_DISTANCE,
+      minRandomNumber: this.MIN_RESTAURANT_RANDOM_NUMBER,
+      maxRandomNumber: this.MAX_RESTAURANT_RANDOM_NUMBER,
+    };
   }
 }

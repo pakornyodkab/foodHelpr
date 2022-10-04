@@ -89,4 +89,10 @@ export class RestaurantController {
       deliveryPlatforms,
     );
   }
+
+  @Get('get-random-restaurant-view-model')
+  @UseGuards(JwtAuthGuard)
+  getRandomRestaurantViewModel() {
+    return this.restaurantService.getRandomRestaurantViewModel();
+  }
 }
