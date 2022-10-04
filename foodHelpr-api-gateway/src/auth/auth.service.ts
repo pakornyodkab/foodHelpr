@@ -72,7 +72,13 @@ export class AuthService {
       .forEach((exUser) => (existingUser = exUser));
 
     if (!existingUser) {
-      return this.googleRegister(tokenInfo.email, tokenInfo.picture, res);
+      return this.googleRegister(
+        tokenInfo.email,
+        tokenInfo.picture,
+        tokenInfo.given_name,
+        tokenInfo.family_name,
+        res,
+      );
     }
 
     const token = sign(
@@ -89,10 +95,18 @@ export class AuthService {
     return res.send({ message: 'Logged in successfully', access_token: token });
   }
 
-  async googleRegister(email: string, picture_url: string, res: Response) {
+  async googleRegister(
+    email: string,
+    picture_url: string,
+    firstname: string,
+    lastname: string,
+    res: Response,
+  ) {
     try {
       mockData.email = email;
       mockData.profile_picture = picture_url;
+      mockData.firstname = firstname;
+      mockData.lastname = lastname;
       let newUser: any;
       await this.userService
         .send<CreateUserDto>({ cmd: 'createUser' }, mockData)
@@ -100,10 +114,13 @@ export class AuthService {
 
       console.log(`Create New User Successfully`);
 
-      const token = this.generateJwt({
-        sub: newUser.user_id,
-        email: newUser.email,
-      });
+      const token = sign(
+        {
+          sub: newUser.user_id,
+          email: newUser.email,
+        },
+        process.env.JWT_SECRET,
+      );
 
       if (!token) {
         throw new ForbiddenException('Could not signin');
