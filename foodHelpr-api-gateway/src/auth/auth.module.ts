@@ -6,6 +6,7 @@ import { GoogleStrategy } from './google/google.strategy';
 import { config } from 'dotenv';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { HttpModule } from '@nestjs/axios';
 
 config();
 
@@ -25,6 +26,7 @@ config();
         },
       },
     ]),
+    HttpModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy, JwtStrategy],

@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -29,6 +30,7 @@ import { RestaurantService } from './restaurant.service';
         },
       },
     ]),
+    HttpModule,
   ],
   controllers: [RestaurantController],
   providers: [RestaurantService, AuthService, JwtService, AppService],

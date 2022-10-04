@@ -8,6 +8,7 @@ import { AuthService } from './auth/auth.service';
 import { IngredientModule } from './ingredient/ingredient.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { RestaurantModule } from './restaurant/restaurant.module';
     RestaurantModule,
     RecipeModule,
     IngredientModule,
+    HttpModule,
   ],
   controllers: [AppController],
   providers: [JwtService, AppService, AuthService],

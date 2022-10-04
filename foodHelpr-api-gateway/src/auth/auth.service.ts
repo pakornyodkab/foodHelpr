@@ -12,6 +12,7 @@ import { Request, Response } from 'express';
 import { Auth, google } from 'googleapis';
 import { config } from 'dotenv';
 import { sign, verify } from 'jsonwebtoken';
+import { HttpService } from '@nestjs/axios';
 
 config();
 
@@ -33,6 +34,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     @Inject('USER') private readonly userService: ClientProxy,
+    private readonly httpService: HttpService,
   ) {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_SECRET;
@@ -52,7 +54,17 @@ export class AuthService {
       throw new BadRequestException('Unauthenticated');
     }
 
-    const tokenInfo = await this.oauthClient.getTokenInfo(googleToken);
+    // const tokenInfo = await this.oauthClient.getToken(googleToken);
+    let tokenInfo: any;
+    await this.httpService
+      .get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleToken}`,
+      )
+      .forEach((value) => (tokenInfo = value.data));
+
+    if (!tokenInfo) {
+      throw new BadRequestException('Unauthenticated');
+    }
 
     let existingUser: any;
     await this.userService
@@ -60,7 +72,7 @@ export class AuthService {
       .forEach((exUser) => (existingUser = exUser));
 
     if (!existingUser) {
-      return this.googleRegister(tokenInfo.email, res);
+      return this.googleRegister(tokenInfo.email, tokenInfo.picture, res);
     }
 
     const token = sign(
@@ -77,9 +89,10 @@ export class AuthService {
     return res.send({ message: 'Logged in successfully', access_token: token });
   }
 
-  async googleRegister(email: string, res: Response) {
+  async googleRegister(email: string, picture_url: string, res: Response) {
     try {
       mockData.email = email;
+      mockData.profile_picture = picture_url;
       let newUser: any;
       await this.userService
         .send<CreateUserDto>({ cmd: 'createUser' }, mockData)
