@@ -48,7 +48,7 @@ export class RestaurantService {
     );
   }
 
-  getRandomRestaurant(
+  async getRandomRestaurant(
     userId: number,
     lat: number,
     lng: number,
@@ -58,17 +58,9 @@ export class RestaurantService {
     deliveryPlatforms: string[],
   ) {
     let userBanList: any;
-    this.appService.findRestaurantBanListsByUserId(userId).subscribe({
-      next: (value: any) => {
-        userBanList = value;
-      },
-      error: (err: any) => {
-        console.log(err);
-      },
-      complete: () => {
-        console.log('Random Restaurant Work Complete');
-      },
-    });
+    await this.appService
+      .findRestaurantBanListsByUserId(userId)
+      .forEach((value) => (userBanList = value));
     const userBanListId = this.getRestaurantIdFromUserBanList(userBanList);
     const coordinate = new Coordinate(lat, lng);
     const randomReq = new RandomRequest(
