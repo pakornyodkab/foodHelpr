@@ -1,13 +1,11 @@
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet } from "react-native";
 import { Image, Text, View, KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import MultiSelect from 'react-native-multiple-select';
-import {MultiSelect} from 'react-native-element-dropdown'
+import MultiSelect from 'react-native-multiple-select';
 import Button from "../../components/common/Button";
 import RecipeRoutes from "../../routes/recipes";
-import { ScrollView, TextInput, TouchableOpacity, } from "react-native-gesture-handler";
+import { ScrollView, TextInput, } from "react-native-gesture-handler";
 import NumberSelector from "../../components/restaurants/NumberSelector";
 
 function RandomRecipes({ navigation }) {
@@ -116,19 +114,10 @@ function RandomRecipes({ navigation }) {
   function onIncreaseRandomAmount() {
     setRandomAmount(Math.min(MAX_RANDOM_AMOUNT, randomAmount + 1));
   }
+
   function onDecreaseRandomAmount() {
     setRandomAmount(Math.max(MIN_RANDOM_AMOUNT, randomAmount - 1));
   }
-
-  const renderDataItem = (item) => {
-    return (
-        <View style={styles.item}>
-            <Text style={styles.selectedTextStyle}>{item.name}</Text>
-            {/* <AntDesign style={styles.icon} color="black" name="Safety" size={20} /> */}
-            <MaterialIcons name="done" size={20} />
-        </View>
-    );
-};
 
   return (
     <SafeAreaView className="relative h-full w-full bg-white">
@@ -160,7 +149,7 @@ function RandomRecipes({ navigation }) {
         <KeyboardAvoidingView behavior="position">
           <View className="flex-1 pb-3">
             <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Tags</Text>
-            {/* <MultiSelect
+            <MultiSelect
               // hideTags
               items={tags}
               uniqueKey="id"
@@ -181,47 +170,11 @@ function RandomRecipes({ navigation }) {
               searchInputStyle={{ color: '#000000' }}
               submitButtonColor="#2CBB54"
               submitButtonText="Select these tags"
-            /> */}
-            <MultiSelect
-                style={styles.dropdown}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={tags}
-                labelField="id"
-                valueField="name"
-                placeholder="Pick Tags"
-                value={selectedTags}
-                search
-                searchPlaceholder="Search..."
-                onChange={item => {
-                  onSelectedItemsChange(item);
-                }}
-                renderLeftIcon={() => (
-                    // <AntDesign
-                    //     style={styles.icon}
-                    //     color="black"
-                    //     name="Safety"
-                    //     size={20}
-                    // />
-                    <MaterialIcons name="done" size={20} />
-                )}
-                renderItem={renderDataItem}
-                renderSelectedItem={(item, unSelect) => (
-                    <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-                        <View style={styles.selectedStyle}>
-                            <Text style={styles.textSelectedStyle}>{item.name}</Text>
-                            {/* <AntDesign color="black" name="delete" size={17} /> */}
-                            <MaterialIcons name="clear" size={17} />
-                        </View>
-                    </TouchableOpacity>
-                )}
             />
           </View>
           <View className="flex-1 pb-3">
             <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Include ingredients</Text>
-            {/* <MultiSelect
+            <MultiSelect
               // hideTags
               items={ingredients}
               uniqueKey="id"
@@ -242,11 +195,11 @@ function RandomRecipes({ navigation }) {
               searchInputStyle={{ color: '#000000' }}
               submitButtonColor="#2CBB54"
               submitButtonText="Select these tags"
-            /> */}
+            />
           </View>
           <View className="flex-1 pb-3">
             <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude ingredients</Text>
-            {/* <MultiSelect
+            <MultiSelect
               // hideTags
               items={ingredients}
               uniqueKey="id"
@@ -267,11 +220,11 @@ function RandomRecipes({ navigation }) {
               searchInputStyle={{ color: '#000000' }}
               submitButtonColor="#2CBB54"
               submitButtonText="Select these tags"
-            /> */}
+            />
           </View>
           <View className="flex-1 pb-3">
             <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude cooking utensils</Text>
-            {/* <MultiSelect
+            <MultiSelect
               // hideTags
               items={utensils}
               uniqueKey="id"
@@ -292,7 +245,7 @@ function RandomRecipes({ navigation }) {
               searchInputStyle={{ color: '#000000' }}
               submitButtonColor="#2CBB54"
               submitButtonText="Select these tags"
-            /> */}
+            />
           </View>
           <View className="flex-1 pb-8">
             <Text className="text-green-500 pb-3" style={{ fontSize: 24, fontWeight: "500" }}>Calories range</Text>
@@ -348,75 +301,5 @@ function RandomRecipes({ navigation }) {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create<any>({
-  container: {
-      backgroundColor: '#37d5d2a2',
-      paddingTop: 30,
-      flex:1
-  },
-  dropdown: {
-      height: 50,
-      backgroundColor: 'white',
-      borderRadius: 12,
-      padding: 12,
-      shadowColor: '#000',
-      shadowOffset: {
-          width: 0,
-          height: 1,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 1.41,
-
-      elevation: 2,
-  },
-  placeholderStyle: {
-      fontSize: 16,
-  },
-  selectedTextStyle: {
-      fontSize: 14,
-  },
-  iconStyle: {
-      width: 20,
-      height: 20,
-  },
-  inputSearchStyle: {
-      height: 40,
-      fontSize: 16,
-  },
-  icon: {
-      marginRight: 5,
-  },
-  item: {
-      padding: 17,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-  },
-  selectedStyle: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 14,
-      backgroundColor: 'white',
-      shadowColor: '#000',
-      marginTop: 8,
-      marginRight: 12,
-      paddingHorizontal: 12,
-      paddingVertical: 8,
-      shadowOffset: {
-          width: 0,
-          height: 1,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 1.41,
-
-      elevation: 2,
-  },
-  textSelectedStyle: {
-      marginRight: 5,
-      fontSize: 16,
-  },
-});
 
 export default RandomRecipes;
