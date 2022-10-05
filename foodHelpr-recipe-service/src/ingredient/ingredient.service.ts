@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { DeliveryType } from 'src/utils/constant';
+import { DeliveryType } from '../utils/constant';
 import {
   DeliveryInfo,
   Ingredient,
@@ -44,7 +44,7 @@ export class IngredientService {
   }
 
   async deleteIngredientById(id: IngredientId) {
-    await this.ingredientModel.deleteOne({ ingredientId: id.ingredientId });
+    await this.ingredientModel.deleteOne({ _id: id.ingredientId });
     console.log('Deleted Successfully !!!');
     return;
   }

@@ -7,9 +7,9 @@ option go_package = "proto";
 import "./ingredient.proto";
 
 service RecipeService {
-  rpc Create(Recipe) returns (Recipe) {}
-  rpc UpdateById(Recipe) returns (Recipe) {}
-  rpc GetById(RecipeId) returns (Recipe) {}
+  rpc Create(Recipe) returns (RecipeResponse) {}
+  rpc UpdateById(Recipe) returns (RecipeResponse) {}
+  rpc GetById(RecipeId) returns (RecipeResponse) {}
   rpc GetAll(Empty) returns (RecipeList) {}
   rpc DeleteById(RecipeId) returns (Empty) {}
   rpc GetRecipeViewModel(Empty) returns (RecipeViewModel) {}
@@ -38,7 +38,19 @@ message Recipe {
   repeated Tag tags = 3;
   int32 kcal = 4;
   repeated IngredientInfo ingredients = 5;
-  repeated string method = 6;
+  repeated Method method = 6;
+  repeated string kitchen_tools = 7;
+  repeated string tutorial_links = 8;
+  repeated string picture_url = 9;
+}
+
+message RecipeResponse {
+  string recipe_id = 1;
+  string name = 2;
+  repeated Tag tags = 3;
+  int32 kcal = 4;
+  repeated IngredientInfoResponse ingredients = 5;
+  repeated Method method = 6;
   repeated string kitchen_tools = 7;
   repeated string tutorial_links = 8;
   repeated string picture_url = 9;
@@ -46,7 +58,7 @@ message Recipe {
 
 message RecipeId { string recipe_id = 1; }
 
-message RecipeList { repeated Recipe recipe_list = 1; }
+message RecipeList { repeated RecipeResponse recipe_list = 1; }
 
 message RecipeViewModel {
   repeated Tag tags = 1;
@@ -64,10 +76,25 @@ message RandomRecipesRequest {
   int32 recipe_number = 7;
 }
 
+message IngredientInfoResponse {
+  string ingredient_id = 1;
+  string name = 2;
+  repeated string picture_url = 3;
+  repeated DeliveryInfo delivery_info = 4;
+  int32 quantity = 5;
+  string unit = 6;
+}
+
 message IngredientInfo {
   string ingredient_id = 1;
   int32 quantity = 2;
   string unit = 3;
+}
+
+message Method {
+  int32 step = 1;
+  string title = 2;
+  repeated string sub_step = 3;
 }
 
 message DeleteMessage { string delete_true = 1; }
