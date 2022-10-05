@@ -13,7 +13,12 @@ export const RecipeSchema = new mongoose.Schema<Recipe>({
   ingredients: {
     type: [
       {
-        name: String,
+        ingredientId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Ingredient',
+        },
+        quantity: Number,
+        unit: String
       },
     ],
   },
@@ -22,3 +27,4 @@ export const RecipeSchema = new mongoose.Schema<Recipe>({
   tutorialLinks: [String],
   pictureUrl: [String],
 });
+ 

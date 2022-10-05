@@ -37,7 +37,7 @@ message Recipe {
   string name = 2;
   repeated Tag tags = 3;
   int32 kcal = 4;
-  repeated Ingredient ingredients = 5;
+  repeated IngredientInfo ingredients = 5;
   repeated string method = 6;
   repeated string kitchen_tools = 7;
   repeated string tutorial_links = 8;
@@ -62,6 +62,12 @@ message RandomRecipesRequest {
   int32 calories_min = 5;
   int32 calories_max = 6;
   int32 recipe_number = 7;
+}
+
+message IngredientInfo {
+  string ingredient_id = 1;
+  int32 quantity = 2;
+  string unit = 3;
 }
 
 message DeleteMessage { string delete_true = 1; }

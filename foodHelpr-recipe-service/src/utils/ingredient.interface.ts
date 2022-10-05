@@ -8,7 +8,7 @@ export interface Ingredient {
 }
 
 export interface DeliveryInfo {
-  type: DeliveryType;
+  deliveryType: DeliveryType;
   url: string;
 }
 

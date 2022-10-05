@@ -10,7 +10,13 @@ export interface Recipe {
   name: string;
   tags: Tag[];
   kcal: Number;
-  ingredients: Ingredient[];
+  ingredients: [
+    {
+      ingredientId: string;
+      quantity: Number;
+      unit: string;
+    },
+  ];
   method: string[];
   kitchenTools: string[];
   tutorialLinks: string[];

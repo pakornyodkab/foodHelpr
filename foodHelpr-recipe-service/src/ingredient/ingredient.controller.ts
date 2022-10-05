@@ -23,8 +23,8 @@ export class IngredientController {
   }
 
   @GrpcMethod('IngredientService', 'GetById')
-  getIngredientById(ingredientId: IngredientId): Promise<Ingredient> {
-    return this.ingredientService.getIngredientById(ingredientId);
+  async getIngredientById(ingredientId: IngredientId): Promise<Ingredient> {
+    return await this.ingredientService.getIngredientById(ingredientId);
   }
 
   @GrpcMethod('IngredientService', 'UpdateById')

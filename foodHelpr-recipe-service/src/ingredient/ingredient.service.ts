@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Ingredient, IngredientId } from '../utils/ingredient.interface';
+import { DeliveryType } from 'src/utils/constant';
+import {
+  DeliveryInfo,
+  Ingredient,
+  IngredientId,
+} from '../utils/ingredient.interface';
 
 @Injectable()
 export class IngredientService {
@@ -11,40 +16,51 @@ export class IngredientService {
   ) {}
 
   async createIngredient(newIngredient: Ingredient) {
-    const ingredient = this.ingredientModel.create(newIngredient);
-    (await ingredient).save();
-    return ingredient;
+    const ingredient = new this.ingredientModel(newIngredient);
+    await ingredient.save();
+    return this.mapper(ingredient);
   }
 
   async getIngredients() {
-    const ingredientList = (await this.ingredientModel
-      .find()
-      .exec()) as Ingredient[];
-    return ingredientList;
+    const ingredientList = await this.ingredientModel.find().exec();
+    return ingredientList.map((e) => {
+      return this.mapper(e);
+    });
   }
 
   async getIngredientById(id: IngredientId) {
-    return await this.ingredientModel.findOne({
-      ingredientId: id.ingredientId,
-    });
+    const ingredient = await this.ingredientModel.findById(id.ingredientId);
+    return this.mapper(ingredient);
   }
 
   async updateIngredientById(updatedIngredient: Ingredient) {
-    const ingredient = await this.ingredientModel.findOne({
-      ingredientId: updatedIngredient.ingredientId,
-    });
-    if (!ingredient) {
-      throw new NotFoundException('Ingredient Not Found !!!');
-    }
-    await ingredient.updateOne(updatedIngredient);
-    await ingredient.save();
+    const ingredient = await this.ingredientModel.findByIdAndUpdate(
+      updatedIngredient.ingredientId,
+      updatedIngredient,
+      { new: true },
+    );
     console.log('Updated Successfully !!!');
-    return ingredient;
+    return this.mapper(ingredient);
   }
 
   async deleteIngredientById(id: IngredientId) {
     await this.ingredientModel.deleteOne({ ingredientId: id.ingredientId });
     console.log('Deleted Successfully !!!');
     return;
+  }
+
+  mapper(ingredient) {
+    return {
+      ingredientId: ingredient._id.toString(),
+      name: ingredient.name,
+      pictureUrl: ingredient.pictureUrl,
+      deliveryInfo: ingredient.deliveryInfo.map((e) => {
+        console.log('deliveryType', e.deliveryType);
+        return {
+          deliveryType: Object.values(DeliveryType)[e.deliveryType],
+          url: e.url,
+        } as DeliveryInfo;
+      }),
+    };
   }
 }
