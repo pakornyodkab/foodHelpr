@@ -68,8 +68,8 @@ message RecipeViewModel {
 
 message RandomRecipesRequest {
   repeated Tag tags = 1;
-  repeated Ingredient include_ingredients = 2;
-  repeated Ingredient exclude_ingredients = 3;
+  repeated string include_ingredients = 2;
+  repeated string exclude_ingredients = 3;
   repeated string exclude_utensils = 4;
   int32 calories_min = 5;
   int32 calories_max = 6;

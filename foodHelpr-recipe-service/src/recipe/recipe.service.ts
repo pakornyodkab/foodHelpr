@@ -1,7 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Recipe, RecipeId, RecipeList } from '../utils/recipe.interface';
+import {
+  RandomRecipesRequest,
+  Recipe,
+  RecipeId,
+  RecipeList,
+} from '../utils/recipe.interface';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { UpdateRecipeDto } from 'src/dto/update-recipe.dto';
 import { DeliveryType, Tag } from '../utils/constant';
@@ -57,6 +67,106 @@ export class RecipeService {
     await this.recipeModel.deleteOne({ _id: id.recipeId });
     console.log('Deleted Successfully !!!');
     return;
+  }
+
+  async getRandomRecipe(
+    tags: Tag[],
+    includeIngredients: string[],
+    excludeIngredients: string[],
+    excludeUtensils: string[],
+    caloriesMin: Number,
+    caloriesMax: Number,
+    recipeNumber: Number,
+  ) {
+    if (recipeNumber <= 0) {
+      return new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Recipe number cannot equal or less than zero',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    let filter = [];
+    console.log(tags);
+    if (tags?.length > 0) {
+      filter.push({ tags: { $in: tags } });
+    }
+    // danger 1
+    if (caloriesMin) {
+      if (Number.isNaN(caloriesMin) || caloriesMin < 0) {
+        return new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error: 'Calories Min cannot equal or less than zero',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      filter.push({ kcal: { $gte: caloriesMin } });
+    } else {
+      caloriesMin = 0;
+    }
+    // danger 2
+    if (caloriesMax) {
+      if (
+        Number.isNaN(caloriesMax) ||
+        caloriesMax < 0 ||
+        caloriesMin > caloriesMax
+      ) {
+        return new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error: 'Calories Max is invalid',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      filter.push({ kcal: { $lte: caloriesMax } });
+    }
+    // danger 3
+    if (excludeIngredients?.length > 0) {
+      filter.push({
+        'ingredients.ingredientId': { $not: { $in: excludeIngredients } },
+      });
+    }
+    if (includeIngredients?.length > 0) {
+      filter.push({
+        'ingredients.ingredientId': { $in: includeIngredients },
+      });
+    }
+    // danger 4
+    if (excludeUtensils?.length > 0) {
+      filter.push({
+        kitchenTools: { $not: { $in: excludeUtensils } },
+      });
+    }
+    let remainedRecipe: any;
+    if (filter.length > 0) {
+      remainedRecipe = await this.recipeModel
+        .find({ $and: filter })
+        .populate('ingredients.ingredientId')
+        .exec();
+    } else {
+      remainedRecipe = await this.recipeModel
+        .find({})
+        .populate('ingredients.ingredientId')
+        .exec();
+    }
+    console.log(remainedRecipe);
+    // danger 5
+    if (remainedRecipe.length <= recipeNumber) {
+      return remainedRecipe.map((e) => {
+        return this.mapper(e);
+      });
+    } else {
+      return remainedRecipe
+        .sort(() => Math.random() - Math.random())
+        .slice(0, recipeNumber as number)
+        .map((e) => {
+          return this.mapper(e);
+        });
+    }
   }
 
   mapper(recipeFromDB) {

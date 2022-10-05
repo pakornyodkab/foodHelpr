@@ -53,3 +53,13 @@ export interface Method {
   title: string;
   subStep: string[];
 }
+
+export interface RandomRecipesRequest {
+  tags: Tag[];
+  includeIngredients: string[];
+  excludeIngredients: string[];
+  excludeUtensils: string[];
+  caloriesMin: Number;
+  caloriesMax: Number;
+  recipeNumber: Number;
+}

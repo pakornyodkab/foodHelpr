@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { RecipeService } from './recipe.service';
 import {
+  RandomRecipesRequest,
   Recipe,
   RecipeId,
   RecipeList,
@@ -37,5 +38,21 @@ export class RecipeController {
   @GrpcMethod('RecipeService', 'DeleteById')
   deleteRecipeById(recipeId: RecipeId) {
     return this.recipeService.deleteRecipeById(recipeId);
+  }
+
+  @GrpcMethod('RecipeService', 'GetRandomRecipes')
+  async getRandomRecipe(randomRecipeReq: RandomRecipesRequest) {
+    const recipeList = await this.recipeService.getRandomRecipe(
+      randomRecipeReq.tags,
+      randomRecipeReq.includeIngredients,
+      randomRecipeReq.excludeIngredients,
+      randomRecipeReq.excludeUtensils,
+      randomRecipeReq.caloriesMin,
+      randomRecipeReq.caloriesMax,
+      randomRecipeReq.recipeNumber,
+    );
+    console.log(recipeList);
+
+    return { recipeList };
   }
 }
