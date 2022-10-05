@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
@@ -35,8 +36,16 @@ export class IngredientController implements OnModuleInit {
 
   @UseGuards(JwtAuthGuard)
   @Get('get-ingredient-by-id/:ingredientId')
-  getIngredientById(@Param('ingredientId') ingredientId: string) {
-    return this.ingredientService.GetById({ ingredientId: ingredientId });
+  async getIngredientById(@Param('ingredientId') ingredientId: string) {
+    let ingredient;
+    try {
+      await this.ingredientService
+        .GetById({ ingredientId: ingredientId })
+        .forEach((res) => (ingredient = res));
+    } catch (error) {
+      throw new NotFoundException('Ingredient Not Found !!!');
+    }
+    return ingredient;
   }
 
   @Post('create-ingredient')
