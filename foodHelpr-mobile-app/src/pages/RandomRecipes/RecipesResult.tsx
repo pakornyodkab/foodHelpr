@@ -90,7 +90,6 @@ function RecipesResult({ navigation }) {
         </>
       )
     })
-
   }
 
   function handleOnPressBack() {
@@ -99,7 +98,7 @@ function RecipesResult({ navigation }) {
 
   function handleOnPressReload() {
     console.log('Contents in rudux:', randRecipeFilterDetail)
-
+    getRecipes()
   }
 
   function handleRecipePress(item) {
@@ -119,12 +118,6 @@ function RecipesResult({ navigation }) {
             <FontAwesome name="arrow-left" size={16} />
           </Text>
         </Button>
-        {/* <Text className="ml-4 text-2xl font-semibold text-black">
-          Find Your
-        </Text>
-        <Text className="ml-4 text-2xl font-semibold text-green-500 right-2" style={{fontFamily: 'inter'}}>
-          Recipe
-        </Text> */}
         <Image
           className="left-2 top-1"
           source={require("../../../assets/RecipeResults.png")}
@@ -132,14 +125,6 @@ function RecipesResult({ navigation }) {
         />
       </View>
       <View className="flex-1 top-5 pl-5 pr-5">
-        {/* <ScrollView>
-          <Pressable onPress={() => handleRecipePress()}>
-            <RecipeCard imageUrl="https://i.ibb.co/tYV28YL/Yod13.jpg" title="Pakorn Sud Aroi" tags={["Thai food", "Microwave"]} kcal="2000" />
-          </Pressable>
-          <Pressable onPress={() => handleRecipePress()}>
-            <RecipeCard imageUrl="https://i.ibb.co/jRyrWm5/Yod10.png" title="Pakorn give you sweet smile" tags={["Thai food", "Microwave", "Dessert", "Beverage"]} kcal="2000" />
-          </Pressable>
-        </ScrollView> */}
         <ScrollView>
           {recipeList.length > 0 && genRecipes()}
         </ScrollView>
@@ -151,14 +136,6 @@ function RecipesResult({ navigation }) {
           </Text>
         </Button>
       </View>
-      {/* <Button
-        className="absolute bottom-0 h-12 w-40"
-        onPress={() => handleRecipePress()}
-      >
-        <Text className="text-center text-lg font-semibold text-white">
-          temp
-        </Text>
-      </Button> */}
     </SafeAreaView>
   );
 }
