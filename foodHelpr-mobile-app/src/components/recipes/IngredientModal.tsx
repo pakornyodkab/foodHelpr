@@ -35,7 +35,7 @@ const IngredientModal = ({
       visible={isVisible}
       onRequestClose={() => onClose()}
     >
-      <View className="flex h-screen w-screen items-center justify-center">
+      <View className="flex h-screen w-screen items-center justify-center bg-black/50">
         <View className="flex h-fit w-10/12 items-center rounded-xl border-[1px] border-green-500 bg-white p-4">
           <GestureHandlerRootView className="flex-1">
             <Carousel
@@ -56,14 +56,16 @@ const IngredientModal = ({
           <Text className="text-2xl font-semibold text-green-500">
             {ingredient.name}
           </Text>
-          
+
           {ingredient.delivery_info.map((info, idx) => (
             <Button
               key={idx}
               className="mt-4 h-10 w-24"
               onPress={() => Linking.openURL(info.url)}
             >
-              <Text className="text-center text-white">{info.delivery_type}</Text>
+              <Text className="text-center text-white">
+                {info.delivery_type}
+              </Text>
             </Button>
           ))}
 
