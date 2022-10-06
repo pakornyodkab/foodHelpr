@@ -45,17 +45,15 @@ function RandomRecipes({ navigation }) {
   React.useEffect(() => {
     getFillterList();
   }, []);
+
+  const [tagsList, setTagsList] = React.useState<Array<any>>([]);
+  const [ingredientsList, setIngredientsList] = React.useState<Array<any>>([]);
+  const [utensilsList, setUtensilsList] = React.useState<Array<any>>([]);
   const [isGenFilterListFinished, setIsGenFilterListFinished] = React.useState<boolean>(false);
 
-  let tags = [];
-
-  let ingredients = [];
-
-  let utensils = [];
-
   const getFillterList = () => {
-    console.log('run')
-    tags = [{
+    // do query
+    const tagsMock = [{
       name: 'Thai food'
     }, {
       name: 'Italian food'
@@ -68,7 +66,7 @@ function RandomRecipes({ navigation }) {
     },
     ];
 
-    ingredients = [{
+    const ingredientsMock = [{
       name: 'Pork'
     }, {
       name: 'Lotus',
@@ -81,7 +79,7 @@ function RandomRecipes({ navigation }) {
     },
     ];
 
-    utensils = [{
+    const utensilsMock = [{
       name: 'Wok'
     }, {
       name: 'Mortar',
@@ -93,6 +91,10 @@ function RandomRecipes({ navigation }) {
       name: 'Flame thrower'
     },
     ];
+
+    setTagsList(tagsMock)
+    setIngredientsList(ingredientsMock)
+    setUtensilsList(utensilsMock)
     setIsGenFilterListFinished(true)
   }
 
@@ -106,7 +108,7 @@ function RandomRecipes({ navigation }) {
                   <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Tags</Text>
                   <MultiSelect
                     // hideTags
-                    items={tags}
+                    items={tagsList}
                     uniqueKey="name"
                     // ref={(component) => { this.multiSelect = component }}
                     onSelectedItemsChange={onSelectedItemsChange}
@@ -131,7 +133,7 @@ function RandomRecipes({ navigation }) {
                   <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Include ingredients</Text>
                   <MultiSelect
                     // hideTags
-                    items={ingredients}
+                    items={ingredientsList}
                     uniqueKey="name"
                     // ref={(component) => { this.multiSelect = component }}
                     onSelectedItemsChange={onSelectedIncludeIngredients}
@@ -156,7 +158,7 @@ function RandomRecipes({ navigation }) {
                   <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude ingredients</Text>
                   <MultiSelect
                     // hideTags
-                    items={ingredients}
+                    items={ingredientsList}
                     uniqueKey="name"
                     // ref={(component) => { this.multiSelect = component }}
                     onSelectedItemsChange={onSelectedExcludeIngredients}
@@ -181,7 +183,7 @@ function RandomRecipes({ navigation }) {
                   <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude cooking utensils</Text>
                   <MultiSelect
                     // hideTags
-                    items={utensils}
+                    items={utensilsList}
                     uniqueKey="name"
                     // ref={(component) => { this.multiSelect = component }}
                     onSelectedItemsChange={onSelectedExcludeUtensils}
@@ -315,12 +317,6 @@ function RandomRecipes({ navigation }) {
             <FontAwesome name="arrow-left" size={16} />
           </Text>
         </Button>
-        {/* <Text className="ml-4 text-2xl font-semibold text-black">
-          Find Your
-        </Text>
-        <Text className="ml-4 text-2xl font-semibold text-green-500 right-2" style={{fontFamily: 'inter'}}>
-          Recipe
-        </Text> */}
         <Image
           className="left-2 top-1"
           source={require("../../../assets/FindYourRecipe.png")}
@@ -328,7 +324,6 @@ function RandomRecipes({ navigation }) {
         />
       </View>
       {isGenFilterListFinished && genFilter()}
-
     </SafeAreaView>
   );
 }
