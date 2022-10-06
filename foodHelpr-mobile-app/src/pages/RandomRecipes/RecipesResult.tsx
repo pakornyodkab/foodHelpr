@@ -10,17 +10,6 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux";
 
-interface recipeDetail{
-  recipeName: string,
-  imageUrls: Array<string>,
-  tags: Array<string>,
-  kcal: number,
-  ingredients: Array<string>,
-  cookingUtensils: Array<string>,
-  steps: string,
-  videoUrls: any,
-}
-
 function RecipesResult({ navigation }) {
   const randRecipeFilterDetail = useSelector((state: RootState) => state.randRecipeReducer)
 
@@ -34,6 +23,7 @@ function RecipesResult({ navigation }) {
     recipeName: "Pakorn Sud Aroi",
     imageUrls: [
       "https://i.ibb.co/tYV28YL/Yod13.jpg",
+      "https://media.discordapp.net/attachments/918571855479189594/1020655655369052201/Yod17.jpg",
       "https://media.discordapp.net/attachments/918571855479189594/1020655174076874763/Yod15.jpg",
     ],
     tags: ["Thai food", "Microwave"],
@@ -91,10 +81,10 @@ function RecipesResult({ navigation }) {
   }
 
   function genRecipes() {
-    return recipeList.map((item:recipeDetail) => {
+    return recipeList.map((item:RecipeDetailParams) => {
       return (
         <>
-          <Pressable onPress={() => handleRecipePress()}>
+          <Pressable onPress={() => handleRecipePress(item)}>
             <RecipeCard imageUrl={item.imageUrls[0]} title={item.recipeName} tags={item.tags} kcal={item.kcal} />
           </Pressable>
         </>
@@ -112,35 +102,8 @@ function RecipesResult({ navigation }) {
 
   }
 
-  function handleRecipePress() {
-    const props: RecipeDetailParams = {
-      recipeName: "recipeName",
-      imageUrls: [
-        "https://media.discordapp.net/attachments/918571855479189594/1020655655369052201/Yod17.jpg",
-        "https://media.discordapp.net/attachments/918571855479189594/1020655174076874763/Yod15.jpg",
-      ],
-      tags: ["Thai food", "Microwave"],
-      kcal: 2000,
-      ingredients: ["ingredientA", "ingredientB", "ingredientC"],
-      cookingUtensils: [
-        "cookingUtensilsA",
-        "cookingUtensilsB",
-        "cookingUtensilsC",
-      ],
-      steps:
-        "1.sadfsdf\n2.sagfsdf\n3.asdfasdf\n\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf",
-      videoUrls: [
-        {
-          platform: "YouTube",
-          url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        },
-        {
-          platform: "facebook",
-          url: "https://www.facebook.com/gssspotted",
-        },
-      ],
-    };
-    navigation.navigate(RecipeRoutes.detail, props);
+  function handleRecipePress(item) {
+    navigation.navigate(RecipeRoutes.detail, item);
   }
 
   return (
