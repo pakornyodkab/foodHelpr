@@ -10,8 +10,98 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux";
 
+interface recipeDetail{
+  recipeName: string,
+  imageUrls: Array<string>,
+  tags: Array<string>,
+  kcal: number,
+  ingredients: Array<string>,
+  cookingUtensils: Array<string>,
+  steps: string,
+  videoUrls: any,
+}
+
 function RecipesResult({ navigation }) {
-  const randRecipeFilterDetail = useSelector((state:RootState) => state.randRecipeReducer)
+  const randRecipeFilterDetail = useSelector((state: RootState) => state.randRecipeReducer)
+
+  const [recipeList, setRecipeList] = React.useState<Array<Object>>([]);
+
+  React.useEffect(() => {
+    getRecipes();
+  }, []);
+
+  const mockRecipes = [{
+    recipeName: "Pakorn Sud Aroi",
+    imageUrls: [
+      "https://i.ibb.co/tYV28YL/Yod13.jpg",
+      "https://media.discordapp.net/attachments/918571855479189594/1020655174076874763/Yod15.jpg",
+    ],
+    tags: ["Thai food", "Microwave"],
+    kcal: 2000,
+    ingredients: ["ingredientA", "ingredientB", "ingredientC"],
+    cookingUtensils: [
+      "cookingUtensilsA",
+      "cookingUtensilsB",
+      "cookingUtensilsC",
+    ],
+    steps:
+      "1.sadfsdf\n2.sagfsdf\n3.asdfasdf\n\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf",
+    videoUrls: [
+      {
+        platform: "YouTube",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      },
+      {
+        platform: "facebook",
+        url: "https://www.facebook.com/gssspotted",
+      },
+    ],
+  }, {
+    recipeName: "Pakorn give you sweet smile",
+    imageUrls: [
+      "https://i.ibb.co/jRyrWm5/Yod10.png",
+      "https://media.discordapp.net/attachments/918571855479189594/1020655174076874763/Yod15.jpg",
+    ],
+    tags: ["Thai food", "Microwave", "Dessert", "Beverage"],
+    kcal: 2000,
+    ingredients: ["ingredientA", "ingredientB", "ingredientC"],
+    cookingUtensils: [
+      "cookingUtensilsA",
+      "cookingUtensilsB",
+      "cookingUtensilsC",
+    ],
+    steps:
+      "1.sadfsdf\n2.sagfsdf\n3.asdfasdf\n\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf\n\tasdl[fkasdlgjklsadf",
+    videoUrls: [
+      {
+        platform: "YouTube",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      },
+      {
+        platform: "facebook",
+        url: "https://www.facebook.com/gssspotted",
+      },
+    ],
+  }
+  ]
+
+  function getRecipes() {
+    //do query
+    setRecipeList(mockRecipes)
+  }
+
+  function genRecipes() {
+    return recipeList.map((item:recipeDetail) => {
+      return (
+        <>
+          <Pressable onPress={() => handleRecipePress()}>
+            <RecipeCard imageUrl={item.imageUrls[0]} title={item.recipeName} tags={item.tags} kcal={item.kcal} />
+          </Pressable>
+        </>
+      )
+    })
+
+  }
 
   function handleOnPressBack() {
     navigation.goBack();
@@ -79,13 +169,16 @@ function RecipesResult({ navigation }) {
         />
       </View>
       <View className="flex-1 top-5 pl-5 pr-5">
-        <ScrollView>
+        {/* <ScrollView>
           <Pressable onPress={() => handleRecipePress()}>
             <RecipeCard imageUrl="https://i.ibb.co/tYV28YL/Yod13.jpg" title="Pakorn Sud Aroi" tags={["Thai food", "Microwave"]} kcal="2000" />
           </Pressable>
           <Pressable onPress={() => handleRecipePress()}>
             <RecipeCard imageUrl="https://i.ibb.co/jRyrWm5/Yod10.png" title="Pakorn give you sweet smile" tags={["Thai food", "Microwave", "Dessert", "Beverage"]} kcal="2000" />
           </Pressable>
+        </ScrollView> */}
+        <ScrollView>
+          {recipeList.length > 0 && genRecipes()}
         </ScrollView>
       </View>
       <View className="flex flex-col items-center align-bottom p-4">

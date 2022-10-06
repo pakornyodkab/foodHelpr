@@ -8,7 +8,6 @@ import RecipeRoutes from "../../routes/recipes";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import NumberSelector from "../../components/restaurants/NumberSelector";
 import { useDispatch } from 'react-redux';
-import {setFilter} from '../../redux/actions/randRecipeActions'
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../redux";
 
@@ -43,44 +42,221 @@ function RandomRecipes({ navigation }) {
     navigation.navigate(RecipeRoutes.result)
   }
 
-  const tags = [{
-    name: 'Thai food'
-  }, {
-    name: 'Italian food'
-  }, {
-    name: 'Zimbabwe food'
-  }, {
-    name: 'Japanese food'
-  }, {
-    name: 'Drinks'
-  },
-  ];
+  React.useEffect(() => {
+    getFillterList();
+  }, []);
+  const [isGenFilterListFinished, setIsGenFilterListFinished] = React.useState<boolean>(false);
 
-  const ingredients = [{
-    name: 'Pork'
-  }, {
-    name: 'Lotus',
-  }, {
-    name: 'Lime'
-  }, {
-    name: 'Robster'
-  }, {
-    name: 'Tomato suace'
-  },
-  ];
+  let tags = [];
 
-  const utensils = [{
-    name: 'Wok'
-  }, {
-    name: 'Mortar',
-  }, {
-    name: 'Microwave'
-  }, {
-    name: 'Stove'
-  }, {
-    name: 'Flame thrower'
-  },
-  ];
+  let ingredients = [];
+
+  let utensils = [];
+
+  const getFillterList = () => {
+    console.log('run')
+    tags = [{
+      name: 'Thai food'
+    }, {
+      name: 'Italian food'
+    }, {
+      name: 'Zimbabwe food'
+    }, {
+      name: 'Japanese food'
+    }, {
+      name: 'Drinks'
+    },
+    ];
+
+    ingredients = [{
+      name: 'Pork'
+    }, {
+      name: 'Lotus',
+    }, {
+      name: 'Lime'
+    }, {
+      name: 'Robster'
+    }, {
+      name: 'Tomato suace'
+    },
+    ];
+
+    utensils = [{
+      name: 'Wok'
+    }, {
+      name: 'Mortar',
+    }, {
+      name: 'Microwave'
+    }, {
+      name: 'Stove'
+    }, {
+      name: 'Flame thrower'
+    },
+    ];
+    setIsGenFilterListFinished(true)
+  }
+
+  const genFilter = () => {
+    if (isGenFilterListFinished){
+      return(
+        <View className="flex top-5 pl-5 pr-5">
+            <ScrollView>
+              <KeyboardAvoidingView behavior="position">
+                <View className="flex-1 pb-3">
+                  <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Tags</Text>
+                  <MultiSelect
+                    // hideTags
+                    items={tags}
+                    uniqueKey="name"
+                    // ref={(component) => { this.multiSelect = component }}
+                    onSelectedItemsChange={onSelectedItemsChange}
+                    selectedItems={selectedTags}
+                    selectText="Pick Items"
+                    searchInputPlaceholderText="Search Items..."
+                    // onChangeInput={ (text)=> console.log(text)}
+                    // altFontFamily="ProximaNova-Light"
+                    tagRemoveIconColor="#2CBB54"
+                    tagBorderColor="#2CBB54"
+                    tagTextColor="#2CBB54"
+                    selectedItemTextColor="#2CBB54"
+                    selectedItemIconColor="#2CBB54"
+                    itemTextColor="#000"
+                    displayKey="name"
+                    searchInputStyle={{ color: '#000000' }}
+                    submitButtonColor="#2CBB54"
+                    submitButtonText="Select these tags"
+                  />
+                </View>
+                <View className="flex-1 pb-3">
+                  <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Include ingredients</Text>
+                  <MultiSelect
+                    // hideTags
+                    items={ingredients}
+                    uniqueKey="name"
+                    // ref={(component) => { this.multiSelect = component }}
+                    onSelectedItemsChange={onSelectedIncludeIngredients}
+                    selectedItems={includedIngredients}
+                    selectText="Pick Items"
+                    searchInputPlaceholderText="Search Items..."
+                    // onChangeInput={ (text)=> console.log(text)}
+                    // altFontFamily="ProximaNova-Light"
+                    tagRemoveIconColor="#2CBB54"
+                    tagBorderColor="#2CBB54"
+                    tagTextColor="#2CBB54"
+                    selectedItemTextColor="#2CBB54"
+                    selectedItemIconColor="#2CBB54"
+                    itemTextColor="#000"
+                    displayKey="name"
+                    searchInputStyle={{ color: '#000000' }}
+                    submitButtonColor="#2CBB54"
+                    submitButtonText="Select these tags"
+                  />
+                </View>
+                <View className="flex-1 pb-3">
+                  <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude ingredients</Text>
+                  <MultiSelect
+                    // hideTags
+                    items={ingredients}
+                    uniqueKey="name"
+                    // ref={(component) => { this.multiSelect = component }}
+                    onSelectedItemsChange={onSelectedExcludeIngredients}
+                    selectedItems={excludedIngredients}
+                    selectText="Pick Items"
+                    searchInputPlaceholderText="Search Items..."
+                    // onChangeInput={ (text)=> console.log(text)}
+                    // altFontFamily="ProximaNova-Light"
+                    tagRemoveIconColor="#2CBB54"
+                    tagBorderColor="#2CBB54"
+                    tagTextColor="#2CBB54"
+                    selectedItemTextColor="#2CBB54"
+                    selectedItemIconColor="#2CBB54"
+                    itemTextColor="#000"
+                    displayKey="name"
+                    searchInputStyle={{ color: '#000000' }}
+                    submitButtonColor="#2CBB54"
+                    submitButtonText="Select these tags"
+                  />
+                </View>
+                <View className="flex-1 pb-3">
+                  <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude cooking utensils</Text>
+                  <MultiSelect
+                    // hideTags
+                    items={utensils}
+                    uniqueKey="name"
+                    // ref={(component) => { this.multiSelect = component }}
+                    onSelectedItemsChange={onSelectedExcludeUtensils}
+                    selectedItems={excludedUtensils}
+                    selectText="Pick Items"
+                    searchInputPlaceholderText="Search Items..."
+                    // onChangeInput={ (text)=> console.log(text)}
+                    // altFontFamily="ProximaNova-Light"
+                    tagRemoveIconColor="#2CBB54"
+                    tagBorderColor="#2CBB54"
+                    tagTextColor="#2CBB54"
+                    selectedItemTextColor="#2CBB54"
+                    selectedItemIconColor="#2CBB54"
+                    itemTextColor="#000"
+                    displayKey="name"
+                    searchInputStyle={{ color: '#000000' }}
+                    submitButtonColor="#2CBB54"
+                    submitButtonText="Select these tags"
+                  />
+                </View>
+                <View className="flex-1 pb-8">
+                  <Text className="text-green-500 pb-3" style={{ fontSize: 24, fontWeight: "500" }}>Calories range</Text>
+                  <View className="flex-row justify-center">
+                    <TextInput
+                      style={{ paddingHorizontal: 20 }}
+                      className="flex-1 top-2 h-10 border-2 text-left border-green-500 rounded-full"
+                      onChangeText={onInputMinCal}
+                      value={String(minCal)}
+                      placeholder='Min'
+                      textContentType='username'
+                      keyboardType='number-pad'
+                    />
+                    <Text className="text-green-500 flex-1 self-center top-1 left-6 " style={{ fontSize: 30 }}> - </Text>
+                    <TextInput
+                      style={{ paddingHorizontal: 20 }}
+                      className="flex-1 top-2 h-10 border-2 text-left border-green-500 rounded-full"
+                      onChangeText={onInputMaxCal}
+                      value={String(maxCal)}
+                      placeholder='Man'
+                      textContentType='username'
+                      keyboardType='number-pad'
+                    />
+                    <Text className="text-green-500 flex-1 self-center top-2 left-5 font-semibold" style={{ fontSize: 15 }}>KCal</Text>
+                  </View>
+                </View>
+                <View className="flex-1 pb-8">
+                  <Text className="text-green-500 pb-3" style={{ fontSize: 24, fontWeight: "500" }}>Number of recipes</Text>
+                  <View className="">
+                    <NumberSelector
+                      number={randomAmount}
+                      canIncrease={randomAmount < MAX_RANDOM_AMOUNT}
+                      canDecrease={randomAmount > MIN_RANDOM_AMOUNT}
+                      onIncrease={onIncreaseRandomAmount}
+                      onDecrease={onDecreaseRandomAmount}
+                    />
+                  </View>
+                </View>
+                <View className="flex-1 self-center">
+                  <Button
+                    className="bottom-0 h-12 w-40"
+                    onPress={handleOnPressSeeMyRecipes}
+                  >
+                    <Text className="text-center text-lg font-semibold text-white">
+                      See my recipes
+                    </Text>
+                  </Button>
+                </View>
+              </KeyboardAvoidingView>
+            </ScrollView>
+          </View>
+      )
+    }else{
+      return <Text>Loading</Text>
+    }
+  }
 
   const MIN_RANDOM_AMOUNT = 1;
   const MAX_RANDOM_AMOUNT = 10;
@@ -128,183 +304,31 @@ function RandomRecipes({ navigation }) {
 
   return (
     <SafeAreaView className="relative h-full w-full bg-white">
-        <Image
-          className="absolute -top-36"
-          source={require("../../../assets/topBanner.png")}
-          style={{ height: 200, width: 400, flex: 1 }}
-        />
-        <View className="mx-4 mt-4 flex flex-row items-center top-3">
-          <Button className="h-12 w-12" onPress={handleOnPressBack}>
-            <Text className="text-center font-semibold text-white">
-              <FontAwesome name="arrow-left" size={16} />
-            </Text>
-          </Button>
-          {/* <Text className="ml-4 text-2xl font-semibold text-black">
+      <Image
+        className="absolute -top-36"
+        source={require("../../../assets/topBanner.png")}
+        style={{ height: 200, width: 400, flex: 1 }}
+      />
+      <View className="mx-4 mt-4 flex flex-row items-center top-3">
+        <Button className="h-12 w-12" onPress={handleOnPressBack}>
+          <Text className="text-center font-semibold text-white">
+            <FontAwesome name="arrow-left" size={16} />
+          </Text>
+        </Button>
+        {/* <Text className="ml-4 text-2xl font-semibold text-black">
           Find Your
         </Text>
         <Text className="ml-4 text-2xl font-semibold text-green-500 right-2" style={{fontFamily: 'inter'}}>
           Recipe
         </Text> */}
-          <Image
-            className="left-2 top-1"
-            source={require("../../../assets/FindYourRecipe.png")}
-            style={{ width: 50, height: 60, flex: 0.75, resizeMode: 'contain' }}
-          />
-        </View>
-        <View className="flex top-5 pl-5 pr-5">
-        <ScrollView>
-        <KeyboardAvoidingView behavior="position">
-          <View className="flex-1 pb-3">
-            <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Tags</Text>
-            <MultiSelect
-              // hideTags
-              items={tags}
-              uniqueKey="name"
-              // ref={(component) => { this.multiSelect = component }}
-              onSelectedItemsChange={onSelectedItemsChange}
-              selectedItems={selectedTags}
-              selectText="Pick Items"
-              searchInputPlaceholderText="Search Items..."
-              // onChangeInput={ (text)=> console.log(text)}
-              // altFontFamily="ProximaNova-Light"
-              tagRemoveIconColor="#2CBB54"
-              tagBorderColor="#2CBB54"
-              tagTextColor="#2CBB54"
-              selectedItemTextColor="#2CBB54"
-              selectedItemIconColor="#2CBB54"
-              itemTextColor="#000"
-              displayKey="name"
-              searchInputStyle={{ color: '#000000' }}
-              submitButtonColor="#2CBB54"
-              submitButtonText="Select these tags"
-            />
-          </View>
-          <View className="flex-1 pb-3">
-            <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Include ingredients</Text>
-            <MultiSelect
-              // hideTags
-              items={ingredients}
-              uniqueKey="name"
-              // ref={(component) => { this.multiSelect = component }}
-              onSelectedItemsChange={onSelectedIncludeIngredients}
-              selectedItems={includedIngredients}
-              selectText="Pick Items"
-              searchInputPlaceholderText="Search Items..."
-              // onChangeInput={ (text)=> console.log(text)}
-              // altFontFamily="ProximaNova-Light"
-              tagRemoveIconColor="#2CBB54"
-              tagBorderColor="#2CBB54"
-              tagTextColor="#2CBB54"
-              selectedItemTextColor="#2CBB54"
-              selectedItemIconColor="#2CBB54"
-              itemTextColor="#000"
-              displayKey="name"
-              searchInputStyle={{ color: '#000000' }}
-              submitButtonColor="#2CBB54"
-              submitButtonText="Select these tags"
-            />
-          </View>
-          <View className="flex-1 pb-3">
-            <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude ingredients</Text>
-            <MultiSelect
-              // hideTags
-              items={ingredients}
-              uniqueKey="name"
-              // ref={(component) => { this.multiSelect = component }}
-              onSelectedItemsChange={onSelectedExcludeIngredients}
-              selectedItems={excludedIngredients}
-              selectText="Pick Items"
-              searchInputPlaceholderText="Search Items..."
-              // onChangeInput={ (text)=> console.log(text)}
-              // altFontFamily="ProximaNova-Light"
-              tagRemoveIconColor="#2CBB54"
-              tagBorderColor="#2CBB54"
-              tagTextColor="#2CBB54"
-              selectedItemTextColor="#2CBB54"
-              selectedItemIconColor="#2CBB54"
-              itemTextColor="#000"
-              displayKey="name"
-              searchInputStyle={{ color: '#000000' }}
-              submitButtonColor="#2CBB54"
-              submitButtonText="Select these tags"
-            />
-          </View>
-          <View className="flex-1 pb-3">
-            <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude cooking utensils</Text>
-            <MultiSelect
-              // hideTags
-              items={utensils}
-              uniqueKey="name"
-              // ref={(component) => { this.multiSelect = component }}
-              onSelectedItemsChange={onSelectedExcludeUtensils}
-              selectedItems={excludedUtensils}
-              selectText="Pick Items"
-              searchInputPlaceholderText="Search Items..."
-              // onChangeInput={ (text)=> console.log(text)}
-              // altFontFamily="ProximaNova-Light"
-              tagRemoveIconColor="#2CBB54"
-              tagBorderColor="#2CBB54"
-              tagTextColor="#2CBB54"
-              selectedItemTextColor="#2CBB54"
-              selectedItemIconColor="#2CBB54"
-              itemTextColor="#000"
-              displayKey="name"
-              searchInputStyle={{ color: '#000000' }}
-              submitButtonColor="#2CBB54"
-              submitButtonText="Select these tags"
-            />
-          </View>
-          <View className="flex-1 pb-8">
-            <Text className="text-green-500 pb-3" style={{ fontSize: 24, fontWeight: "500" }}>Calories range</Text>
-            <View className="flex-row justify-center">
-              <TextInput
-                style={{ paddingHorizontal: 20 }}
-                className="flex-1 top-2 h-10 border-2 text-left border-green-500 rounded-full"
-                onChangeText={onInputMinCal}
-                value={String(minCal)}
-                placeholder='Min'
-                textContentType='username'
-                keyboardType='number-pad'
-              />
-              <Text className="text-green-500 flex-1 self-center top-1 left-6 " style={{ fontSize: 30 }}> - </Text>
-              <TextInput
-                style={{ paddingHorizontal: 20 }}
-                className="flex-1 top-2 h-10 border-2 text-left border-green-500 rounded-full"
-                onChangeText={onInputMaxCal}
-                value={String(maxCal)}
-                placeholder='Man'
-                textContentType='username'
-                keyboardType='number-pad'
-              />
-              <Text className="text-green-500 flex-1 self-center top-2 left-5 font-semibold" style={{ fontSize: 15 }}>KCal</Text>
-            </View>
-          </View>
-          <View className="flex-1 pb-8">
-            <Text className="text-green-500 pb-3" style={{ fontSize: 24, fontWeight: "500" }}>Number of recipes</Text>
-            <View className="">
-              <NumberSelector
-                number={randomAmount}
-                canIncrease={randomAmount < MAX_RANDOM_AMOUNT}
-                canDecrease={randomAmount > MIN_RANDOM_AMOUNT}
-                onIncrease={onIncreaseRandomAmount}
-                onDecrease={onDecreaseRandomAmount}
-              />
-            </View>
-          </View>
-          <View className="flex-1 self-center">
-            <Button
-              className="bottom-0 h-12 w-40"
-              onPress={handleOnPressSeeMyRecipes}
-            >
-              <Text className="text-center text-lg font-semibold text-white">
-                See my recipes
-              </Text>
-            </Button>
-          </View>
-        </KeyboardAvoidingView>
-        </ScrollView>
-        </View>
-      
+        <Image
+          className="left-2 top-1"
+          source={require("../../../assets/FindYourRecipe.png")}
+          style={{ width: 50, height: 60, flex: 0.75, resizeMode: 'contain' }}
+        />
+      </View>
+      {isGenFilterListFinished && genFilter()}
+
     </SafeAreaView>
   );
 }
