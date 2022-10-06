@@ -26,6 +26,7 @@ import RestaurantService from "../../apis/restaurant";
 import { getToken } from "../../libs/token";
 import RestaurantOptionPanel from "../../components/restaurants/RestaurantOptionPanel";
 import ColorScheme from "../../constants/ColorScheme";
+import GoogleMapsApi from "../../apis/googlemaps";
 
 const mockTags = Array.from({ length: 22 }, (_, idx) => {
   return {
@@ -96,7 +97,6 @@ export default function RandomRestaurantsScreen({ navigation }) {
   async function getLocationName() {
     try {
       const { data } = await GoogleMapsApi.ReverseGeocode(pinCoordinate);
-      console.log(data);
       const locationProperties = data?.results[0];
       setLocationInfo({
         name: `${locationProperties.address_components[0].long_name} ${locationProperties.address_components[1].long_name}`,
