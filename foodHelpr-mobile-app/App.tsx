@@ -15,6 +15,8 @@ import HomeScreen from "./src/pages/Home/Home";
 import { Platform, View } from "react-native";
 import MainRoutes from "./src/routes/main";
 import RandomRecipesIndex from "./src/pages/RandomRecipes";
+import { Provider } from 'react-redux';
+import { Store } from './src/redux/store';
 
 const Stack = createStackNavigator();
 
@@ -47,20 +49,22 @@ export default function App() {
     return null;
   }
   return (
-    <NavigationContainer>
-      <View className="h-full w-full flex-1" onLayout={onLayoutRootView}>
-        <Stack.Navigator
-          initialRouteName={MainRoutes.home}
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen name={MainRoutes.home} component={HomeScreen} />
-          <Stack.Screen
-            name={MainRoutes.restaurant}
-            component={RandomRestaurantsScreen}
-          />
-          <Stack.Screen name={MainRoutes.recipe} component={RandomRecipesIndex} />
-        </Stack.Navigator>
-      </View>
-    </NavigationContainer>
+    <Provider store={Store}>
+      <NavigationContainer>
+        <View className="h-full w-full flex-1" onLayout={onLayoutRootView}>
+          <Stack.Navigator
+            initialRouteName={MainRoutes.home}
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen name={MainRoutes.home} component={HomeScreen} />
+            <Stack.Screen
+              name={MainRoutes.restaurant}
+              component={RandomRestaurantsScreen}
+            />
+            <Stack.Screen name={MainRoutes.recipe} component={RandomRecipesIndex} />
+          </Stack.Navigator>
+        </View>
+      </NavigationContainer>
+    </Provider>
   );
 }

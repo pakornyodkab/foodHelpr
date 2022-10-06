@@ -6,10 +6,20 @@ import RecipeRoutes from "../../routes/recipes";
 import { FontAwesome } from "@expo/vector-icons";
 import { RecipeDetailParams } from "./RecipeDetail";
 import RecipeCard from '../../components/recipes/RecipeCard'
+import { ScrollView } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux";
 
 function RecipesResult({ navigation }) {
+  const randRecipeFilterDetail = useSelector((state:RootState) => state.randRecipeReducer)
+
   function handleOnPressBack() {
     navigation.goBack();
+  }
+
+  function handleOnPressReload() {
+    console.log('Contents in rudux:', randRecipeFilterDetail)
+
   }
 
   function handleRecipePress() {
@@ -68,13 +78,22 @@ function RecipesResult({ navigation }) {
           style={{ width: 50, height: 60, flex: 0.75, resizeMode: 'contain' }}
         />
       </View>
-      <View className="flex top-5 pl-5 pr-5">
-        <Pressable onPress={() => handleRecipePress()}>
-          <RecipeCard imageUrl="https://i.ibb.co/tYV28YL/Yod13.jpg" title="Pakorn Sud Aroi" tags={["Thai food", "Microwave"]} kcal="2000" />
-        </Pressable>
-        <Pressable onPress={() => handleRecipePress()}>
-          <RecipeCard imageUrl="https://i.ibb.co/jRyrWm5/Yod10.png" title="Pakorn give you sweet smile" tags={["Thai food", "Microwave", "Dessert", "Beverage"]} kcal="2000" />
-        </Pressable>
+      <View className="flex-1 top-5 pl-5 pr-5">
+        <ScrollView>
+          <Pressable onPress={() => handleRecipePress()}>
+            <RecipeCard imageUrl="https://i.ibb.co/tYV28YL/Yod13.jpg" title="Pakorn Sud Aroi" tags={["Thai food", "Microwave"]} kcal="2000" />
+          </Pressable>
+          <Pressable onPress={() => handleRecipePress()}>
+            <RecipeCard imageUrl="https://i.ibb.co/jRyrWm5/Yod10.png" title="Pakorn give you sweet smile" tags={["Thai food", "Microwave", "Dessert", "Beverage"]} kcal="2000" />
+          </Pressable>
+        </ScrollView>
+      </View>
+      <View className="flex flex-col items-center align-bottom p-4">
+        <Button className="h-12 w-12" onPress={handleOnPressReload}>
+          <Text className="text-center font-semibold text-white">
+            <FontAwesome name="rotate-right" size={24} />
+          </Text>
+        </Button>
       </View>
       {/* <Button
         className="absolute bottom-0 h-12 w-40"

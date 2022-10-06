@@ -5,8 +5,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MultiSelect from 'react-native-multiple-select';
 import Button from "../../components/common/Button";
 import RecipeRoutes from "../../routes/recipes";
-import { ScrollView, TextInput, } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import NumberSelector from "../../components/restaurants/NumberSelector";
+import { useDispatch } from 'react-redux';
+import {setFilter} from '../../redux/actions/randRecipeActions'
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../../redux";
 
 function RandomRecipes({ navigation }) {
   function handleOnPressBack() {
@@ -21,56 +25,59 @@ function RandomRecipes({ navigation }) {
   const [maxCal, setMaxCal] = React.useState<String>('');
   const [randomAmount, setRandomAmount] = React.useState<number>(3);
 
+  const dispatch = useDispatch();
+
+  const { setFilter } = bindActionCreators(actionCreators, dispatch)
+
+  function handleOnPressSeeMyRecipes() {
+    const filter = {
+      selectedTags: selectedTags,
+      includedIngredients,
+      excludedIngredients,
+      excludedUtensils,
+      minCal,
+      maxCal,
+      randomAmount
+    }
+    setFilter(filter)
+    navigation.navigate(RecipeRoutes.result)
+  }
+
   const tags = [{
-    id: '92iijs7yta',
     name: 'Thai food'
   }, {
-    id: 'a0s0a8ssbsd',
     name: 'Italian food'
   }, {
-    id: '16hbajsabsd',
     name: 'Zimbabwe food'
   }, {
-    id: 'nahs75a5sg',
     name: 'Japanese food'
   }, {
-    id: '667atsas',
     name: 'Drinks'
   },
   ];
 
   const ingredients = [{
-    id: '92iijs7yta',
     name: 'Pork'
   }, {
-    id: 'a0s0a8ssbsd',
     name: 'Lotus',
   }, {
-    id: '16hbajsabsd',
     name: 'Lime'
   }, {
-    id: 'nahs75a5sg',
     name: 'Robster'
   }, {
-    id: '667atsas',
     name: 'Tomato suace'
   },
   ];
 
   const utensils = [{
-    id: '92iijs7yta',
     name: 'Wok'
   }, {
-    id: 'a0s0a8ssbsd',
     name: 'Mortar',
   }, {
-    id: '16hbajsabsd',
     name: 'Microwave'
   }, {
-    id: 'nahs75a5sg',
     name: 'Stove'
   }, {
-    id: '667atsas',
     name: 'Flame thrower'
   },
   ];
@@ -152,7 +159,7 @@ function RandomRecipes({ navigation }) {
             <MultiSelect
               // hideTags
               items={tags}
-              uniqueKey="id"
+              uniqueKey="name"
               // ref={(component) => { this.multiSelect = component }}
               onSelectedItemsChange={onSelectedItemsChange}
               selectedItems={selectedTags}
@@ -177,7 +184,7 @@ function RandomRecipes({ navigation }) {
             <MultiSelect
               // hideTags
               items={ingredients}
-              uniqueKey="id"
+              uniqueKey="name"
               // ref={(component) => { this.multiSelect = component }}
               onSelectedItemsChange={onSelectedIncludeIngredients}
               selectedItems={includedIngredients}
@@ -202,7 +209,7 @@ function RandomRecipes({ navigation }) {
             <MultiSelect
               // hideTags
               items={ingredients}
-              uniqueKey="id"
+              uniqueKey="name"
               // ref={(component) => { this.multiSelect = component }}
               onSelectedItemsChange={onSelectedExcludeIngredients}
               selectedItems={excludedIngredients}
@@ -227,7 +234,7 @@ function RandomRecipes({ navigation }) {
             <MultiSelect
               // hideTags
               items={utensils}
-              uniqueKey="id"
+              uniqueKey="name"
               // ref={(component) => { this.multiSelect = component }}
               onSelectedItemsChange={onSelectedExcludeUtensils}
               selectedItems={excludedUtensils}
@@ -287,7 +294,7 @@ function RandomRecipes({ navigation }) {
           <View className="flex-1 self-center">
             <Button
               className="bottom-0 h-12 w-40"
-              onPress={() => navigation.navigate(RecipeRoutes.result)}
+              onPress={handleOnPressSeeMyRecipes}
             >
               <Text className="text-center text-lg font-semibold text-white">
                 See my recipes
