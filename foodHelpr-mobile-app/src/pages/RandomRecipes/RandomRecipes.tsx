@@ -1,8 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
-import { Image, Text, View, KeyboardAvoidingView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import MultiSelect from 'react-native-multiple-select';
+import { Image, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context"
 import Button from "../../components/common/Button";
 import RecipeRoutes from "../../routes/recipes";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
@@ -11,7 +10,6 @@ import { useDispatch } from 'react-redux';
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../redux";
 import Icon from 'react-native-vector-icons/MaterialIcons'
-// import {MaterialIcons} from '@expo/vector-icons';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 
 const customizeMultiSelectColor = {
@@ -110,32 +108,8 @@ function RandomRecipes({ navigation }) {
     if (isGenFilterListFinished) {
       return (
         <View className="flex top-5 pl-5 pr-5">
-          {/* <ScrollView> */}
-          {/* <KeyboardAvoidingView behavior="position"> */}
             <View className="flex-1 pb-3">
               <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Tags</Text>
-              {/* <MultiSelect
-                    // hideTags
-                    items={tagsList}
-                    uniqueKey="name"
-                    // ref={(component) => { this.multiSelect = component }}
-                    onSelectedItemsChange={onSelectedItemsChange}
-                    selectedItems={selectedTags}
-                    selectText="Pick Items"
-                    searchInputPlaceholderText="Search Items..."
-                    // onChangeInput={ (text)=> console.log(text)}
-                    // altFontFamily="ProximaNova-Light"
-                    tagRemoveIconColor="#2CBB54"
-                    tagBorderColor="#2CBB54"
-                    tagTextColor="#2CBB54"
-                    selectedItemTextColor="#2CBB54"
-                    selectedItemIconColor="#2CBB54"
-                    itemTextColor="#000"
-                    displayKey="name"
-                    searchInputStyle={{ color: '#000000' }}
-                    submitButtonColor="#2CBB54"
-                    submitButtonText="Select these tags"
-                  /> */}
               <SectionedMultiSelect
                 items={tagsList}
                 IconRenderer={Icon}
@@ -150,28 +124,6 @@ function RandomRecipes({ navigation }) {
             </View>
             <View className="flex-1 pb-3">
               <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Include ingredients</Text>
-              {/* <MultiSelect
-                  // hideTags
-                  items={ingredientsList}
-                  uniqueKey="name"
-                  // ref={(component) => { this.multiSelect = component }}
-                  onSelectedItemsChange={onSelectedIncludeIngredients}
-                  selectedItems={includedIngredients}
-                  selectText="Pick Items"
-                  searchInputPlaceholderText="Search Items..."
-                  // onChangeInput={ (text)=> console.log(text)}
-                  // altFontFamily="ProximaNova-Light"
-                  tagRemoveIconColor="#2CBB54"
-                  tagBorderColor="#2CBB54"
-                  tagTextColor="#2CBB54"
-                  selectedItemTextColor="#2CBB54"
-                  selectedItemIconColor="#2CBB54"
-                  itemTextColor="#000"
-                  displayKey="name"
-                  searchInputStyle={{ color: '#000000' }}
-                  submitButtonColor="#2CBB54"
-                  submitButtonText="Select these tags"
-                /> */}
               <SectionedMultiSelect
                 items={ingredientsList}
                 IconRenderer={Icon}
@@ -186,28 +138,6 @@ function RandomRecipes({ navigation }) {
             </View>
             <View className="flex-1 pb-3">
               <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude ingredients</Text>
-              {/* <MultiSelect
-                  // hideTags
-                  items={ingredientsList}
-                  uniqueKey="name"
-                  // ref={(component) => { this.multiSelect = component }}
-                  onSelectedItemsChange={onSelectedExcludeIngredients}
-                  selectedItems={excludedIngredients}
-                  selectText="Pick Items"
-                  searchInputPlaceholderText="Search Items..."
-                  // onChangeInput={ (text)=> console.log(text)}
-                  // altFontFamily="ProximaNova-Light"
-                  tagRemoveIconColor="#2CBB54"
-                  tagBorderColor="#2CBB54"
-                  tagTextColor="#2CBB54"
-                  selectedItemTextColor="#2CBB54"
-                  selectedItemIconColor="#2CBB54"
-                  itemTextColor="#000"
-                  displayKey="name"
-                  searchInputStyle={{ color: '#000000' }}
-                  submitButtonColor="#2CBB54"
-                  submitButtonText="Select these tags"
-                /> */}
               <SectionedMultiSelect
                 items={ingredientsList}
                 IconRenderer={Icon}
@@ -222,28 +152,6 @@ function RandomRecipes({ navigation }) {
             </View>
             <View className="flex-1 pb-3">
               <Text className="text-green-500" style={{ fontSize: 24, fontWeight: "500" }}>Exclude cooking utensils</Text>
-              {/* <MultiSelect
-                  // hideTags
-                  items={utensilsList}
-                  uniqueKey="name"
-                  // ref={(component) => { this.multiSelect = component }}
-                  onSelectedItemsChange={onSelectedExcludeUtensils}
-                  selectedItems={excludedUtensils}
-                  selectText="Pick Items"
-                  searchInputPlaceholderText="Search Items..."
-                  // onChangeInput={ (text)=> console.log(text)}
-                  // altFontFamily="ProximaNova-Light"
-                  tagRemoveIconColor="#2CBB54"
-                  tagBorderColor="#2CBB54"
-                  tagTextColor="#2CBB54"
-                  selectedItemTextColor="#2CBB54"
-                  selectedItemIconColor="#2CBB54"
-                  itemTextColor="#000"
-                  displayKey="name"
-                  searchInputStyle={{ color: '#000000' }}
-                  submitButtonColor="#2CBB54"
-                  submitButtonText="Select these tags"
-                /> */}
               <SectionedMultiSelect
                 items={utensilsList}
                 IconRenderer={Icon}
@@ -303,8 +211,6 @@ function RandomRecipes({ navigation }) {
                 </Text>
               </Button>
             </View>
-          {/* </KeyboardAvoidingView> */}
-          {/* </ScrollView> */}
         </View>
       )
     } else {
