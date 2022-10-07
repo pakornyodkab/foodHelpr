@@ -29,9 +29,6 @@ export default function HomeScreen({ navigation }) {
   const [userInfo, setUserInfo] = React.useState<any>();
   const [stealCheckenToken, setStealChickenToken] = React.useState<string>("");
 
-  //!
-  const [isLoggedInPressed, setIsLoggedInPressed] = React.useState<boolean>(false);
-
   // console.log('hello',discovery);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -102,8 +99,7 @@ export default function HomeScreen({ navigation }) {
         style={{ height: 200, width: 400, flex: accessToken ? 1 : 1.2 }}
       />
       <View style={{ flex: 3 }}>
-        {/* {accessToken && userInfo && ( */}
-        {isLoggedInPressed && userInfo && ( //!
+        {accessToken && userInfo && (
           <View>
             <View className="flex-row-reverse">
               <Image
@@ -120,13 +116,11 @@ export default function HomeScreen({ navigation }) {
           </View>
         )}
         <Image
-          // className={`${accessToken ? "bottom-4" : "top-16"}`}
-          className={`${isLoggedInPressed ? "bottom-4" : "top-16"}`} //!
+          className={`${accessToken ? "bottom-4" : "top-16"}`}
           source={require("../../../assets/FoodHelprLogo.png")}
           // style={{ height: '10%', width: '90%'}}
         />
-        {/* {!accessToken && ( */}
-        {!isLoggedInPressed && ( //!
+        {!accessToken && (
           // <View>
           //   <TextInput
           //     style={{ paddingHorizontal: 20 }}
@@ -178,7 +172,6 @@ export default function HomeScreen({ navigation }) {
             className="top-48 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
             onPress={() => {
               promptAsync();
-              setIsLoggedInPressed(true); //!
             }}
           >
             <Text className="text-center font-normal text-white">
@@ -186,8 +179,7 @@ export default function HomeScreen({ navigation }) {
             </Text>
           </Pressable>
         )}
-        {/* {accessToken && ( */}
-        {isLoggedInPressed && ( //!
+        {accessToken && (
           <View className="flex items-center justify-center gap-1">
             <Pressable
               className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
@@ -233,7 +225,6 @@ export default function HomeScreen({ navigation }) {
               className="top-36 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-green-500 bg-white active:scale-95 active:bg-gray-300"
               onPress={() => {
                 setAccessToken("");
-                setIsLoggedInPressed(false); //!
               }}
             >
               <Text className="text-center font-normal text-green-500">
