@@ -3,7 +3,6 @@ import { Recipe } from '../utils/recipe.interface';
 import { Tag } from '../utils/constant';
 
 export const RecipeSchema = new mongoose.Schema<Recipe>({
-  recipeId: String,
   name: String,
   tags: {
     type: [String],
@@ -13,11 +12,24 @@ export const RecipeSchema = new mongoose.Schema<Recipe>({
   ingredients: {
     type: [
       {
-        name: String,
+        ingredientId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Ingredient',
+        },
+        quantity: Number,
+        unit: String,
       },
     ],
   },
-  method: [String],
+  method: {
+    type: [
+      {
+        step: Number,
+        title: String,
+        subStep: [String],
+      },
+    ],
+  },
   kitchenTools: [String],
   tutorialLinks: [String],
   pictureUrl: [String],

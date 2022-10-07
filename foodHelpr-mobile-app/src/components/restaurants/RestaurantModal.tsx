@@ -50,7 +50,7 @@ const RestaurantModal = ({
       visible={isVisible}
       onRequestClose={() => onClose()}
     >
-      <View className="flex h-screen w-screen items-center justify-center">
+      <View className="flex h-screen w-screen items-center justify-center bg-black/50">
         <View className="flex h-fit w-10/12 items-center rounded-xl border-[1px] border-green-500 bg-white p-4">
           <GestureHandlerRootView className="flex-1">
             <Carousel
