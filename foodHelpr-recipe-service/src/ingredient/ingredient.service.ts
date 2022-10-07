@@ -49,6 +49,15 @@ export class IngredientService {
     return;
   }
 
+  async updateIngredientByName(ingredient: Ingredient) {
+    const newIngredient = await this.ingredientModel.findOneAndUpdate(
+      { name: ingredient.name },
+      ingredient,
+      { returnOriginal: false },
+    );
+    return newIngredient;
+  }
+
   mapper(ingredient) {
     return {
       ingredientId: ingredient._id.toString(),

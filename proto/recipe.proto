@@ -62,8 +62,12 @@ message RecipeList { repeated RecipeResponse recipe_list = 1; }
 
 message RecipeViewModel {
   repeated Tag tags = 1;
-  repeated Ingredient ingredients = 2;
-  repeated string utensils = 4;
+  repeated IngredientIdAndName ingredients = 2;
+  repeated string utensils = 3;
+  int32 min_kcal = 4;
+  int32 max_kcal = 5;
+  int32 min_random_number = 6;
+  int32 max_random_number = 7;
 }
 
 message RandomRecipesRequest {
@@ -81,13 +85,13 @@ message IngredientInfoResponse {
   string name = 2;
   repeated string picture_url = 3;
   repeated DeliveryInfo delivery_info = 4;
-  int32 quantity = 5;
+  double quantity = 5;
   string unit = 6;
 }
 
 message IngredientInfo {
   string ingredient_id = 1;
-  int32 quantity = 2;
+  double quantity = 2;
   string unit = 3;
 }
 
@@ -98,3 +102,8 @@ message Method {
 }
 
 message DeleteMessage { string delete_true = 1; }
+
+message IngredientIdAndName {
+  string ingredient_id = 1;
+  string name = 2;
+}

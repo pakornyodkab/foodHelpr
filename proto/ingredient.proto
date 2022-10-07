@@ -8,6 +8,7 @@ service IngredientService {
   rpc GetById(IngredientId) returns (Ingredient) {}
   rpc GetAll(Empty) returns (IngredientList) {}
   rpc DeleteById(IngredientId) returns (Empty) {}
+  rpc UpdateByName(Ingredient) returns (Ingredient) {}
 }
 
 enum DeliveryType {

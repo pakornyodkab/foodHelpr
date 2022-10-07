@@ -55,4 +55,9 @@ export class RecipeController {
 
     return { recipeList };
   }
+
+  @GrpcMethod('RecipeService', 'GetRecipeViewModel')
+  async getRecipeViewModel() {
+    return await this.recipeService.getRecipeViewModel();
+  }
 }
