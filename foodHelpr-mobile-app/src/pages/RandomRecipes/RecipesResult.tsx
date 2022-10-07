@@ -139,7 +139,10 @@ function RecipesResult({ navigation }) {
   }
 
   function handleRecipePress(item) {
-    navigation.navigate(RecipeRoutes.detail, item);
+    const props = {
+      recipe: item,
+    };
+    navigation.navigate(RecipeRoutes.detail, props);
   }
 
   return (
