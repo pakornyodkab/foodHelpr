@@ -27,6 +27,7 @@ import { getToken } from "../../libs/token";
 import RestaurantOptionPanel from "../../components/restaurants/RestaurantOptionPanel";
 import ColorScheme from "../../constants/ColorScheme";
 import GoogleMapsApi from "../../apis/googlemaps";
+import IRestaurantViewModel from "../../models/RestaurantViewModel";
 
 const mockTags = Array.from({ length: 22 }, (_, idx) => {
   return {
@@ -94,6 +95,9 @@ export default function RandomRestaurantsScreen({ navigation }) {
   const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
   const [restaurantsLoading, setRestaurantsLoading] = useState<boolean>(false);
 
+  const [restaurantViewModel, setRestaurantViewModel] =
+    useState<IRestaurantViewModel>(null);
+
   async function getLocationName() {
     try {
       const { data } = await GoogleMapsApi.ReverseGeocode(pinCoordinate);
@@ -147,7 +151,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
       longitudeDelta: DELTA_LNG,
     });
   }
- 
+
   function onMapPress(event: MapEvent) {
     setPinCoordinate(event.nativeEvent.coordinate);
     setLocationInfoLoading(true);
@@ -179,6 +183,8 @@ export default function RandomRestaurantsScreen({ navigation }) {
         latitude: pinCoordinate.latitude,
         longitude: pinCoordinate.longitude,
         range: 5,
+        delivery_platforms: deliveryOptions,
+        tags: selectedTags,
       });
       const restaurantData: IRestaurant[] = res.data.map((restaurant) => {
         return {
@@ -198,7 +204,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
       });
       setRestaurants(restaurantData);
     } catch (error) {
-      console.error(error);
+      console.error(error, error.message, error.stack);
       throw error;
     } finally {
       setTimeout(() => setRestaurantsLoading(false), RESTAURANT_LOAD_DELAY);
@@ -220,6 +226,23 @@ export default function RandomRestaurantsScreen({ navigation }) {
       RESTAURANT_LOAD_DELAY
     );
   }, [restaurants]);
+
+  const fetchViewModel = async () => {
+    try {
+      const accessToken = await getToken();
+      const result = await RestaurantService.GetRestaurantViewModel(
+        accessToken
+      );
+      setRestaurantViewModel(result.data);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    fetchViewModel();
+  }, []);
 
   const CurrentLocationPanel = () => (
     <View className="my-2 w-full rounded-lg border-[1px] border-green-500 bg-white px-2 py-1">
@@ -249,6 +272,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
   function handleOnPressBack() {
     if (restaurants.length > 0) {
       setRestaurants([]);
+      return;
     }
     navigation.goBack();
   }
@@ -334,16 +358,18 @@ export default function RandomRestaurantsScreen({ navigation }) {
               )}
             </Pressable>
           </View>
-          <RestaurantOptionPanel
-            randomDistance={randomDistance}
-            onRandomDistanceChange={handleRandomDistanceChange}
-            tags={mockTags}
-            selectedTags={selectedTags}
-            onSelectedTagsChange={handleSelectedTagsChange}
-            deliveryOptions={mockOptions}
-            selectedDeliveryOptions={deliveryOptions}
-            onDeliveryOptionsChange={handleDeliveryOptionsChange}
-          />
+          {restaurantViewModel && (
+            <RestaurantOptionPanel
+              randomDistance={randomDistance}
+              onRandomDistanceChange={handleRandomDistanceChange}
+              tags={restaurantViewModel.tag}
+              selectedTags={selectedTags}
+              onSelectedTagsChange={handleSelectedTagsChange}
+              deliveryOptions={restaurantViewModel.deliveryPlatform}
+              selectedDeliveryOptions={deliveryOptions}
+              onDeliveryOptionsChange={handleDeliveryOptionsChange}
+            />
+          )}
         </>
       )}
     </View>

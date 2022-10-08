@@ -41,4 +41,9 @@ export class IngredientController {
   updateIngredientByName(ingredient: Ingredient) {
     return this.ingredientService.updateIngredientByName(ingredient);
   }
+
+  @GrpcMethod('IngredientService', 'GetByName')
+  getIngredientByName(ingredient: Ingredient) {
+    return this.ingredientService.getIngredientByName(ingredient);
+  }
 }

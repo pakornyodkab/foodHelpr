@@ -181,8 +181,12 @@ export class RestaurantService {
       'deliveryInfo.platform',
     );
     return {
-      tag: allTags,
-      deliveryPlatform: allDeliveryPlatforms,
+      tag: allTags.map((e) => {
+        return { name: e };
+      }),
+      deliveryPlatform: allDeliveryPlatforms.map((e) => {
+        return { name: e };
+      }),
       minDistance: this.MIN_RESTAURANT_DISTANCE,
       maxDistance: this.MAX_RESTAURANT_DISTANCE,
       minRandomNumber: this.MIN_RESTAURANT_RANDOM_NUMBER,

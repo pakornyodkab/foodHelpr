@@ -1,22 +1,22 @@
-import { Action } from '../actions';
-import { Dispatch } from "redux"
-import { ActionType } from '../action-types';
+import { Action } from "../actions";
+import { Dispatch } from "redux";
+import { ActionType } from "../action-types";
 
-interface payloadDetail{
-    selectedTags: Array<string>,
-    includedIngredients: Array<string>
-    excludedIngredients: Array<string>
-    excludedUtensils: Array<string>
-    minCal: String
-    maxCal: String
-    randomAmount: number
+interface payloadDetail {
+  tags: Array<string>;
+  include_ingredients: Array<string>;
+  exclude_ingredients: Array<string>;
+  exclude_utensils: Array<string>;
+  calories_min: number;
+  calories_max: number;
+  random_amount: number;
 }
 
 export const setFilter = (filters: payloadDetail) => {
-    return (dispatch: Dispatch<Action>) => {
-        dispatch({
-            type: ActionType.SET_RECIPE_FILTER,
-            payload: filters
-        })
-    }
-}
+  return (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: ActionType.SET_RECIPE_FILTER,
+      payload: filters,
+    });
+  };
+};

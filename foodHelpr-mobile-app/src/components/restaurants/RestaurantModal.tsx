@@ -95,15 +95,17 @@ const RestaurantModal = ({
             <Text className="ml-2">{address}</Text>
           </View>
 
-          {deliveryInfo.map((info) => (
-            <Button
-              key={info._id}
-              className="mt-4 h-10 w-24"
-              onPress={() => Linking.openURL(info.link)}
-            >
-              <Text className="text-center text-white">{info.platform}</Text>
-            </Button>
-          ))}
+          <View className="flex w-full flex-row items-center justify-center">
+            {deliveryInfo.map((info) => (
+              <Button
+                key={info._id}
+                className="mt-4 h-10 w-24 mx-1"
+                onPress={() => Linking.openURL(info.link)}
+              >
+                <Text className="text-center text-white">{info.platform}</Text>
+              </Button>
+            ))}
+          </View>
 
           <Button className="mt-4 h-10 w-10" onPress={() => onClose()}>
             <Text className="text-center text-white">
