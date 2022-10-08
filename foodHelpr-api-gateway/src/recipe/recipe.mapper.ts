@@ -17,7 +17,7 @@ const TagMap = [
 
 export const convertTag = (tags) => {
   return tags.map((e) => {
-    return { name: TagMap[e] };
+    return TagMap[e];
   });
 };
 
@@ -28,18 +28,22 @@ export const convertNameToTagNumber = (names) => {
 };
 
 export const convertRecipeViewModel = (recipe) => {
+  if (!recipe) {
+    return [];
+  }
   return {
     tags: convertTag(recipe.tags),
     ingredients: recipe.ingredients,
-    utensils: recipe.utensils.map((e: any) => {
-      return { name: e };
-    }),
+    utensils: recipe.utensils,
     minCal: recipe.minKcal,
     maxCal: recipe.maxKcal,
   };
 };
 
 export const convertRandomRecipeResult = (recipe) => {
+  if (!recipe) {
+    return [];
+  }
   return recipe.map((e: any) => {
     return {
       recipe_id: e.recipeId,

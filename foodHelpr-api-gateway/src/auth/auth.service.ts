@@ -103,10 +103,10 @@ export class AuthService {
     res: Response,
   ) {
     try {
-      mockData.email = email;
-      mockData.profile_picture = picture_url;
-      mockData.firstname = firstname;
-      mockData.lastname = lastname;
+      mockData.email = email || mockData.email;
+      mockData.profile_picture = picture_url || mockData.profile_picture;
+      mockData.firstname = firstname || mockData.firstname;
+      mockData.lastname = lastname || mockData.lastname;
       let newUser: any;
       await this.userService
         .send<CreateUserDto>({ cmd: 'createUser' }, mockData)

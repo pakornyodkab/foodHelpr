@@ -76,17 +76,25 @@ export class RestaurantController {
     @Query('lng') lng: number,
     @Query('random_number') randomNumber: number,
     @Query('range') range: number,
-    @Query('tags') tags: string[],
-    @Query('delivery_platforms') deliveryPlatforms: string[],
+    @Query('tags') tags: string,
+    @Query('delivery_platforms') deliveryPlatforms: string,
   ) {
+    let tagsUse, deliveryUse;
+    if (tags) {
+      tagsUse = tags.split(',');
+    }
+
+    if (deliveryPlatforms) {
+      deliveryUse = deliveryPlatforms.split(',');
+    }
     return this.restaurantService.getRandomRestaurant(
       userId,
       lat,
       lng,
       randomNumber,
       range,
-      tags,
-      deliveryPlatforms,
+      tagsUse,
+      deliveryUse,
     );
   }
 

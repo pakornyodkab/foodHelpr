@@ -13,6 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { RandomRecipeRequest } from 'src/dto/randomRecipeRequest.dto';
 import { Tag } from 'src/utils/constant';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { Recipe, RecipeList } from '../utils/recipe.interface';
@@ -104,29 +105,47 @@ export class RecipeController implements OnModuleInit {
   @UseGuards(JwtAuthGuard)
   @Get('get-random-recipe')
   async getRandomRecipe(
-    @Query('tags') tags: string[],
-    @Query('include_ingredients') includeIngredients: string[],
-    @Query('exclude_ingredients') excludeIngredients: string[],
-    @Query('exclude_utensils') excludeUtensils: string[],
+    @Query('tags') tags: string,
+    @Query('include_ingredients') includeIngredients: string,
+    @Query('exclude_ingredients') excludeIngredients: string,
+    @Query('exclude_utensils') excludeUtensils: string,
     @Query('calories_min') caloriesMin: Number,
     @Query('calories_max') caloriesMax: Number,
     @Query('random_amount') recipeNumber: Number,
   ) {
-    let tagNumber;
-    let randomRecipes;
+    let tagUse,
+      includeIngredientsUse,
+      excludeIngredientsUse,
+      excludeUtenUse,
+      tagNumber,
+      randomRecipes;
     if (tags) {
-      tagNumber = convertNameToTagNumber(tags);
+      tagUse = tags.split(',');
     }
+    console.log(tagUse);
+    if (includeIngredients) {
+      includeIngredientsUse = includeIngredients.split(',');
+    }
+    if (excludeIngredients) {
+      excludeIngredientsUse = excludeIngredients.split(',');
+    }
+    if (excludeUtensils) {
+      excludeUtenUse = excludeUtensils.split(',');
+    }
+    if (tagUse) {
+      tagNumber = convertNameToTagNumber(tagUse);
+    }
+    const request = new RandomRecipeRequest(
+      tagNumber,
+      includeIngredientsUse,
+      excludeIngredientsUse,
+      excludeUtenUse,
+      caloriesMin,
+      caloriesMax,
+      recipeNumber,
+    );
     await this.recipeService
-      .getRandomRecipes({
-        tags: tagNumber,
-        includeIngredients,
-        excludeIngredients,
-        excludeUtensils,
-        caloriesMin,
-        caloriesMax,
-        recipeNumber,
-      })
+      .getRandomRecipes(request)
       .forEach((res: any) => (randomRecipes = res));
     return convertRandomRecipeResult(randomRecipes.recipeList);
   }

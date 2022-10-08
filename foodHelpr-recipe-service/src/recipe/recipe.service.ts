@@ -95,7 +95,6 @@ export class RecipeService {
     if (tags?.length > 0) {
       filter.push({ tags: { $in: tags } });
     }
-    // danger 1
     if (caloriesMin) {
       if (Number.isNaN(caloriesMin) || caloriesMin < 0) {
         return new HttpException(
@@ -110,7 +109,6 @@ export class RecipeService {
     } else {
       caloriesMin = 0;
     }
-    // danger 2
     if (caloriesMax) {
       if (
         Number.isNaN(caloriesMax) ||
@@ -127,7 +125,6 @@ export class RecipeService {
       }
       filter.push({ kcal: { $lte: caloriesMax } });
     }
-    // danger 3
     if (excludeIngredients?.length > 0) {
       filter.push({
         'ingredients.ingredientId': { $not: { $in: excludeIngredients } },
@@ -138,7 +135,6 @@ export class RecipeService {
         'ingredients.ingredientId': { $in: includeIngredients },
       });
     }
-    // danger 4
     if (excludeUtensils?.length > 0) {
       filter.push({
         kitchenTools: { $not: { $in: excludeUtensils } },
@@ -156,8 +152,6 @@ export class RecipeService {
         .populate('ingredients.ingredientId')
         .exec();
     }
-    console.log(remainedRecipe);
-    // danger 5
     if (remainedRecipe.length <= recipeNumber) {
       return remainedRecipe.map((e) => {
         return this.mapper(e);
