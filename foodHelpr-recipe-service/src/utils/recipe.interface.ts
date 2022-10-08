@@ -63,3 +63,18 @@ export interface RandomRecipesRequest {
   caloriesMax: Number;
   recipeNumber: Number;
 }
+
+export interface RecipeViewModel {
+  tags: Tag[];
+  ingredients: IngredientIdAndName[];
+  utensils: string[];
+  minKcal: Number;
+  maxKcal: Number;
+  minRandomNumber: Number;
+  maxRandomNumber: Number;
+}
+
+export interface IngredientIdAndName {
+  ingredientId: string;
+  name: string;
+}

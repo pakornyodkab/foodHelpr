@@ -36,4 +36,9 @@ export class IngredientController {
   deleteIngredientById(ingredientId: IngredientId) {
     return this.ingredientService.deleteIngredientById(ingredientId);
   }
+
+  @GrpcMethod('IngredientService', 'UpdateByName')
+  updateIngredientByName(ingredient: Ingredient) {
+    return this.ingredientService.updateIngredientByName(ingredient);
+  }
 }

@@ -26,6 +26,9 @@ export class RecipeService {
     private readonly ingredientModel: Model<Ingredient>,
   ) {}
 
+  private MIN_RECIPE_RANDOM_NUMBER = 1;
+  private MAX_RECIPE_RANDOM_NUMBER = 10;
+
   async createRecipe(newRecipe: Recipe) {
     const recipe = new this.recipeModel(newRecipe);
     await recipe.save();
@@ -167,6 +170,48 @@ export class RecipeService {
           return this.mapper(e);
         });
     }
+  }
+
+  async getRecipeViewModel() {
+    const allTags = await this.recipeModel.distinct('tags');
+    const allIngredientsId = await this.recipeModel
+      .find({})
+      .distinct('ingredients.ingredientId');
+
+    const allIngredients = await this.ingredientModel.find({
+      _id: { $in: allIngredientsId },
+    });
+
+    const allKitchenTools = await this.recipeModel.distinct('kitchenTools');
+    const minKCalRecipe = await this.recipeModel
+      .find({})
+      .sort({ kcal: 1 })
+      .limit(1)
+      .exec();
+    const minKcal = minKCalRecipe[0].kcal;
+    const maxKCalRecipe = await this.recipeModel
+      .find({})
+      .sort({ kcal: -1 })
+      .limit(1)
+      .exec();
+    const maxKcal = maxKCalRecipe[0].kcal;
+    return {
+      tags: allTags.map((e) => {
+        return Object.values(Tag)[e];
+      }),
+      ingredients: allIngredients.map((e) => {
+        const ingredient = {
+          ingredientId: e._id.toString(),
+          name: e.name,
+        };
+        return ingredient;
+      }),
+      utensils: allKitchenTools,
+      minKcal,
+      maxKcal,
+      minRandomNumber: this.MIN_RECIPE_RANDOM_NUMBER,
+      maxRandomNumber: this.MAX_RECIPE_RANDOM_NUMBER,
+    };
   }
 
   mapper(recipeFromDB) {

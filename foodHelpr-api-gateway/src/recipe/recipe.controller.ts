@@ -9,11 +9,18 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { Tag } from 'src/utils/constant';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { Recipe, RecipeList } from '../utils/recipe.interface';
+import {
+  convertRecipeViewModel,
+  convertNameToTagNumber,
+  convertRandomRecipeResult,
+} from './recipe.mapper';
 
 @Controller('recipe')
 export class RecipeController implements OnModuleInit {
@@ -78,5 +85,49 @@ export class RecipeController implements OnModuleInit {
       .deleteById({ recipeId: id })
       .forEach((res: any) => console.log(res));
     return { msg: 'Delete Successfully !!!' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('get-recipe-view-model')
+  async getRecipeViewModel(): Promise<object> {
+    let recipeViewModel: any;
+    try {
+      await this.recipeService
+        .getRecipeViewModel({})
+        .forEach((res: any) => (recipeViewModel = res));
+    } catch (error) {
+      throw new NotFoundException('Get Recipe View Model Error!!!');
+    }
+    return convertRecipeViewModel(recipeViewModel);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('get-random-recipe')
+  async getRandomRecipe(
+    @Query('tags') tags: string[],
+    @Query('include_ingredients') includeIngredients: string[],
+    @Query('exclude_ingredients') excludeIngredients: string[],
+    @Query('exclude_utensils') excludeUtensils: string[],
+    @Query('calories_min') caloriesMin: Number,
+    @Query('calories_max') caloriesMax: Number,
+    @Query('random_amount') recipeNumber: Number,
+  ) {
+    let tagNumber;
+    let randomRecipes;
+    if (tags) {
+      tagNumber = convertNameToTagNumber(tags);
+    }
+    await this.recipeService
+      .getRandomRecipes({
+        tags: tagNumber,
+        includeIngredients,
+        excludeIngredients,
+        excludeUtensils,
+        caloriesMin,
+        caloriesMax,
+        recipeNumber,
+      })
+      .forEach((res: any) => (randomRecipes = res));
+    return convertRandomRecipeResult(randomRecipes.recipeList);
   }
 }
