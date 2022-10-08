@@ -11,10 +11,14 @@ const window = Dimensions.get("window");
 type RestaurantOptionPanelProp = {
   randomDistance: number;
   onRandomDistanceChange: (newRandomDistance: number) => void;
-  tags: {}[];
+  tags: {
+    name: string;
+  }[];
   selectedTags: {}[];
   onSelectedTagsChange: (newSelectedTags: {}[]) => void;
-  deliveryOptions: {}[];
+  deliveryOptions: {
+    name: string;
+  }[];
   selectedDeliveryOptions: {}[];
   onDeliveryOptionsChange: (newOptions: {}[]) => void;
 };
