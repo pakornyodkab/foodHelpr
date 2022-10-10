@@ -9,6 +9,7 @@ import { IngredientModule } from './ingredient/ingredient.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { HttpModule } from '@nestjs/axios';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { HttpModule } from '@nestjs/axios';
     RecipeModule,
     IngredientModule,
     HttpModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [JwtService, AppService, AuthService],
