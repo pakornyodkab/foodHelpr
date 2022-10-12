@@ -5,7 +5,7 @@ export class SaveChatDto {
   roomId: string;
 
   @IsNotEmpty()
-  senderId: string[];
+  senderId: string;
 
   @IsNotEmpty()
   message: string;
