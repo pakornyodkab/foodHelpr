@@ -5,12 +5,6 @@ export class CreateUserDto {
   user_id: number;
 
   @IsNotEmpty()
-  username: string;
-
-  @IsNotEmpty()
-  password: string;
-
-  @IsNotEmpty()
   email: string;
 
   @IsNotEmpty()
@@ -23,7 +17,7 @@ export class CreateUserDto {
   profile_picture: string;
 
   @IsNotEmpty()
-  age: number;
+  birthdate: Date;
 
   @IsNotEmpty()
   nickname: string;

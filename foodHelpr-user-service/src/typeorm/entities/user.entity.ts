@@ -1,15 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, AfterLoad } from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   user_id: number;
-
-  @Column()
-  username: string;
-
-  @Column()
-  password: string;
 
   @Column()
   email: string;
@@ -23,8 +17,22 @@ export class User {
   @Column()
   profile_picture: string;
 
-  @Column()
+  @Column({ type: 'timestamp', default: () => 'now()' })
+  birthdate: Date;
+
   age: number;
+
+  @AfterLoad()
+  setAge() {
+    var today = new Date();
+    var birthDate = this.birthdate;
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    this.age = age;
+  }
 
   @Column()
   nickname: string;

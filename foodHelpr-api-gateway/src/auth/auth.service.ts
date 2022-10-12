@@ -17,13 +17,10 @@ import { HttpService } from '@nestjs/axios';
 config();
 
 let mockData = {
-  username: 'xxx',
-  password: '123456789',
   email: '',
   firstname: 'yyy',
   lastname: 'zzz',
   profile_picture: 'N/A',
-  age: 99,
   nickname: 'test',
   job: 'student',
 };

@@ -30,7 +30,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    this.userRepository.update(id, updateUserDto)
+    this.userRepository.update(id, updateUserDto);
     return { message: 'Updated!!!' };
   }
 
