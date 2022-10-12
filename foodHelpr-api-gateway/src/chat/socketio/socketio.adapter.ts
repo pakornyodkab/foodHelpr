@@ -1,6 +1,13 @@
 import { INestApplicationContext } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
+export interface CustomSocket extends Socket {
+  user: {
+    token: string;
+    userId: number;
+  };
+}
 
 export class AuthenticatedSocketIoAdapter extends IoAdapter {
   private readonly authService: AuthService;
@@ -14,21 +21,26 @@ export class AuthenticatedSocketIoAdapter extends IoAdapter {
   }
 
   createIOServer(port: number, options?: any): any {
-    options.allowRequest = async (request, allowFunction) => {
-      const token = request.headers.authorization.split(' ')[1];
-      const verified = token && (await this.authService.verifyJwt(token));
-      console.log(verified);
-      if (verified) {
-        request._query = {
-          ...request._query,
-          token: token,
-          userId: verified,
-        };
-        return allowFunction(null, true);
+    const server = super.createIOServer(port, { ...options, cors: true });
+    server.use(async (socket: CustomSocket, next) => {
+      try {
+        if (socket.handshake?.headers?.authorization) {
+          const token = socket.handshake.headers.authorization.split(' ')[1];
+          const verified = token && (await this.authService.verifyJwt(token));
+          if (verified) {
+            socket.user = {
+              token: token,
+              userId: verified.sub,
+            };
+            next();
+            return;
+          }
+        }
+      } catch (error) {
+        next(new Error(error.message));
       }
-
-      return allowFunction('Unauthorized', false);
-    };
-    return super.createIOServer(port, options);
+      next(new Error('Authenticated error'));
+    });
+    return server;
   }
 }
