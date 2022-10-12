@@ -55,7 +55,15 @@ export class IngredientService {
       ingredient,
       { returnOriginal: false },
     );
-    return newIngredient;
+    return this.mapper(newIngredient);
+  }
+
+  async getIngredientByName(ingredient: Ingredient) {
+    const foundIngredient = await this.ingredientModel
+      .findOne({ name: ingredient.name })
+      .exec();
+
+    return this.mapper(foundIngredient);
   }
 
   mapper(ingredient) {

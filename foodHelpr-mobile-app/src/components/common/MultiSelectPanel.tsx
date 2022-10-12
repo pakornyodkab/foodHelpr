@@ -26,7 +26,7 @@ const MultiSelectPanel = React.memo(
       <View className="my-2 flex-1">
         <Text className="font-semibold text-green-500">{title}</Text>
         <SectionedMultiSelect
-          uniqueKey="_id"
+          uniqueKey="name"
           displayKey="name"
           selectText={selectText}
           fixedHeight

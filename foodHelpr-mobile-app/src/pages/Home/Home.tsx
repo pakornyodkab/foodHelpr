@@ -16,7 +16,7 @@ import * as Linking from "expo-linking";
 import AuthService from "../../apis/auth";
 import MainRoutes from "../../routes/main";
 
-WebBrowser.maybeCompleteAuthSession();
+//WebBrowser.maybeCompleteAuthSession();
 // const discovery = {
 //   authorizationEndpoint: "http://10.0.2.2.nip.io:3000/auth/google/login",
 //   tokenEndpoint: "http://10.0.2.2.nip.io:3000/auth/google/redirect",
@@ -30,6 +30,10 @@ export default function HomeScreen({ navigation }) {
   const [stealCheckenToken, setStealChickenToken] = React.useState<string>("");
 
   // console.log('hello',discovery);
+  // return <Text>
+  //   {ANDROID_CLIENT_ID}\n
+  //   {EXPO_CLIENT_ID}
+  // </Text>
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: ANDROID_CLIENT_ID,

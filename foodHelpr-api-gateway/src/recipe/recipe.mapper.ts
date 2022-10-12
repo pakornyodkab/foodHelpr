@@ -15,9 +15,11 @@ const TagMap = [
   'Esan Food',
 ];
 
+const DeliveryInfoToName = ['Unspecified', 'Big C', 'Tesco Lotus'];
+
 export const convertTag = (tags) => {
   return tags.map((e) => {
-    return TagMap[e];
+    return { name: TagMap[e] };
   });
 };
 
@@ -34,7 +36,9 @@ export const convertRecipeViewModel = (recipe) => {
   return {
     tags: convertTag(recipe.tags),
     ingredients: recipe.ingredients,
-    utensils: recipe.utensils,
+    utensils: recipe.utensils.map((e) => {
+      return { name: e };
+    }),
     minCal: recipe.minKcal,
     maxCal: recipe.maxKcal,
   };
@@ -80,7 +84,7 @@ export const convertIngredients = (ingredients) => {
       picture_url: e.pictureUrl,
       delivery_info: e.deliveryInfo.map((e) => {
         return {
-          delivery_type: DeliveryType[e.deliveryType],
+          delivery_type: DeliveryInfoToName[e.deliveryType],
           url: e.url,
         };
       }),

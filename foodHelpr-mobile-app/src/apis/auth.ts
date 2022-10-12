@@ -7,15 +7,19 @@ const authService = axios.create({
 });
 
 export interface IGetTokenResponse {
-  message: string,
-  access_token: string,
+  message: string;
+  access_token: string;
 }
 
 export default class AuthService {
   constructor() {}
 
   static GetToken = (accessToken: string) => {
-    const request = authService.get<IGetTokenResponse>(`user-jwt-token/${accessToken}`);
+    console.log("here", accessToken);
+    const request = authService.get<IGetTokenResponse>(
+      `user-jwt-token/${accessToken}`
+    );
+    console.log("hey", `user-jwt-token/${accessToken}`);
     return request;
   };
 }

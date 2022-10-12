@@ -46,6 +46,10 @@ export class AuthService {
     return req.user.id;
   }
 
+  async verifyJwt(token: string) {
+    return await this.jwtService.verifyAsync(token);
+  }
+
   async googleLogin(googleToken: string, res: Response) {
     if (!googleToken) {
       throw new BadRequestException('Unauthenticated');

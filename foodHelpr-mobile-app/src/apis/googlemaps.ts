@@ -11,9 +11,14 @@ export default class GoogleMapsApi {
   constructor() {}
 
   static ReverseGeocode = (coordinate: LatLng) => {
-    const request = googleMapsApi.get(
-      `geocode/json?latlng=${coordinate.latitude},${coordinate.longitude}&key=${GOOGLEMAPS_KEY}&language=en&result_type=street_address`
-    );
+    const request = googleMapsApi.get("geocode/json", {
+      params: {
+        latlng: `${coordinate.latitude},${coordinate.longitude}`,
+        key: GOOGLEMAPS_KEY,
+        language: "en",
+        result_type: "street_address",
+      },
+    });
     return request;
-  }
+  };
 }

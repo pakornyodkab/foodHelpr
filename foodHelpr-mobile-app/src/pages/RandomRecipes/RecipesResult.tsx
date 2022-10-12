@@ -10,6 +10,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux";
 import IRecipe from "../../models/Recipe";
+import { getToken } from "../../libs/token";
+import RecipeService from "../../apis/recipe";
 
 const mockRecipes:Array<IRecipe> = [{
   recipe_id: "asjghfajskdf",
@@ -106,15 +108,23 @@ const mockRecipes:Array<IRecipe> = [{
 function RecipesResult({ navigation }) {
   const randRecipeFilterDetail = useSelector((state: RootState) => state.randRecipeReducer)
 
-  const [recipeList, setRecipeList] = React.useState<Array<IRecipe>>([]);
+  const [recipeList, setRecipeList] = React.useState<IRecipe[]>([]);
 
   React.useEffect(() => {
     getRecipes();
   }, []);
 
-  function getRecipes() {
-    //do query
-    setRecipeList(mockRecipes)
+  async function getRecipes () {
+    // do query
+    try {
+      const accessToken = await getToken();
+      const response = await RecipeService.GetRandomRecipe(accessToken, randRecipeFilterDetail);
+      setRecipeList(response.data)
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+    // setRecipeList(mockRecipes)
   }
 
   function genRecipes() {
@@ -134,7 +144,6 @@ function RecipesResult({ navigation }) {
   }
 
   function handleOnPressReload() {
-    console.log('Contents in rudux:', randRecipeFilterDetail)
     getRecipes()
   }
 
@@ -169,7 +178,7 @@ function RecipesResult({ navigation }) {
           {recipeList.length > 0 && genRecipes()}
         </ScrollView>
       </View>
-      <View className="flex flex-col items-center align-bottom p-4">
+      <View className="flex flex-col items-center align-bottom p-4 top-3">
         <Button className="h-12 w-12" onPress={handleOnPressReload}>
           <Text className="text-center font-semibold text-white">
             <FontAwesome name="rotate-right" size={24} />
