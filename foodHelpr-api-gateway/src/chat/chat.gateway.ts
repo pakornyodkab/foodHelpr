@@ -3,13 +3,13 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
+  WsException,
 } from '@nestjs/websockets';
 import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
 import { SaveChatDto } from 'src/dto/save-chat.dto';
-import { Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { GetCurrentUserId } from 'src/auth/decorator';
 import { AuthService } from 'src/auth/auth.service';
+import { CustomSocket } from './socketio/socketio.adapter';
 
 @WebSocketGateway(3010, {
   transports: ['websocket'],
@@ -27,10 +27,9 @@ export class ChatGateway implements NestGateway {
     // console.log('Init', server);
   }
 
-  async handleConnection(@ConnectedSocket() socket: Socket) {
-    console.log(socket.handshake.query);
-    let { userId, roomId, registrationToken } = socket.handshake.query;
-    if (!(typeof userId === 'string')) userId = userId?.toString();
+  async handleConnection(@ConnectedSocket() socket: CustomSocket) {
+    const userId = socket.user.userId.toString();
+    let { roomId, registrationToken } = socket.handshake.query;
     if (!(typeof roomId === 'string')) roomId = roomId?.toString();
     if (!(typeof registrationToken === 'string'))
       registrationToken = registrationToken?.toString();
@@ -38,7 +37,7 @@ export class ChatGateway implements NestGateway {
     console.log('Connect', { userId, roomId, registrationToken });
     this.chatService
       .handleConnection({
-        userId: userId.toString(),
+        userId: userId,
         roomId: roomId,
         registrationToken: registrationToken,
       })
@@ -50,9 +49,9 @@ export class ChatGateway implements NestGateway {
       );
   }
 
-  handleDisconnect(@ConnectedSocket() socket: Socket) {
-    let { userId, roomId } = socket.handshake.query;
-    if (!(typeof userId === 'string')) userId = userId?.toString();
+  handleDisconnect(@ConnectedSocket() socket: CustomSocket) {
+    const userId = socket.user.userId.toString();
+    let { roomId } = socket.handshake.query;
     if (!(typeof roomId === 'string')) roomId = roomId?.toString();
     console.log('Disconnect', { userId, roomId });
     this.chatService
@@ -65,14 +64,23 @@ export class ChatGateway implements NestGateway {
 
   @SubscribeMessage('chat')
   async handleNewMessage(
-    @GetCurrentUserId() userId: number,
-    @MessageBody() chat: SaveChatDto,
-    @ConnectedSocket() sender: Socket,
+    @MessageBody() chat: Partial<SaveChatDto>,
+    @ConnectedSocket() socket: CustomSocket,
   ) {
-    console.log('hey', userId);
-    console.log('New Chat', chat);
-    this.chatService.saveChat(chat).subscribe();
-    sender.emit('newChat', chat);
-    sender.broadcast.emit('newChat', chat);
+    try {
+      const userId = socket.user.userId.toString();
+      console.log('New Chat', chat);
+      const chatDto: SaveChatDto = {
+        message: chat.message,
+        roomId: chat.roomId,
+        senderId: userId,
+      };
+      this.chatService.saveChat(chatDto).subscribe();
+      socket.emit('newChat', chat);
+      socket.to(chat.roomId).emit('newChat', chat);
+    } catch (error) {
+      console.error(error);
+      throw new WsException(error.message);
+    }
   }
 }
