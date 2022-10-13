@@ -7,6 +7,7 @@ import {
   ANDROID_CLIENT_ID,
   EXPO_CLIENT_ID,
   MY_SECURE_AUTH_STATE_KEY,
+  IOS_CLIENT_ID,
 } from "@env";
 import * as AuthSession from "expo-auth-session";
 import GoogleApis from "../../apis/googleapis";
@@ -37,6 +38,7 @@ export default function HomeScreen({ navigation }) {
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: ANDROID_CLIENT_ID,
+    iosClientId: IOS_CLIENT_ID,
     expoClientId: EXPO_CLIENT_ID,
   });
 
@@ -188,7 +190,7 @@ export default function HomeScreen({ navigation }) {
             <Pressable
               className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
               onPress={() => navigation.navigate(MainRoutes.restaurant)}
-              >
+            >
               <View className="relative flex h-full justify-center">
                 <Text className="absolute left-4 text-white">
                   <MaterialIcons name="restaurant" size={24} />
@@ -222,6 +224,19 @@ export default function HomeScreen({ navigation }) {
                 </Text>
                 <Text className="text-center font-normal text-white">
                   Find your food friends
+                </Text>
+              </View>
+            </Pressable>
+            <Pressable
+              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+              onPress={() => navigation.navigate(MainRoutes.createParty)}
+            >
+              <View className="relative flex h-full justify-center">
+                <Text className="absolute left-4 text-white">
+                  <MaterialIcons name="people" size={24} />
+                </Text>
+                <Text className="text-center font-normal text-white">
+                  Create Your Party
                 </Text>
               </View>
             </Pressable>

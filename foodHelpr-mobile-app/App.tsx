@@ -15,8 +15,9 @@ import HomeScreen from "./src/pages/Home/Home";
 import { Platform, View } from "react-native";
 import MainRoutes from "./src/routes/main";
 import RandomRecipesIndex from "./src/pages/RandomRecipes";
-import { Provider } from 'react-redux';
-import { Store } from './src/redux/store';
+import { Provider } from "react-redux";
+import { Store } from "./src/redux/store";
+import CreateParty from "./src/pages/Party/CreateParty";
 
 const Stack = createStackNavigator();
 
@@ -61,7 +62,14 @@ export default function App() {
               name={MainRoutes.restaurant}
               component={RandomRestaurantsScreen}
             />
-            <Stack.Screen name={MainRoutes.recipe} component={RandomRecipesIndex} />
+            <Stack.Screen
+              name={MainRoutes.recipe}
+              component={RandomRecipesIndex}
+            />
+            <Stack.Screen
+              name={MainRoutes.createParty}
+              component={CreateParty}
+            />
           </Stack.Navigator>
         </View>
       </NavigationContainer>
