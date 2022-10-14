@@ -18,8 +18,8 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import CalendarPicker from "react-native-calendar-picker";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import PartyTime from "./PartyTime";
-import PartyCalendar from "./PartyCalendar";
+import PartyTime from "../../components/party/PartyTime";
+import PartyCalendar from "../../components/party/PartyCalendar";
 function CreateParty({ navigation }) {
   const handleOnPressBack = () => {
     navigation.goBack();

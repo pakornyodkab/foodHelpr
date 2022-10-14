@@ -10,7 +10,7 @@ import {
   TextInput,
 } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
-import ChatScreen from "./ChatScreen";
+import ChatScreen from "../../components/chat/ChatScreen";
 import Button from "../../components/common/Button";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { getToken } from "../../libs/token";
