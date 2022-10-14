@@ -44,11 +44,8 @@ export class ChatGateway implements NestGateway {
         registrationToken: registrationToken,
       })
       .forEach((x) => console.log(x));
-    this.chatService
-      .getChats(roomId?.toString())
-      .forEach((chats) =>
-        process.nextTick(() => socket.emit('allChats', chats)),
-      );
+    const chats = await this.chatService.getChats(roomId?.toString());
+    process.nextTick(() => socket.emit('allChats', chats));
   }
 
   handleDisconnect(@ConnectedSocket() socket: CustomSocket) {
