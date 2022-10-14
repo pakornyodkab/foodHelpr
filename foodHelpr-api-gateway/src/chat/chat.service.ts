@@ -27,7 +27,7 @@ export class ChatService {
     );
   }
 
-  async getChats(roomId: string): Promise<IGetChatsResponse> {
+  async getChats(roomId: string): Promise<IGetChatsResponse[]> {
     let allChats;
     await this.foodFriendService
       .send({ cmd: 'chat.getChats' }, roomId)

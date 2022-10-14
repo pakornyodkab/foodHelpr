@@ -5,11 +5,14 @@ import {
   WebSocketGateway,
   WsException,
 } from '@nestjs/websockets';
+import { Inject } from '@nestjs/common';
 import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
 import { SaveChatDto } from 'src/dto/save-chat.dto';
 import { ChatService } from './chat.service';
 import { AuthService } from 'src/auth/auth.service';
 import { CustomSocket } from './socketio/socketio.adapter';
+import { ClientProxy } from '@nestjs/microservices';
+import IGetChatsResponse from './models/get-chats.model';
 
 @WebSocketGateway(3010, {
   transports: ['websocket'],
@@ -20,7 +23,7 @@ import { CustomSocket } from './socketio/socketio.adapter';
 export class ChatGateway implements NestGateway {
   constructor(
     private readonly chatService: ChatService,
-    private readonly authService: AuthService,
+    @Inject('USER') private readonly userService: ClientProxy,
   ) {}
 
   afterInit(server: any) {
@@ -74,12 +77,26 @@ export class ChatGateway implements NestGateway {
         roomId: chat.roomId,
         senderId: userId,
       };
-      this.chatService.saveChat(chatDto).subscribe();
-      socket.emit('newChat', chat);
-      socket.to(chat.roomId).emit('newChat', chat);
+      await this.sendNewChatData(chatDto, socket);
     } catch (error) {
       console.error(error);
       throw new WsException(error.message);
     }
+  }
+
+  private async sendNewChatData(chatDto: SaveChatDto, socket: CustomSocket) {
+    let newChat, userData;
+    await this.chatService.saveChat(chatDto).forEach((chat) => {
+      newChat = chat;
+    });
+    await this.userService
+      .send({ cmd: 'getUserById' }, chatDto.senderId)
+      .forEach((data) => (userData = data));
+    const newChatData: IGetChatsResponse = {
+      ...newChat,
+      senderData: userData,
+    };
+    socket.emit('newChat', newChatData);
+    socket.to(chatDto.roomId).emit('newChat', newChatData);
   }
 }
