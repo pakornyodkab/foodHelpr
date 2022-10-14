@@ -34,9 +34,6 @@ const ChatScreen = ({
   });
 
   const onSend = useCallback((messages = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages)
-    );
     onChatSend(messages);
   }, []);
 
@@ -79,7 +76,6 @@ const ChatScreen = ({
       renderBubble={renderBubble}
       renderUsernameOnMessage={true}
       renderSend={renderSend}
-      inverted={false}
     />
   );
 };

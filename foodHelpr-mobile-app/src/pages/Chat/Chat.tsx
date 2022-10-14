@@ -136,19 +136,12 @@ const Chat = ({ route, navigation }) => {
 
     socketRef.current.on("allChats", (msgs) => {
       console.log("Msg from allChats");
-      const formattedMsgs = msgs.map((msg, idx) => {
-        // console.log("hey", idx);
-        return formatChat(msg);
-      });
+      const formattedMsgs = msgs
+        .map((msg) => {
+          return formatChat(msg);
+        })
+        .sort((a, b) => -(a.createdAt - b.createdAt));
       setMessages(formattedMsgs);
-      // setMessages((oldmsgs) => {
-      //   return [
-      //     ...oldmsgs,
-      //     ...msgs.map((msg) => {
-      //       return formatChat(msg);
-      //     }),
-      //   ];
-      // });
     });
 
     socketRef.current.on("newChat", (msg) => {
