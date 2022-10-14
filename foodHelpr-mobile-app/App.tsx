@@ -18,6 +18,7 @@ import RandomRecipesIndex from "./src/pages/RandomRecipes";
 import { Provider } from "react-redux";
 import { Store } from "./src/redux/store";
 import CreateParty from "./src/pages/Party/CreateParty";
+import Chat from "./src/pages/Chat/Chat";
 
 const Stack = createStackNavigator();
 
@@ -70,6 +71,7 @@ export default function App() {
               name={MainRoutes.createParty}
               component={CreateParty}
             />
+            <Stack.Screen name={MainRoutes.chat} component={Chat} />
           </Stack.Navigator>
         </View>
       </NavigationContainer>

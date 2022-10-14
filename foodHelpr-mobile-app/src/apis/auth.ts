@@ -20,6 +20,10 @@ export default class AuthService {
       `user-jwt-token/${accessToken}`
     );
     console.log("hey", `user-jwt-token/${accessToken}`);
+    console.log(
+      "Message from get jwt token",
+      request.then((res) => console.log(res.data.access_token))
+    );
     return request;
   };
 }

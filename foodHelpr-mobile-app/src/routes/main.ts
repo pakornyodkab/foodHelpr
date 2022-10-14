@@ -4,6 +4,7 @@ const MainRoutes = {
   recipe: "Random Recipes",
   foodFriend: "FoodFriend",
   createParty: "Party",
+  chat: "Chat",
 };
 
 export default MainRoutes;
