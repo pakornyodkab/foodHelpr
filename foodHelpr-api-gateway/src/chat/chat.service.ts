@@ -34,7 +34,6 @@ export class ChatService {
       .forEach((chats) => {
         allChats = chats;
       });
-    console.log(allChats);
     const chatterIds = [...new Set(allChats.map((chat) => chat.senderId))];
     let chatterData = [];
     await forkJoin(

@@ -17,53 +17,32 @@ import { getToken } from "../../libs/token";
 import { getUser } from "../../libs/user";
 import IUser from "../../models/User";
 
-const Chat = ({ navigation }) => {
+const Chat = ({ route, navigation }) => {
+  const { party } = route.params;
   const handleOnPressBack = () => {
     navigation.goBack();
   };
-  const [messages, setMessages] = useState([
-    {
-      _id: "1",
-      text: "Hello developer",
-      createdAt: new Date(2022, 8, 24, 10, 33, 30, 0),
-      user: {
-        _id: 2,
-        name: "Bryan",
-        avatar: "https://placeimg.com/140/140/any",
-      },
-    },
-    {
-      _id: "2",
-      text: "Hello Pakorn",
-      createdAt: new Date(),
-      user: {
-        _id: 1,
-        name: "Anthony",
-        avatar:
-          "https://th.bing.com/th/id/OIP.RDGUSyngwmMzWs8XUhwQvAHaHa?pid=ImgDet&rs=1",
-      },
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
 
-  const [party, setParty] = useState({
-    _id: "1",
-    name: "Let's Party",
-    restaurant: "",
-    memberList: [
-      {
-        user_id: 1,
-        name: "Anthony",
-      },
-      {
-        user_id: 2,
-        name: "Bryan",
-      },
-      {
-        user_id: 3,
-        name: "Yod",
-      },
-    ],
-  });
+  // const [party, setParty] = useState({
+  //   _id: "1",
+  //   name: "Let's Party",
+  //   restaurant: "",
+  //   memberList: [
+  //     {
+  //       user_id: 1,
+  //       name: "Anthony",
+  //     },
+  //     {
+  //       user_id: 2,
+  //       name: "Bryan",
+  //     },
+  //     {
+  //       user_id: 3,
+  //       name: "Yod",
+  //     },
+  //   ],
+  // });
   const socketRef = useRef<Socket>(null);
   const userRef = useRef<IUser>();
 
@@ -124,24 +103,25 @@ const Chat = ({ navigation }) => {
   //       },
   //     },
 
-  function formatChat(messages) {
-    return messages.map((message) => {
-      const date = new Date(message.createdAt);
-      return {
-        _id: message._id,
-        text: message.message,
-        createdAt: date,
-        user: {
-          _id: message.senderId,
-          name: "Mock",
-          avatar:
-            "https://th.bing.com/th/id/OIP.RDGUSyngwmMzWs8XUhwQvAHaHa?pid=ImgDet&rs=1",
-        },
-      };
-    });
+  function formatChat(message) {
+    const date = new Date(message.createdAt);
+    // const avatar =
+    // "https://th.bing.com/th/id/OIP.RDGUSyngwmMzWs8XUhwQvAHaHa?pid=ImgDet&rs=1";
+    const avatar = message.senderData.profile_picture;
+    return {
+      _id: message._id,
+      text: message.message,
+      createdAt: date,
+      user: {
+        _id: message.senderData.user_id.toString(),
+        name: message.senderData.firstname + " " + message.senderData.lastname,
+        avatar: avatar,
+      },
+    };
   }
 
   const connectSocket = async () => {
+    await getMyUser();
     console.log("Run connectSocket");
     socketRef.current = io("http://10.0.2.2:3010", {
       transports: ["websocket"],
@@ -154,14 +134,28 @@ const Chat = ({ navigation }) => {
       },
     });
 
-    socketRef.current.on("allChats", (msg) => {
-      console.log("Msg from allChats", msg);
-      setMessages([...messages, ...formatChat(msg)]);
+    socketRef.current.on("allChats", (msgs) => {
+      console.log("Msg from allChats");
+      const formattedMsgs = msgs.map((msg, idx) => {
+        // console.log("hey", idx);
+        return formatChat(msg);
+      });
+      setMessages(formattedMsgs);
+      // setMessages((oldmsgs) => {
+      //   return [
+      //     ...oldmsgs,
+      //     ...msgs.map((msg) => {
+      //       return formatChat(msg);
+      //     }),
+      //   ];
+      // });
     });
 
     socketRef.current.on("newChat", (msg) => {
       console.log("Msg from newChat", msg);
-      setMessages([...messages, ...formatChat(msg)]);
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, [formatChat(msg)])
+      );
     });
   };
 
@@ -179,8 +173,8 @@ const Chat = ({ navigation }) => {
 
   useEffect(() => {
     connectSocket();
-    getMyUser();
     return () => {
+      console.log("Into useEffect CallBack");
       socketRef.current.close();
     };
   }, []);
