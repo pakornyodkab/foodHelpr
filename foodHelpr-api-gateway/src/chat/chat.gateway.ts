@@ -34,6 +34,8 @@ export class ChatGateway implements NestGateway {
     if (!(typeof registrationToken === 'string'))
       registrationToken = registrationToken?.toString();
 
+    socket.join(roomId);
+
     console.log('Connect', { userId, roomId, registrationToken });
     this.chatService
       .handleConnection({
