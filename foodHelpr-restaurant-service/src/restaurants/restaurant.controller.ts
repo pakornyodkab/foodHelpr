@@ -70,4 +70,13 @@ export class RestaurantController {
     this.LOGGER.log('Call Get Random Restaurant View Model')
     return this.restaurantService.getRandomRestaurantViewModel()
   }
+
+  @MessagePattern({ cmd: 'get-restaurant-in-range' })
+  getRestaurantInRange(randomRequest: {coordinate:Coordinate, range:number}) {
+    this.LOGGER.log('Call Restaurant In Range Function');
+    return this.restaurantService.getRestaurantInRange(
+      randomRequest.coordinate,
+      randomRequest.range,
+    );
+  }
 }

@@ -193,4 +193,26 @@ export class RestaurantService {
       maxRandomNumber: this.MAX_RESTAURANT_RANDOM_NUMBER,
     };
   }
+  
+  async getRestaurantInRange(
+    coordinate: Coordinate,
+    range: number,
+  ) {
+    if (range <= 0) {
+      return new BadRequestException('Range cannot equal or less than zero');
+    }
+
+    let filter = {};
+
+    const restaurants = JSON.parse(
+      JSON.stringify(await this.restaurantModel.find(filter).exec()),
+    );
+
+    // calculate distance of remain restaurant and filter
+    const remainedRestaurants = restaurants.filter((e) => {
+      return this.calculateDistance(coordinate, e.coordinate) <= range;
+    });
+
+    return remainedRestaurants;
+  }
 }

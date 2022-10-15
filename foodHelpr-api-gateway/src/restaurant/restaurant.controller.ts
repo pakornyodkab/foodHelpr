@@ -103,4 +103,18 @@ export class RestaurantController {
   getRandomRestaurantViewModel() {
     return this.restaurantService.getRandomRestaurantViewModel();
   }
+
+  @Get('get-restaurant-in-range')
+  @UseGuards(JwtAuthGuard)
+  getRestaurantInRange(
+    @Query('lat') lat: number,
+    @Query('lng') lng: number,
+    @Query('range') range: number,
+  ) {
+    return this.restaurantService.getRestaurantInRange(
+      lat,
+      lng,
+      range
+    );
+  }
 }
