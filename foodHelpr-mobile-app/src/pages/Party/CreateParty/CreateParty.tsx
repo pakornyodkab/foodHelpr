@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import Button from "../../components/common/Button";
+import Button from "../../../components/common/Button";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import CalendarPicker from "react-native-calendar-picker";
 import moment from "moment";
@@ -47,7 +47,7 @@ function CreateParty({ navigation }) {
     <SafeAreaView className="relative h-full w-full bg-white">
       <Image
         className="absolute -top-36"
-        source={require("../../../assets/topBanner.png")}
+        source={require("../../../../assets/topBanner.png")}
         style={{ height: 200, width: 400, flex: 1 }}
       />
       <View className="top-8 mx-4 mt-4 flex flex-row items-center pb-5">
@@ -58,7 +58,7 @@ function CreateParty({ navigation }) {
         </Button>
         <Image
           className="left-2 top-1"
-          source={require("../../../assets/CreateParty.png")}
+          source={require("../../../../assets/CreateParty.png")}
           style={{ width: 50, height: 60, flex: 0.75, resizeMode: "contain" }}
         />
       </View>
@@ -88,6 +88,7 @@ function CreateParty({ navigation }) {
               style={{
                 flexDirection: "row",
               }}
+              className="items-center"
             >
               <PartyCalendar
                 setOpenCalendar={SetOpenCalender}

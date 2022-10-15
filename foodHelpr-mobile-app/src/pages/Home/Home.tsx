@@ -16,6 +16,7 @@ import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import * as Linking from "expo-linking";
 import AuthService from "../../apis/auth";
 import MainRoutes from "../../routes/main";
+import AgeModal from "../../components/foodFriend/AgeModal";
 
 //WebBrowser.maybeCompleteAuthSession();
 // const discovery = {
@@ -29,6 +30,7 @@ export default function HomeScreen({ navigation }) {
   const [accessToken, setAccessToken] = React.useState<string>("");
   const [userInfo, setUserInfo] = React.useState<any>();
   const [stealCheckenToken, setStealChickenToken] = React.useState<string>("");
+  const [ageModal,setAgeModal] = React.useState<boolean>(false);
 
   // console.log('hello',discovery);
   // return <Text>
@@ -97,6 +99,10 @@ export default function HomeScreen({ navigation }) {
   React.useEffect(() => {
     getUserData();
   }, [stealCheckenToken]);
+
+  // React.useEffect(() => {
+  //   setAgeModal(true);
+  // }, []);
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -187,6 +193,7 @@ export default function HomeScreen({ navigation }) {
         )}
         {accessToken && (
           <View className="flex items-center justify-center gap-1">
+            {/* <AgeModal /> */}
             <Pressable
               className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
               onPress={() => navigation.navigate(MainRoutes.restaurant)}
@@ -214,9 +221,8 @@ export default function HomeScreen({ navigation }) {
               </View>
             </Pressable>
             <Pressable
-              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 opacity-40 active:scale-95 active:bg-green-700"
-              onPress={() => console.log("comming soon")}
-              disabled
+              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+              onPress={() => navigation.navigate(MainRoutes.foodFriend)}
             >
               <View className="relative flex h-full justify-center">
                 <Text className="absolute left-4 text-white">
@@ -227,7 +233,7 @@ export default function HomeScreen({ navigation }) {
                 </Text>
               </View>
             </Pressable>
-            <Pressable
+            {/* <Pressable
               className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
               onPress={() => navigation.navigate(MainRoutes.createParty)}
             >
@@ -239,7 +245,7 @@ export default function HomeScreen({ navigation }) {
                   Create Your Party
                 </Text>
               </View>
-            </Pressable>
+            </Pressable> */}
             <Pressable
               className="top-36 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-green-500 bg-white active:scale-95 active:bg-gray-300"
               onPress={() => {

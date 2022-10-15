@@ -17,7 +17,7 @@ import MainRoutes from "./src/routes/main";
 import RandomRecipesIndex from "./src/pages/RandomRecipes";
 import { Provider } from "react-redux";
 import { Store } from "./src/redux/store";
-import CreateParty from "./src/pages/Party/CreateParty";
+import FoodFriendIndex from "./src/pages/FoodFriend";
 
 const Stack = createStackNavigator();
 
@@ -67,9 +67,13 @@ export default function App() {
               component={RandomRecipesIndex}
             />
             <Stack.Screen
+              name={MainRoutes.foodFriend}
+              component={FoodFriendIndex}
+            />
+            {/* <Stack.Screen
               name={MainRoutes.createParty}
               component={CreateParty}
-            />
+            /> */}
           </Stack.Navigator>
         </View>
       </NavigationContainer>

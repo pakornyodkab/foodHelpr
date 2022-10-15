@@ -1,0 +1,49 @@
+import { View, Text, Image } from "react-native";
+import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import Button from "../common/Button";
+import LeaveRoomModal from "./LeaveRoomModal";
+
+const MyPartyCard = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const onClose = () => {
+    setModalVisible(false)
+  }
+
+  return (
+    <View className="mb-4 flex max-w-sm space-y-1 rounded-lg border-2 border-green-500 bg-transparent p-4 shadow-lg ">
+      <View className="flex-row justify-between space-x-2">
+        <View className="flex-row space-x-1">
+          <Text>Let’s Party</Text>
+          <Text>(6)</Text>
+        </View>
+        <Ionicons name="key" size={20} />
+      </View>
+
+      <View className="flex-row items-center space-x-2">
+        <Ionicons name="restaurant" size={20} />
+        <Text>McDonald Paragon</Text>
+      </View>
+
+      <View className="flex-row items-center justify-between">
+        <Image
+          source={require("../../../assets/member.png")}
+          style={{ height: 20 }}
+          className=" rounded-md"
+        />
+        <View className="flex-row">
+          <Button className="rounded-lg bg-green-500 px-2 py-1 shadow-md duration-150 hover:shadow-lg focus:shadow-lg active:scale-95 active:bg-green-700 active:shadow-lg">
+            <Text className="text-white">Chat</Text>
+          </Button>
+          <Button className="rounded-lg bg-red-500 px-2 py-1 shadow-md duration-150 hover:shadow-lg focus:shadow-lg active:scale-95 active:bg-red-700 active:shadow-lg" onPress={() => setModalVisible(true)}>
+            <Text className="text-white">End Room</Text>
+          </Button>
+        </View>
+      </View>
+      <LeaveRoomModal isVisible={modalVisible} onClose={onClose}></LeaveRoomModal>
+    </View>
+  );
+};
+
+export default MyPartyCard;
