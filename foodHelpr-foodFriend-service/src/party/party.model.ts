@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-export const partySchema = new mongoose.Schema({
+export const PartySchema = new mongoose.Schema({
     name: { type: String, required: true },
     restaurant: { type: String, required:true },
     apptDate: { type: Date, required:true },

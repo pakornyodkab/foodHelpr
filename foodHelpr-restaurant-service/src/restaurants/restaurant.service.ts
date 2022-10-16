@@ -36,6 +36,19 @@ export class RestaurantService {
     return await this.restaurantModel.find();
   }
 
+  async getRestaurantsFromCoordinate(coordinate: Coordinate){
+      const restaurant = JSON.parse(
+          JSON.stringify(await this.restaurantModel.find()),
+        );
+      let remainedRestaurant = [];
+      remainedRestaurant = restaurant.filter((e) => {
+          return this.calculateDistance(coordinate, e.coordinate) <= 10; // assuming 10 km max
+        });
+      
+      remainedRestaurant.map(remainedRestaurant => remainedRestaurant.name);
+      return remainedRestaurant
+  }
+
   async deleteRestaurant(id: string) {
     const result = await this.restaurantModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {

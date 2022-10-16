@@ -15,12 +15,12 @@ export class PartyController {
         this.LOGGER = new Logger();
     }   
 
-    @MessagePattern({ cmd : 'getRestaurantName' })
-    getRestaurantName(restaurantNameRequest:RestaurantNameRequest) {
-        return this.partyService.getRestaurantName(
-            restaurantNameRequest.coordinate
-        )
-    }
+    // @MessagePattern({ cmd : 'getRestaurantName' })
+    // getRestaurantName(restaurantNameRequest:RestaurantNameRequest) {
+    //     return this.partyService.getRestaurantName(
+    //         restaurantNameRequest.coordinate
+    //     )
+    // }
     
     @MessagePattern({ cmd: 'getHostPartyById' })
     getHostPartyById(id: string) {
@@ -35,5 +35,15 @@ export class PartyController {
     @MessagePattern({ cmd: 'createHostParty' })
     createHostParty(createHostPartyDto: CreateHostPartyDto) {
         return this.partyService.createHostParty(createHostPartyDto);
+    }
+
+    @MessagePattern({ cmd: 'deleteHostParty' })
+    deleteHostParty(id: string) {
+        return this.partyService.deleteHostParty(id);
+    }
+
+    @MessagePattern({ cmd: 'deleteAllHostParty'})
+    deleteAllHostParty() {
+        return this.partyService.deleteAllHostParty();
     }
 }

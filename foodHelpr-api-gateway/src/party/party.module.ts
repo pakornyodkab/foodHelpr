@@ -12,11 +12,11 @@ import { PartyService } from './party.service';
   imports: [
     ClientsModule.register([
       {
-        name: 'PARTY',
+        name: 'FOODFRIEND',
         transport: Transport.TCP,
         options: {
           host: 'localhost',
-          port: 3006,
+          port: 3090,
         },
       },
     ]),
