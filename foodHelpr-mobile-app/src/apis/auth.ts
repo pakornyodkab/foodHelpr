@@ -15,11 +15,17 @@ export default class AuthService {
   constructor() {}
 
   static GetToken = (accessToken: string) => {
+    console.log(AUTH_URI);
+
     console.log("here", accessToken);
     const request = authService.get<IGetTokenResponse>(
       `user-jwt-token/${accessToken}`
     );
     console.log("hey", `user-jwt-token/${accessToken}`);
+    console.log(
+      "Message from get jwt token",
+      request.then((res) => console.log(res.data.access_token))
+    );
     return request;
   };
 }

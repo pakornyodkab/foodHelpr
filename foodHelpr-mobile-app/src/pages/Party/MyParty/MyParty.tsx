@@ -10,7 +10,7 @@ import {
 import React from "react";
 import Button from "../../../components/common/Button";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import MyPartyCard from "../../../components/foodFriend/MyPartyCard";
+import MyPartyCard from "../../../components/party/MyPartyCard";
 
 const MyParty = ({ navigation }) => {
   function handleOnPressBack() {
@@ -37,13 +37,13 @@ const MyParty = ({ navigation }) => {
         />
       </View>
       <ScrollView className="top-5 p-5">
-        <MyPartyCard></MyPartyCard>
-        <MyPartyCard></MyPartyCard>
-        <MyPartyCard></MyPartyCard>
-        <MyPartyCard></MyPartyCard>
-        <MyPartyCard></MyPartyCard>
-        <MyPartyCard></MyPartyCard>
-        <MyPartyCard></MyPartyCard>
+        <MyPartyCard navigation= { navigation }></MyPartyCard>
+        <MyPartyCard navigation= { navigation }></MyPartyCard>
+        <MyPartyCard navigation= { navigation }></MyPartyCard>
+        <MyPartyCard navigation= { navigation }></MyPartyCard>
+        <MyPartyCard navigation= { navigation }></MyPartyCard>
+        <MyPartyCard navigation= { navigation }></MyPartyCard>
+        <MyPartyCard navigation= { navigation }></MyPartyCard>
       </ScrollView>
     </SafeAreaView>
   );

@@ -90,4 +90,16 @@ export class RestaurantService {
       return userBanList.map((e) => e.restaurant_id);
     }
   }
+
+  async getRestaurantInRange(
+    lat: number,
+    lng: number,
+    range: number,
+  ) {
+    const coordinate = new Coordinate(lat, lng);
+    return this.restaurantService.send(
+      { cmd: 'get-restaurant-in-range' },
+      {coordinate, range},
+    );
+  }
 }

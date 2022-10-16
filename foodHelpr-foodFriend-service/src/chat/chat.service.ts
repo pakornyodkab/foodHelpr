@@ -31,10 +31,10 @@ export class ChatService {
     return await this.chatModel.find({ roomId: roomId });
   }
 
-  async saveChat(saveChatDto: SaveChatDto): Promise<void> {
+  async saveChat(saveChatDto: SaveChatDto) {
     const createdChat = new this.chatModel(saveChatDto);
     console.log(saveChatDto, createdChat);
-    await createdChat.save();
+    return await createdChat.save();
   }
 
   userConnected(userConnectedDto: UserConnectedDto) {

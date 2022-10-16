@@ -21,10 +21,10 @@ import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import ColorScheme from "../../../constants/ColorScheme";
 import GoogleMapsApi from "../../../apis/googlemaps";
 import IParty from "../../../models/Party";
-import PartyMarker from "../../../components/foodFriend/PartyMarker";
+import PartyMarker from "../../../components/party/PartyMarker";
 import MapStyle from "../../../constants/MapStyle";
 import { findFocusedRoute } from "@react-navigation/native";
-import PartyDistancePanel from "../../../components/foodFriend/PartyDistancePanel";
+import PartyDistancePanel from "../../../components/party/PartyDistancePanel";
 
 const mockParties = [
   {
@@ -316,7 +316,7 @@ export default function SearchParty({ navigation }) {
           </Text>
         </Pressable>
         <Text className="right-15 w-50 absolute top-12 mb-5 flex h-12 justify-center text-xl font-semibold text-green-500">
-          Select Restaurant on Map
+          Select Party on Map
         </Text>
         <Pressable
           className="absolute top-10 left-4 mb-5 flex h-12 w-12 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
@@ -327,7 +327,11 @@ export default function SearchParty({ navigation }) {
           </Text>
         </Pressable>
       </View>
-      <View className="relative inset-0 mt-5 h-3/6 flex-1">
+      <View
+        className={`relative inset-0 mt-5 ${
+          toggleDistancePanel ? "h-3/6" : "h-5/6"
+        }  flex-1`}
+      >
         <MapView
           ref={mapRef}
           className=" absolute h-full w-full"

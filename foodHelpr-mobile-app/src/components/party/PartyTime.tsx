@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import Button from "../../components/common/Button";
+import Button from "../common/Button";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import CalendarPicker from "react-native-calendar-picker";
 import moment from "moment";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -18,8 +18,8 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import CalendarPicker from "react-native-calendar-picker";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import PartyTime from "./PartyTime";
-import PartyCalendar from "./PartyCalendar";
+import PartyCalendar from "../../../components/party/PartyCalendar";
+import PartyTime from "../../../components/party/PartyTime";
 function CreateParty({ navigation }) {
   const handleOnPressBack = () => {
     navigation.goBack();
@@ -29,6 +29,9 @@ function CreateParty({ navigation }) {
   const [partyStartDate, SetPartyStartDate] = useState(null);
   const [time, setTime] = useState(new Date(Date.now()));
   const [isTimePickerVisible, SetTimePickerVisible] = useState(false);
+  const [partyName, setPartyName] = useState<string>(null);
+  const [maxGuests, setMaxGuests] = useState<Number>(null);
+  const [ageRestriction, setAgeRestriction] = useState<Number>(null);
 
   const handleTimeChange = (time, validTime) => {
     if (!validTime) return;
@@ -42,6 +45,15 @@ function CreateParty({ navigation }) {
       SetTimePickerVisible(false);
     }
   };
+
+  useEffect(() => {
+    console.log("partyStartDate",partyStartDate);
+    console.log("time",time);
+    console.log("partyName",partyName);
+    console.log("maxGuests",maxGuests);
+    console.log("ageRestriction",ageRestriction);
+  },[partyStartDate,time,partyName,maxGuests,ageRestriction])
+
 
   return (
     <SafeAreaView className="relative h-full w-full bg-white">
@@ -75,6 +87,8 @@ function CreateParty({ navigation }) {
               className="top-2 h-10 flex-1 rounded-full border-2 border-green-500 px-[20px] text-left"
               placeholder="Enter name"
               keyboardType="default"
+              value={partyName}
+              onChangeText={(value) => setPartyName(value)}
             />
           </View>
           <View className="top-5 flex-1 pb-3">
@@ -123,6 +137,8 @@ function CreateParty({ navigation }) {
                     placeholder="Select Number"
                     keyboardType="number-pad"
                     style={{ marginRight: 5, fontSize: 16 }}
+                    value={maxGuests?.toString()}
+                    onChangeText={(value) => setMaxGuests(Number.isNaN(Number(value)) ? 0:Number(value))}
                   />
                 </View>
                 <View>
@@ -137,6 +153,8 @@ function CreateParty({ navigation }) {
                     placeholder="Select Number"
                     keyboardType="number-pad"
                     style={{ marginLeft: 5, fontSize: 16 }}
+                    value={ageRestriction?.toString()}
+                    onChangeText={(value) => setAgeRestriction(Number.isNaN(Number(value)) ? 0:Number(value))}
                   />
                 </View>
               </View>

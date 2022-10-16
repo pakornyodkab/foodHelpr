@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-
+import Button from "../common/Button";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import CalendarPicker from "react-native-calendar-picker";
 import moment from "moment";
@@ -26,7 +26,7 @@ const PartyCalendar = ({
 }) => {
   return (
     <TouchableOpacity
-      className="flex-row justify-center rounded-full border-2 border-green-500  px-[20px] text-left space-x-2"
+      className="flex-row justify-center space-x-2 rounded-full border-2  border-green-500 px-[20px] text-left"
       onPress={() => {
         setOpenCalendar(!openCalendar);
       }}

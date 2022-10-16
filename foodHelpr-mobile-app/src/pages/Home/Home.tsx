@@ -16,7 +16,9 @@ import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import * as Linking from "expo-linking";
 import AuthService from "../../apis/auth";
 import MainRoutes from "../../routes/main";
-import AgeModal from "../../components/foodFriend/AgeModal";
+import AgeModal from "../../components/party/AgeModal";
+import { saveUser } from "../../libs/user";
+import UserService from "../../apis/user";
 
 //WebBrowser.maybeCompleteAuthSession();
 // const discovery = {
@@ -30,7 +32,7 @@ export default function HomeScreen({ navigation }) {
   const [accessToken, setAccessToken] = React.useState<string>("");
   const [userInfo, setUserInfo] = React.useState<any>();
   const [stealCheckenToken, setStealChickenToken] = React.useState<string>("");
-  const [ageModal,setAgeModal] = React.useState<boolean>(false);
+  const [ageModal, setAgeModal] = React.useState<boolean>(false);
 
   // console.log('hello',discovery);
   // return <Text>
@@ -74,13 +76,16 @@ export default function HomeScreen({ navigation }) {
         const token = tokenResponse.data.access_token;
         setAccessToken(token);
         await saveToken(token);
+        const myUserResponse = await UserService.GetMyUser(token);
+        await saveUser(myUserResponse.data);
+        console.log(myUserResponse.data);
         // SecureStore.setItemAsync(MY_SECURE_AUTH_STATE_KEY, response.authentication.accessToken);
         // console.log(response.authentication.accessToken);
 
         // console.log(await getToken())
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       throw error;
     }
   };
@@ -100,9 +105,34 @@ export default function HomeScreen({ navigation }) {
     getUserData();
   }, [stealCheckenToken]);
 
-  // React.useEffect(() => {
-  //   setAgeModal(true);
-  // }, []);
+  function handleChatPress() {
+    const props = {
+      party: {
+        _id: "1",
+        name: "Let's Party",
+        restaurant: "",
+        memberList: [
+          {
+            user_id: 1,
+            name: "Anthony",
+          },
+          {
+            user_id: 2,
+            name: "Bryan",
+          },
+          {
+            user_id: 3,
+            name: "Yod",
+          },
+          {
+            user_id: 16,
+            name: "Aof",
+          },
+        ],
+      },
+    };
+    navigation.navigate(MainRoutes.chat, props);
+  }
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -192,73 +222,90 @@ export default function HomeScreen({ navigation }) {
           </Pressable>
         )}
         {accessToken && (
-          <View className="flex items-center justify-center gap-1">
-            {/* <AgeModal /> */}
-            <Pressable
-              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-              onPress={() => navigation.navigate(MainRoutes.restaurant)}
-            >
-              <View className="relative flex h-full justify-center">
-                <Text className="absolute left-4 text-white">
-                  <MaterialIcons name="restaurant" size={24} />
+          <>
+            <View className="flex items-center justify-center gap-1">
+              <Pressable
+                className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                onPress={() => navigation.navigate(MainRoutes.restaurant)}
+              >
+                <View className="relative flex h-full justify-center">
+                  <Text className="absolute left-4 text-white">
+                    <MaterialIcons name="restaurant" size={24} />
+                  </Text>
+                  <Text className="text-center font-normal text-white">
+                    Find your restaurants
+                  </Text>
+                </View>
+              </Pressable>
+              <Pressable
+                className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                onPress={() => navigation.navigate(MainRoutes.recipe)}
+              >
+                <View className="relative flex h-full justify-center">
+                  <Text className="absolute left-4 text-white">
+                    <MaterialIcons name="microwave" size={24} />
+                  </Text>
+                  <Text className="text-center font-normal text-white">
+                    Find your recipes
+                  </Text>
+                </View>
+              </Pressable>
+              <Pressable
+                className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                onPress={() => navigation.navigate(MainRoutes.foodFriend)}
+              >
+                <View className="relative flex h-full justify-center">
+                  <Text className="absolute left-4 text-white">
+                    <MaterialIcons name="people" size={24} />
+                  </Text>
+                  <Text className="text-center font-normal text-white">
+                    Find your food friends
+                  </Text>
+                </View>
+              </Pressable>
+              {/* <Pressable
+                className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                onPress={() => navigation.navigate(MainRoutes.createParty)}
+              >
+                <View className="relative flex h-full justify-center">
+                  <Text className="absolute left-4 text-white">
+                    <MaterialIcons name="people" size={24} />
+                  </Text>
+                  <Text className="text-center font-normal text-white">
+                    Create Your Party
+                  </Text>
+                </View>
+              </Pressable>
+              <Pressable
+                className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                onPress={() => handleChatPress()}
+              >
+                <View className="relative flex h-full justify-center">
+                  <Text className="absolute left-4 text-white">
+                    <MaterialIcons name="chat" size={24} />
+                  </Text>
+                  <Text className="text-center font-normal text-white">
+                    Let's Chat
+                  </Text>
+                </View>
+              </Pressable> */}
+            </View>
+            <View>
+              <Pressable
+                className="top-20 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-green-500 bg-white active:scale-95 active:bg-gray-300"
+                onPress={() => {
+                  setAccessToken("");
+                }}
+              >
+                <Text className="text-center font-normal text-green-500">
+                  Sign Out
                 </Text>
-                <Text className="text-center font-normal text-white">
-                  Find your restaurants
-                </Text>
-              </View>
-            </Pressable>
-            <Pressable
-              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-              onPress={() => navigation.navigate(MainRoutes.recipe)}
-            >
-              <View className="relative flex h-full justify-center">
-                <Text className="absolute left-4 text-white">
-                  <MaterialIcons name="microwave" size={24} />
-                </Text>
-                <Text className="text-center font-normal text-white">
-                  Find your recipes
-                </Text>
-              </View>
-            </Pressable>
-            <Pressable
-              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-              onPress={() => navigation.navigate(MainRoutes.foodFriend)}
-            >
-              <View className="relative flex h-full justify-center">
-                <Text className="absolute left-4 text-white">
-                  <MaterialIcons name="people" size={24} />
-                </Text>
-                <Text className="text-center font-normal text-white">
-                  Find your food friends
-                </Text>
-              </View>
-            </Pressable>
-            {/* <Pressable
-              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
-              onPress={() => navigation.navigate(MainRoutes.createParty)}
-            >
-              <View className="relative flex h-full justify-center">
-                <Text className="absolute left-4 text-white">
-                  <MaterialIcons name="people" size={24} />
-                </Text>
-                <Text className="text-center font-normal text-white">
-                  Create Your Party
-                </Text>
-              </View>
-            </Pressable> */}
-            <Pressable
-              className="top-36 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-green-500 bg-white active:scale-95 active:bg-gray-300"
-              onPress={() => {
-                setAccessToken("");
-              }}
-            >
-              <Text className="text-center font-normal text-green-500">
-                Sign Out
-              </Text>
-            </Pressable>
-          </View>
+              </Pressable>
+            </View>
+          </>
         )}
       </View>
+      <AgeModal></AgeModal>
     </View>
   );
 }

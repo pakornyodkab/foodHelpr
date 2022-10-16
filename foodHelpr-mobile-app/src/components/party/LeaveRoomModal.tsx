@@ -10,7 +10,6 @@ import {
   Image,
 } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
-import PartyCalendar from "../../pages/Party/CreateParty/PartyCalendar";
 import Button from "../common/Button";
 import PartyCard from "./PartyCard";
 
