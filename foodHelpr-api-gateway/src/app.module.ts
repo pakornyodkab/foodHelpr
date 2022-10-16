@@ -10,6 +10,7 @@ import { RecipeModule } from './recipe/recipe.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { HttpModule } from '@nestjs/axios';
 import { ChatModule } from './chat/chat.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ChatModule } from './chat/chat.module';
     IngredientModule,
     HttpModule,
     ChatModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [JwtService, AppService, AuthService],
