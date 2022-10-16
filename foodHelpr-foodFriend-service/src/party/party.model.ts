@@ -1,8 +1,5 @@
 import * as mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-
 export const partySchema = new mongoose.Schema({
     name: { type: String, required: true },
     restaurant: { type: String, required:true },
