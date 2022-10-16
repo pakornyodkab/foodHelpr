@@ -14,6 +14,9 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { CreateHostPartyDto } from 'src/dto/createHostParty.dto';
 import { PartyService } from './party.service';
+import { GuestJoinPartyDto } from 'src/dto/guestJoinParty.dto';
+import { HostPartyActionDto } from 'src/dto/hostPartyAction.dto';
+import { GetCurrentUserId } from 'src/auth/decorator';
 
 @Controller('party')
 export class PartyController {
@@ -22,9 +25,10 @@ export class PartyController {
     private readonly authService: AuthService,
   ) {}
 
-  @Get('test')
-  test() {
-    return 'test';
+  @Get('get-all-party')
+  @UseGuards(JwtAuthGuard)
+  getAllParty() {
+    return this.partyService.getAllParty();
   }
 
   @Get('get-host-partys')
@@ -33,10 +37,10 @@ export class PartyController {
     return this.partyService.getHostParty();
   }
 
-  @Get('get-host-party-by-id/:id')
+  @Get('get-party-by-id/:id')
   @UseGuards(JwtAuthGuard)
-  getHostPartyById(@Param('id') id: string) {
-    return this.partyService.getHostPartyById(id);
+  async getPartyById(@Param('id') id: string) {
+    return await this.partyService.getPartyById(id);
   }
 
   @Post('create-host-party')
@@ -47,7 +51,7 @@ export class PartyController {
 
   @Delete('delete-host-party/:id')
   @UseGuards(JwtAuthGuard)
-  deleteHostParty(@Param('id') id: string){
+  deleteHostParty(@Param('id') id: string) {
     return this.partyService.deleteHostParty(id);
   }
 
@@ -57,5 +61,37 @@ export class PartyController {
     return this.partyService.deleteAllHostParty();
   }
 
+  @Get('get-host-party-view-model')
+  @UseGuards(JwtAuthGuard)
+  getHostPartyViewModel() {
+    return this.partyService.getHostPartyViewModel();
+  }
 
+  @Post('guestJoinParty')
+  @UseGuards(JwtAuthGuard)
+  guestJoinParty(
+    @GetCurrentUserId() userId: number,
+    @Body() guestJoinPartyDto: Partial<GuestJoinPartyDto>,
+  ) {
+    return this.partyService.guestJoinParty({
+      partyId: guestJoinPartyDto.partyId,
+      memberId: userId.toString(),
+    });
+  }
+
+  @Post('hostPartyAction')
+  @UseGuards(JwtAuthGuard)
+  hostPartyAction(@Body() hostPartyActionDto: HostPartyActionDto) {
+    return this.partyService.hostPartyAction({
+      partyId: hostPartyActionDto.partyId,
+      memberId: hostPartyActionDto.memberId,
+      action: hostPartyActionDto.action,
+    });
+  }
+
+  @Get('get-guest-party-view-model')
+  @UseGuards(JwtAuthGuard)
+  getGuestPartyViewModel() {
+    return this.partyService.getGuestPartyViewModel();
+  }
 }

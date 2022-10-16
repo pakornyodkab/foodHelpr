@@ -97,6 +97,9 @@ export class RestaurantService {
     range: number,
   ) {
     const coordinate = new Coordinate(lat, lng);
+    console.log(lat)
+    console.log(lng)
+    console.log(coordinate)
     return this.restaurantService.send(
       { cmd: 'get-restaurant-in-range' },
       {coordinate, range},

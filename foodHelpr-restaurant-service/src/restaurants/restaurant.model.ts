@@ -22,7 +22,7 @@ export interface Restaurant {
   restaurantPictureLink: Array<string>;
   recommendedDish: Array<string>;
   tag: Array<string>;
-  coordinate: { Latitude: Number; Longitude: Number };
+  coordinate: { Latitude: number; Longitude: number };
   rating: number;
   deliveryInfo: Array<{ platform: string; link: string }>;
 }

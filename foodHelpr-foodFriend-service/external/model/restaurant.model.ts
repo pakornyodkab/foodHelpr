@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { Coordinate } from './dto/coordinate.dto';
 
 export const RestaurantSchema = new mongoose.Schema({
   name: { type: String, required: true },

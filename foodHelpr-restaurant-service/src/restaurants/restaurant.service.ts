@@ -16,10 +16,10 @@ import { Coordinate } from './dto/coordinate.dto';
 @Injectable()
 export class RestaurantService {
   private LOGGER: Logger;
-  private MIN_RESTAURANT_DISTANCE = 0;
-  private MAX_RESTAURANT_DISTANCE = 10;
-  private MIN_RESTAURANT_RANDOM_NUMBER = 1;
-  private MAX_RESTAURANT_RANDOM_NUMBER = 10;
+  private static MIN_RESTAURANT_DISTANCE = 0;
+  private static MAX_RESTAURANT_DISTANCE = 10;
+  private static MIN_RESTAURANT_RANDOM_NUMBER = 1;
+  private static MAX_RESTAURANT_RANDOM_NUMBER = 10;
 
   constructor(
     @InjectModel('Restaurant')
@@ -36,17 +36,17 @@ export class RestaurantService {
     return await this.restaurantModel.find();
   }
 
-  async getRestaurantsFromCoordinate(coordinate: Coordinate){
-      const restaurant = JSON.parse(
-          JSON.stringify(await this.restaurantModel.find()),
-        );
-      let remainedRestaurant = [];
-      remainedRestaurant = restaurant.filter((e) => {
-          return this.calculateDistance(coordinate, e.coordinate) <= 10; // assuming 10 km max
-        });
-      
-      remainedRestaurant.map(remainedRestaurant => remainedRestaurant.name);
-      return remainedRestaurant
+  async getRestaurantsFromCoordinate(coordinate: Coordinate) {
+    const restaurant = JSON.parse(
+      JSON.stringify(await this.restaurantModel.find()),
+    );
+    let remainedRestaurant = [];
+    remainedRestaurant = restaurant.filter((e) => {
+      return this.calculateDistance(coordinate, e.coordinate) <= 10; // assuming 10 km max
+    });
+
+    remainedRestaurant.map((remainedRestaurant) => remainedRestaurant.name);
+    return remainedRestaurant;
   }
 
   async deleteRestaurant(id: string) {
@@ -157,7 +157,6 @@ export class RestaurantService {
         $elemMatch: { platform: { $in: deliveryPlatforms } },
       };
     }
-
     const restaurant = JSON.parse(
       JSON.stringify(await this.restaurantModel.find(filter).exec()),
     );
@@ -177,7 +176,7 @@ export class RestaurantService {
     remainedRestaurant = remainedRestaurant.filter((e) => {
       return this.calculateDistance(coordinate, e.coordinate) <= range;
     });
-
+    console.log(remainedRestaurant);
     // random restaurant
     if (remainedRestaurant.length <= randomNumber) {
       return remainedRestaurant;
@@ -200,30 +199,28 @@ export class RestaurantService {
       deliveryPlatform: allDeliveryPlatforms.map((e) => {
         return { name: e };
       }),
-      minDistance: this.MIN_RESTAURANT_DISTANCE,
-      maxDistance: this.MAX_RESTAURANT_DISTANCE,
-      minRandomNumber: this.MIN_RESTAURANT_RANDOM_NUMBER,
-      maxRandomNumber: this.MAX_RESTAURANT_RANDOM_NUMBER,
+      minDistance: RestaurantService.MIN_RESTAURANT_DISTANCE,
+      maxDistance: RestaurantService.MAX_RESTAURANT_DISTANCE,
+      minRandomNumber: RestaurantService.MIN_RESTAURANT_RANDOM_NUMBER,
+      maxRandomNumber: RestaurantService.MAX_RESTAURANT_RANDOM_NUMBER,
     };
   }
-  
-  async getRestaurantInRange(
-    coordinate: Coordinate,
-    range: number,
-  ) {
+
+  async getRestaurantInRange(coordinate: Coordinate, range: number) {
     if (range <= 0) {
       return new BadRequestException('Range cannot equal or less than zero');
     }
 
-    let filter = {};
-
-    const restaurants = JSON.parse(
-      JSON.stringify(await this.restaurantModel.find(filter).exec()),
-    );
+    const restaurants = await this.restaurantModel.find();
 
     // calculate distance of remain restaurant and filter
     const remainedRestaurants = restaurants.filter((e) => {
-      return this.calculateDistance(coordinate, e.coordinate) <= range;
+      return (
+        this.calculateDistance(
+          coordinate,
+          new Coordinate(e.coordinate.Latitude, e.coordinate.Longitude),
+        ) <= range
+      );
     });
 
     return remainedRestaurants;
