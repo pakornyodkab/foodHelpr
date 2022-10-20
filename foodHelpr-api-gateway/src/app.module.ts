@@ -11,6 +11,7 @@ import { RestaurantModule } from './restaurant/restaurant.module';
 import { HttpModule } from '@nestjs/axios';
 import { ChatModule } from './chat/chat.module';
 import { NotificationModule } from './notification/notification.module';
+import { PartyModule } from './party/party.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { NotificationModule } from './notification/notification.module';
     RestaurantModule,
     RecipeModule,
     IngredientModule,
+    PartyModule,
     HttpModule,
     ChatModule,
     NotificationModule,

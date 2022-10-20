@@ -7,6 +7,7 @@ import { RestaurantService } from './restaurant.service';
 import { Coordinate } from './dto/coordinate.dto';
 import { RandomRequest } from './dto/randomRequest.dto';
 import { RandomReqWithBanList } from './dto/randomReqWithBanList.dto';
+import { RestaurantsByCoordinateRequest } from './dto/restaurantsByCoordinate';
 
 @Controller()
 export class RestaurantController {
@@ -65,10 +66,29 @@ export class RestaurantController {
     );
   }
 
-  @MessagePattern({cmd:'get-random-restaurant-view-model'})
-  getRandomRestaurantViewModel(){
-    this.LOGGER.log('Call Get Random Restaurant View Model')
-    return this.restaurantService.getRandomRestaurantViewModel()
+  @MessagePattern({ cmd: 'get-random-restaurant-view-model' })
+  getRandomRestaurantViewModel() {
+    this.LOGGER.log('Call Get Random Restaurant View Model');
+    return this.restaurantService.getRandomRestaurantViewModel();
+  }
+
+  @MessagePattern({ cmd: 'get-restaurant-in-range' })
+  getRestaurantInRange(randomRequest: {
+    coordinate: Coordinate;
+    range: number;
+  }) {
+    this.LOGGER.log('Call Restaurant In Range Function');
+    return this.restaurantService.getRestaurantInRange(
+      randomRequest.coordinate,
+      randomRequest.range,
+    );
+  }
+
+  @MessagePattern({ cmd: 'get-restaurants-from-coordinate' })
+  getRestaurantsFromCoordinate(restaurantNameRequest: RestaurantsByCoordinateRequest) {
+    return this.restaurantService.getRestaurantsFromCoordinate(
+      restaurantNameRequest.coordinate,
+    );
   }
 
   @MessagePattern({ cmd: 'get-restaurant-in-range' })

@@ -91,7 +91,7 @@ export class RestaurantService {
     }
   }
 
-  async getRestaurantInRange(
+  getRestaurantInRange(
     lat: number,
     lng: number,
     range: number,
