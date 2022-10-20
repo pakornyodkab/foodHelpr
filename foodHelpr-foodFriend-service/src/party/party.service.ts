@@ -168,7 +168,11 @@ export class PartyService {
     if (result.modifiedCount === 0) {
       throw new BadRequestException('Action Fail');
     }
-    return { message: `Action party complete` };
+    if (action === 'accept') {
+      return { message: `Action party complete` };
+    }else{
+      throw new BadRequestException('Wrong Action Command')
+    }
   }
 
   async guestFindParty(guestFindPartyDto: GuestFindPartyDto) {
