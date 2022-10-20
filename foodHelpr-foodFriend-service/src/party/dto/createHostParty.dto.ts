@@ -11,9 +11,6 @@ export class CreateHostPartyDto {
     apptDate: Date;
 
     @IsNotEmpty()
-    memberList: Array<string>;
-
-    @IsNotEmpty()
     ageRestriction: number;
 
     @IsNotEmpty()

@@ -5,7 +5,9 @@ import { CreateHostPartyDto } from './dto/createHostParty.dto';
 import { PartyService } from './party.service';
 import { RestaurantNameRequest } from './dto/restaurantNameRequest';
 import { HostPartyActionDto } from './dto/hostPartyAction.dto';
+import { GuestFindPartyDto } from './dto/guestFindParty.dto';
 import { GuestJoinPartyDto } from './dto/guestJoinParty.dto';
+import { GuestLeavePartyDto } from './dto/guestLeaveParty.dto';
 
 @Controller()
 export class PartyController {
@@ -53,9 +55,19 @@ export class PartyController {
     return this.partyService.getHostPartyViewModel();
   }
 
+  @MessagePattern({ cmd: 'getGuestFindParty' })
+  getGuestFindParty(guestFindPartyDto: GuestFindPartyDto) {
+    return this.partyService.guestFindParty(guestFindPartyDto);
+  }
+
   @MessagePattern({ cmd: 'guestJoinParty' })
   guestJoinParty(guestJoinPartyDto: GuestJoinPartyDto) {
     return this.partyService.guestJoinParty(guestJoinPartyDto);
+  }
+
+  @MessagePattern({ cmd: 'guestLeaveParty' })
+  guestLeaveParty(guestLeavePartyDto: GuestLeavePartyDto) {
+    return this.partyService.guestLeaveParty(guestLeavePartyDto)
   }
 
   @MessagePattern({ cmd: 'hostPartyAction' })

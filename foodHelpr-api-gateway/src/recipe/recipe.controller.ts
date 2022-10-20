@@ -122,7 +122,6 @@ export class RecipeController implements OnModuleInit {
     if (tags) {
       tagUse = tags.split(',');
     }
-    console.log(tagUse);
     if (includeIngredients) {
       includeIngredientsUse = includeIngredients.split(',');
     }

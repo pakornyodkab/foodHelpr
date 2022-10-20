@@ -14,7 +14,9 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { CreateHostPartyDto } from 'src/dto/createHostParty.dto';
 import { PartyService } from './party.service';
+import { GuestFindPartyDto } from 'src/dto/guestFindParty.dto';
 import { GuestJoinPartyDto } from 'src/dto/guestJoinParty.dto';
+import { GuestLeavePartyDto } from 'src/dto/guestLeaveParty.dto';
 import { HostPartyActionDto } from 'src/dto/hostPartyAction.dto';
 import { GetCurrentUserId } from 'src/auth/decorator';
 
@@ -45,8 +47,14 @@ export class PartyController {
 
   @Post('create-host-party')
   @UseGuards(JwtAuthGuard)
-  createHostParty(@Body() createHostPartyDto: CreateHostPartyDto) {
-    return this.partyService.createHostParty(createHostPartyDto);
+  createHostParty(
+    @GetCurrentUserId() userId: number,
+    @Body() createHostPartyDto: Omit<CreateHostPartyDto, 'ownerId'>,
+  ) {
+    return this.partyService.createHostParty({
+      ...createHostPartyDto,
+      ownerId: userId.toString(),
+    });
   }
 
   @Delete('delete-host-party/:id')
@@ -67,7 +75,20 @@ export class PartyController {
     return this.partyService.getHostPartyViewModel();
   }
 
-  @Post('guestJoinParty')
+  @Get('get-guest-find-party-to-join')
+  @UseGuards(JwtAuthGuard)
+  async getGuestFindParty(
+    @GetCurrentUserId() userId: number,
+    @Body() guestFindPartyDto: Omit<GuestFindPartyDto, 'userId'>,
+  ) {
+    return await this.partyService.getGuestFindParty({
+      userId: userId.toString(),
+      distance: guestFindPartyDto.distance,
+      location: guestFindPartyDto.location,
+    });
+  }
+
+  @Post('guest-join-party')
   @UseGuards(JwtAuthGuard)
   guestJoinParty(
     @GetCurrentUserId() userId: number,
@@ -79,7 +100,19 @@ export class PartyController {
     });
   }
 
-  @Post('hostPartyAction')
+  @Post('guest-leave-party')
+  @UseGuards(JwtAuthGuard)
+  guestLeaveParty(
+    @GetCurrentUserId() userId: number,
+    @Body() guestLeavePartyDto: Partial<GuestLeavePartyDto>,
+  ) {
+    return this.partyService.guestLeaveParty({
+      partyId: guestLeavePartyDto.partyId,
+      memberId: userId.toString(),
+    });
+  }
+
+  @Post('host-party-action')
   @UseGuards(JwtAuthGuard)
   hostPartyAction(@Body() hostPartyActionDto: HostPartyActionDto) {
     return this.partyService.hostPartyAction({

@@ -176,7 +176,6 @@ export class RestaurantService {
     remainedRestaurant = remainedRestaurant.filter((e) => {
       return this.calculateDistance(coordinate, e.coordinate) <= range;
     });
-    console.log(remainedRestaurant);
     // random restaurant
     if (remainedRestaurant.length <= randomNumber) {
       return remainedRestaurant;

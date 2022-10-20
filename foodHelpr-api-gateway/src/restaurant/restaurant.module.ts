@@ -34,5 +34,6 @@ import { RestaurantService } from './restaurant.service';
   ],
   controllers: [RestaurantController],
   providers: [RestaurantService, AuthService, JwtService, AppService],
+  exports: [RestaurantService],
 })
 export class RestaurantModule {}
