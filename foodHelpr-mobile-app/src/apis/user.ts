@@ -3,7 +3,7 @@ import { USER_URI } from "@env";
 import IUser from "../models/User";
 
 const userService = axios.create({
-  baseURL: "http://10.0.2.2:3000/",
+  baseURL: USER_URI,
   timeout: 5000,
 });
 

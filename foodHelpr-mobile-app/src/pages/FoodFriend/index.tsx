@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import FoodFriendRoutes from "../../routes/foodFriend";
 import CreateParty from "../Party/CreateParty/CreateParty";
+import CreatePartyMap from "../Party/CreateParty/CreatePartyMap";
 import MyParty from "../Party/MyParty/MyParty";
 import SearchParty from "../Party/SearchParty/SearchParty";
 import FoodFriendScreen from "./FoodFriendScreen";
@@ -18,6 +19,7 @@ function FoodFriendIndex() {
       <Stack.Screen name={FoodFriendRoutes.createParty} component={CreateParty} />
       <Stack.Screen name={FoodFriendRoutes.searchParty} component={SearchParty} />
       <Stack.Screen name={FoodFriendRoutes.myParty} component={MyParty} />
+      <Stack.Screen name={FoodFriendRoutes.createPartyMap} component={CreatePartyMap} />
     </Stack.Navigator>
   );
 }

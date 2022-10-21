@@ -5,7 +5,7 @@ import { LatLng, Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
 import { IMember } from "../../models/Party";
 import IRestaurant from "../../models/Restaurant";
-import PartyModal from "./PartyModal";
+import PartyModal from "./PartyListModal";
 
 type PartyMarkerProp = {
   partyName: string;

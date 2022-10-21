@@ -26,7 +26,7 @@ const PartyCalendar = ({
 }) => {
   return (
     <TouchableOpacity
-      className="flex-row justify-center space-x-2 rounded-full border-2  border-green-500 px-[20px] text-left"
+      className="top-2 h-10 flex-row justify-center space-x-2 rounded-full border-2  border-green-500 px-[20px] text-left"
       onPress={() => {
         setOpenCalendar(!openCalendar);
       }}

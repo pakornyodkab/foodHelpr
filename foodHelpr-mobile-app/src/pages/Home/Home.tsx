@@ -17,7 +17,7 @@ import * as Linking from "expo-linking";
 import AuthService from "../../apis/auth";
 import MainRoutes from "../../routes/main";
 import AgeModal from "../../components/party/AgeModal";
-import { saveUser } from "../../libs/user";
+import { getUser, saveUser } from "../../libs/user";
 import UserService from "../../apis/user";
 
 //WebBrowser.maybeCompleteAuthSession();
@@ -54,6 +54,11 @@ export default function HomeScreen({ navigation }) {
   //   },
   //   discovery
   // );
+
+  const ageValidation = async ()  => {
+    const user = await getUser();
+    return user.age <= 5;
+  }
 
   const getFoodHelprToken = async (googleToken: string) => {
     try {
@@ -104,35 +109,6 @@ export default function HomeScreen({ navigation }) {
   React.useEffect(() => {
     getUserData();
   }, [stealCheckenToken]);
-
-  function handleChatPress() {
-    const props = {
-      party: {
-        _id: "1",
-        name: "Let's Party",
-        restaurant: "",
-        memberList: [
-          {
-            user_id: 1,
-            name: "Anthony",
-          },
-          {
-            user_id: 2,
-            name: "Bryan",
-          },
-          {
-            user_id: 3,
-            name: "Yod",
-          },
-          {
-            user_id: 16,
-            name: "Aof",
-          },
-        ],
-      },
-    };
-    navigation.navigate(MainRoutes.chat, props);
-  }
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -305,7 +281,7 @@ export default function HomeScreen({ navigation }) {
           </>
         )}
       </View>
-      <AgeModal></AgeModal>
+      { ageValidation() && <AgeModal></AgeModal> }
     </View>
   );
 }

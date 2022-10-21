@@ -1,8 +1,13 @@
 import { combineReducers } from "redux";
+import partyReducer from "./partyReducer";
+// import createPartyReducer from "./createPartyReducer";
 import randRecipeReducer from "./randRecipeReducer"
 
 const reducers = combineReducers({
-    randRecipeReducer: randRecipeReducer
+    randRecipeReducer: randRecipeReducer,
+    partyReducer: partyReducer
+    //createPartyReducer : createPartyReducer
+
 })
 
 export default reducers

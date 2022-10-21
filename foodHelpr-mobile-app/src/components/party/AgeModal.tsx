@@ -25,7 +25,7 @@ const AgeModal = () => {
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Please Enter You Birthdate</Text>
+          <Text className=' font-bold text-green-500 text-lg'>Please Enter You Birthdate</Text>
           <View className="flex-row items-center space-x-5 px-5">
             <Text
               className="text-green-500"
@@ -33,7 +33,7 @@ const AgeModal = () => {
             >
               Date of Birth
             </Text>
-            <View>
+            <View className="mb-3">
               <PartyCalendar
                 setOpenCalendar={setOpenCalender}
                 openCalendar={openCalendar}
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalText: {
-    marginBottom: 15,
+    marginBottom: 10,
     textAlign: "center",
     fontSize: 16,
     fontWeight: "500",

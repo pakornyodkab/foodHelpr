@@ -10,11 +10,27 @@ import {
   Image,
 } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
-import PartyCalendar from "../../pages/Party/CreateParty/PartyCalendar2";
+import { getToken } from "../../libs/token";
 import Button from "../common/Button";
 import PartyCard from "./PartyCard";
 
 const PartyModal = ({ isVisible, onClose }) => {
+
+  const [partyList,setPartyList] = useState([])
+
+  // async function getAllPartyCard() {
+  //   try {
+  //     const accessToken = await getToken();
+  //     const response = await RecipeService.GetRandomRecipe(accessToken, randRecipeFilterDetail);
+  //     setRecipeList(response.data)
+  //   } catch (error) {
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // }
+
+
+
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View style={styles.centeredView}>
@@ -43,13 +59,27 @@ const PartyModal = ({ isVisible, onClose }) => {
                 <PartyCard></PartyCard>
               }
               } */}
+            {/* {
+              false ? 
+              <View>
+                <Text>Not found !!!</Text>
+              </View>
+              :
+              partyList.map((partyCard) => {
+                return (
+                  <View>
+                <PartyCard></PartyCard>
+                </View>
+                )
+              })
+            
+            } */}
             <PartyCard></PartyCard>
-            <PartyCard></PartyCard>
-            <PartyCard></PartyCard>
-            <PartyCard></PartyCard>
-            <PartyCard></PartyCard>
-            <PartyCard></PartyCard>
-            <PartyCard></PartyCard>
+                <PartyCard></PartyCard>
+                <PartyCard></PartyCard>
+                <PartyCard></PartyCard>
+                <PartyCard></PartyCard>
+            
           </ScrollView>
           <View className="mt-3">
             <Button className="mt-4 h-10 w-10" onPress={() => onClose()}>

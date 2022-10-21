@@ -2,7 +2,7 @@ import axios from "axios";
 import { AUTH_URI } from "@env";
 
 const authService = axios.create({
-  baseURL: AUTH_URI,
+  baseURL: "http://192.168.43.128:3000/",
   timeout: 5000,
 });
 

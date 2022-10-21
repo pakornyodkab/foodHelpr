@@ -11,14 +11,14 @@ export default interface IParty {
   ownerId: string;
 }
 
-// export interface IPartyChat {
+// export default interface IPartyChat {
 //   _id: string;
 //   name: string;
-//   restaurant: string;
+//   //restaurant: string;
 //   memberList: IMember[];
 // }
 
 export interface IMember {
-  _id: string;
+  user_id: string;
   name: string;
 }

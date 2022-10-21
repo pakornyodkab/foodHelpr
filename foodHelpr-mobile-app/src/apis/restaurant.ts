@@ -36,7 +36,15 @@ export interface IGetRandomRestaurantResponse {
   __v: number;
 }
 
-export interface GetRestaurantViewModel extends IRestaurantViewModel {}
+export interface IGetRestaurantInRangeRequest {
+  latitude: number;
+  longitude: number;
+  range: number;
+}
+
+export interface IGetRestaurantInRangeResponse extends IGetRandomRestaurantResponse{}
+
+export interface IGetRestaurantViewModel extends IRestaurantViewModel {}
 
 export default class RestaurantService {
   constructor() {}
@@ -63,7 +71,7 @@ export default class RestaurantService {
   };
 
   static GetRestaurantViewModel = (accessToken: string) => {
-    const request = restaurantService.get<GetRestaurantViewModel>(
+    const request = restaurantService.get<IGetRestaurantViewModel>(
       "get-random-restaurant-view-model",
       {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -71,4 +79,19 @@ export default class RestaurantService {
     );
     return request;
   };
+
+  static GetRestaurantInRange = (accessToken: string , requestParams: IGetRestaurantInRangeRequest) => {
+    const request = restaurantService.get<IGetRestaurantInRangeResponse[]>(
+      "get-restaurant-in-range",{
+        params: {
+          lat: requestParams.latitude,
+          lng: requestParams.longitude,
+          range: requestParams.range,
+        },
+        headers: { Authorization: `Bearer ${accessToken}` }
+      },
+        
+    );
+    return request;
+  }
 }

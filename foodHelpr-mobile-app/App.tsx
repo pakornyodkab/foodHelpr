@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
@@ -19,7 +19,7 @@ import { Provider } from "react-redux";
 import { Store } from "./src/redux/store";
 import FoodFriendIndex from "./src/pages/FoodFriend";
 import Chat from "./src/pages/Chat/Chat";
-
+import Notification from "./src/components/notification/notification";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -52,6 +52,7 @@ export default function App() {
   }
   return (
     <Provider store={Store}>
+      <Notification />
       <NavigationContainer>
         <View className="h-full w-full flex-1" onLayout={onLayoutRootView}>
           <Stack.Navigator

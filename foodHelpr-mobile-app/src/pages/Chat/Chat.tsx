@@ -18,7 +18,7 @@ import { getUser } from "../../libs/user";
 import IUser from "../../models/User";
 
 const Chat = ({ route, navigation }) => {
-  const { party } = route.params;
+  const { party }= route.params;
   const handleOnPressBack = () => {
     navigation.goBack();
   };

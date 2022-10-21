@@ -4,7 +4,6 @@ import { Ionicons } from "@expo/vector-icons";
 import Button from "../common/Button";
 import LeaveRoomModal from "./LeaveRoomModal";
 import MainRoutes from "../../routes/main";
-import { IPartyChat } from "../../models/Party";
 
 const MyPartyCard = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
