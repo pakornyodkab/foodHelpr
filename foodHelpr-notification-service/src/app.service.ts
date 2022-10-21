@@ -5,9 +5,16 @@ import { LeaveRequest } from './dto/leaveRequest';
 import { RejectedRequest } from './dto/rejectedRequest';
 import { WannaJoinRequest } from './dto/wannaJoinRequest';
 import { messaging } from 'firebase-admin';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { NotificationToken } from './app.model';
 
 @Injectable()
 export class AppService {
+  constructor(
+    @InjectModel('NotificationToken')
+    private readonly notificationTokenModel: Model<NotificationToken>,
+  ) {}
   private roomHost = new Map<string, string>(); // {roomId, host noti id}
   private roomMembers = new Map<string, Array<string>>(); // {roomId, [member noti ids]}
 
@@ -25,7 +32,11 @@ export class AppService {
 
   // leaverNotiToken used to be leaverId
   leaveNoti(msg: LeaveRequest) {
-    const { leaverName, leaverNotiToken, roomId } = msg;
+    const { leaverName, leaverId, roomId } = msg;
+
+    const leaverNotiToken = this.notificationTokenModel.find({
+      userId: leaverId,
+    });
 
     if (this.roomHost[roomId] === leaverNotiToken) return;
 

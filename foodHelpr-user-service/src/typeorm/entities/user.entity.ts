@@ -24,10 +24,10 @@ export class User {
 
   @AfterLoad()
   setAge() {
-    var today = new Date();
-    var birthDate = this.birthdate;
-    var age = today.getFullYear() - birthDate.getFullYear();
-    var m = today.getMonth() - birthDate.getMonth();
+    const today = new Date();
+    const birthDate = this.birthdate;
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
