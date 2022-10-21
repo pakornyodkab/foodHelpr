@@ -30,6 +30,6 @@ config();
   ],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy, JwtStrategy],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule, HttpModule],
 })
 export class AuthModule {}

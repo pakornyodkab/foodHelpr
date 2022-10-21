@@ -10,6 +10,7 @@ import { RecipeModule } from './recipe/recipe.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { HttpModule } from '@nestjs/axios';
 import { ChatModule } from './chat/chat.module';
+import { PartyModule } from './party/party.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ChatModule } from './chat/chat.module';
     RestaurantModule,
     RecipeModule,
     IngredientModule,
+    PartyModule,
     HttpModule,
     ChatModule,
   ],
