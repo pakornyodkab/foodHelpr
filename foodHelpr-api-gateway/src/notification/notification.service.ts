@@ -11,13 +11,17 @@ import { UpdateRestaurantDto } from 'src/dto/update-restaurant.dto';
 @Injectable()
 export class NotificationService {
   constructor(
-    @Inject('NOTIFICATION_SERVICE') private readonly notificationClient: ClientProxy,
+    @Inject('NOTIFICATION_SERVICE')
+    private readonly notificationClient: ClientProxy,
   ) {}
 
-  async testNotification(
-    message: string,
-  ) {
-    this.notificationClient.emit('test_noti', message)
-    return 'Noti has been sent.'
+  async testNotification(message: string) {
+    this.notificationClient.emit('test_noti', message);
+    return 'Noti has been sent.';
+  }
+
+  async saveExpoToken(userId: number, token: string) {
+    this.notificationClient.emit('save_noti_token', { userId, token });
+    return 'Token has been save.';
   }
 }

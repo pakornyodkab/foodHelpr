@@ -5,6 +5,7 @@ import { AcceptedRequest } from './dto/acceptedRequest';
 import { RoomCreatedRequest } from './dto/createdRoomRequest';
 import { LeaveRequest } from './dto/leaveRequest';
 import { RejectedRequest } from './dto/rejectedRequest';
+import { userIdExpoTokenPair } from './dto/userIdExpoTokenPair';
 import { WannaJoinRequest } from './dto/wannaJoinRequest';
 
 @Controller()
@@ -23,7 +24,7 @@ export class AppController {
 
   @EventPattern('wannaJoin_noti')
   wannaJoineNoti(msg: WannaJoinRequest) {
-    return this.appService.wannaJoineNoti(msg);
+    return this.appService.wannaJoinNoti(msg);
   }
 
   @EventPattern('accepted_noti')
@@ -41,8 +42,13 @@ export class AppController {
     return this.appService.leaveNoti(msg);
   }
 
-  @EventPattern('room_created')
-  roomCreated(msg: RoomCreatedRequest) {
-    return this.appService.roomCreated(msg);
+  // @EventPattern('room_created')
+  // roomCreated(msg: RoomCreatedRequest) {
+  //   return this.appService.roomCreated(msg);
+  // }
+
+  @EventPattern('save_noti_token')
+  addNotiToken(msg: userIdExpoTokenPair) {
+    return this.appService.addNotiToken(msg);
   }
 }

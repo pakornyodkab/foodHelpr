@@ -1,8 +1,10 @@
+import { Party } from './room.dto';
+
 export class LeaveRequest {
   constructor(
     // public leaverId: string,
-    public leaverNotiToken: string,
+    public leaverId: string,
     public leaverName: string,
-    public roomId: string,
+    public room: Party,
   ) {}
 }

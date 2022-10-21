@@ -29,6 +29,11 @@ export class PartyController {
     return this.partyService.getAllParty();
   }
 
+  @MessagePattern({ cmd: 'getPartyListByUserId' })
+  getPartyListByUserId(id: string) {
+    return this.partyService.getPartyListByUserId(id);
+  }
+
   @MessagePattern({ cmd: 'getPartyById' })
   getPartyById(id: string) {
     return this.partyService.getPartyById(id);
@@ -67,7 +72,7 @@ export class PartyController {
 
   @MessagePattern({ cmd: 'guestLeaveParty' })
   guestLeaveParty(guestLeavePartyDto: GuestLeavePartyDto) {
-    return this.partyService.guestLeaveParty(guestLeavePartyDto)
+    return this.partyService.guestLeaveParty(guestLeavePartyDto);
   }
 
   @MessagePattern({ cmd: 'hostPartyAction' })
@@ -75,8 +80,8 @@ export class PartyController {
     return this.partyService.hostPartyAction(hostPartyActionDto);
   }
 
-  @MessagePattern({ cmd: 'getGuestPartyViewModel'})
-  getGuestPartyViewModel(){
+  @MessagePattern({ cmd: 'getGuestPartyViewModel' })
+  getGuestPartyViewModel() {
     this.LOGGER.log('Call Get Guest Party View Model');
     return this.partyService.getGuestPartyViewModel();
   }

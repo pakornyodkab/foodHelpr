@@ -41,8 +41,14 @@ export class PartyController {
 
   @Get('get-party-by-id/:id')
   @UseGuards(JwtAuthGuard)
-  async getPartyById(@Param('id') id: string) {
-    return await this.partyService.getPartyById(id);
+  getPartyById(@Param('id') id: string) {
+    return this.partyService.getPartyById(id);
+  }
+
+  @Get('get-party-list-by-user-id/:id')
+  @UseGuards(JwtAuthGuard)
+  async getPartyListByUserId(@Param('id') id: string) {
+    return await this.partyService.getPartyListByUserId(id);
   }
 
   @Post('create-host-party')

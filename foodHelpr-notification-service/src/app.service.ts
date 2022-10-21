@@ -8,6 +8,7 @@ import { messaging } from 'firebase-admin';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { NotificationToken } from './app.model';
+import { userIdExpoTokenPair } from './dto/userIdExpoTokenPair';
 
 @Injectable()
 export class AppService {
@@ -15,8 +16,8 @@ export class AppService {
     @InjectModel('NotificationToken')
     private readonly notificationTokenModel: Model<NotificationToken>,
   ) {}
-  private roomHost = new Map<string, string>(); // {roomId, host noti id}
-  private roomMembers = new Map<string, Array<string>>(); // {roomId, [member noti ids]}
+  // private roomHost = new Map<string, string>(); // {roomId, host noti id}
+  // private roomMembers = new Map<string, Array<string>>(); // {roomId, [member noti ids]}
 
   //may do latter. Idea is to store map of userId as key and array of userNotiId as value. Then change all targetId logic.
   // private userIdToNotiId = new Map<string, Array<string>>(); // {userId, notiId}
@@ -31,21 +32,28 @@ export class AppService {
   }
 
   // leaverNotiToken used to be leaverId
-  leaveNoti(msg: LeaveRequest) {
-    const { leaverName, leaverId, roomId } = msg;
+  async leaveNoti(msg: LeaveRequest) {
+    const { leaverName, leaverId, room } = msg;
 
-    const leaverNotiToken = this.notificationTokenModel.find({
-      userId: leaverId,
-    });
+    // const leaverNotiToken = await this.notificationTokenModel.findOne({
+    //   userId: leaverId,
+    // });
 
-    if (this.roomHost[roomId] === leaverNotiToken) return;
+    // const leaverToken = leaverNotiToken.expoToken;
+
+    // if (this.roomHost[roomId] === leaverNotiToken) return;
+    if (room.ownerId === leaverId) return;
 
     // remove leaverId from members
-    const index = this.roomMembers[roomId].indexOf(leaverNotiToken, 0);
+    const index = room.memberList.indexOf(leaverId, 0);
     if (index > -1) {
-      this.roomMembers[roomId].splice(index, 1);
+      room.memberList.splice(index, 1);
     }
-    const targetNoti = this.roomMembers[roomId];
+
+    const notiTokens = await this.notificationTokenModel.find({
+      userId: { $in: room.memberList },
+    });
+    const targetNoti = notiTokens.map((e) => e.expoToken).flat();
     const notiMessage = `${leaverName} has leaved the party.`;
 
     //Send noti to targetNoti
@@ -63,47 +71,59 @@ export class AppService {
 
     console.log('leaveNoti has been sent.');
     console.log('Noti message', notiMessage);
-    console.log('host', this.roomHost[roomId]);
-    console.log('member', this.roomMembers[roomId]);
+    console.log('host', room.ownerId);
+    console.log('member', room.memberList);
     return msg;
   }
 
-  wannaJoineNoti(msg: WannaJoinRequest) {
+  async wannaJoinNoti(msg: WannaJoinRequest) {
     console.log(msg);
-    const { roomId, joinerName } = msg;
-    const targetNoti = this.roomHost[roomId];
+    const { room, joinerName } = msg;
+    const hostNotiToken = await this.notificationTokenModel.findOne({
+      userId: room.ownerId,
+    });
+    const targetNoti = hostNotiToken.expoToken;
     const notiMessage = `${joinerName} want to join your party!`;
 
     //Send Noti to targetNoti
     const message = {
       data: { message: notiMessage },
       tokens: targetNoti,
-      condition: 'I don,t know',
+      // condition: 'I don,t know',
     };
 
     //*FB
+    // messaging()
+    //   .send(message)
+    //   .then((response) => {
+    //     // Response is a message ID string.
+    //     console.log('Successfully sent message:', response);
+    //   })
+    //   .catch((error) => {
+    //     console.log('Error sending message:', error);
+    //   });
     messaging()
-      .send(message)
+      .sendMulticast(message)
       .then((response) => {
-        // Response is a message ID string.
-        console.log('Successfully sent message:', response);
-      })
-      .catch((error) => {
-        console.log('Error sending message:', error);
+        console.log(response.successCount + ' messages were sent successfully');
       });
 
     console.log('wannaJoin has been sent.');
     console.log('Noti message', notiMessage);
-    console.log('host', this.roomHost[roomId]);
-    console.log('member', this.roomMembers[roomId]);
+    console.log('host', room.ownerId);
+    console.log('member', room.memberList);
     return msg;
   }
 
-  //่ joinerNotiToken used to be joinerId
-  acceptedNoti(msg: AcceptedRequest) {
-    const { joinerName, roomId, joinerNotiToken } = msg;
-    this.roomMembers[roomId].push(joinerNotiToken);
-    const targetNoti = this.roomMembers[roomId];
+  // joinerNotiToken used to be joinerId
+  async acceptedNoti(msg: AcceptedRequest) {
+    const { joinerName, room, joinerId } = msg;
+    room.memberList.push(joinerId);
+    const notiTokens = await this.notificationTokenModel.find({
+      userId: { $in: room.memberList },
+    });
+    const targetNoti = notiTokens.map((e) => e.expoToken).flat();
+
     const notiMessage = `${joinerName} has joined the party!`;
 
     //send noti to targetNoti
@@ -121,33 +141,40 @@ export class AppService {
 
     console.log('acceptedNoti has been sent.');
     console.log('Noti message', notiMessage);
-    console.log('host', this.roomHost[roomId]);
-    console.log('member', this.roomMembers[roomId]);
+    console.log('host', room.ownerId);
+    console.log('member', room.memberList);
     return msg;
   }
 
   // joinerNotiToken used to be joinerId
-  rejectedNoti(msg: RejectedRequest) {
-    const { joinerNotiToken } = msg;
-    const targetNoti = joinerNotiToken;
+  async rejectedNoti(msg: RejectedRequest) {
+    const { joinerId } = msg;
+    const notiToken = await this.notificationTokenModel.findOne({
+      userId: joinerId,
+    });
+    const targetNoti = notiToken.expoToken;
     const notiMessage = 'Sorry, you have been rejected from the party host.';
 
     //send noti to targetNoti
     const message = {
       data: { message: notiMessage },
       tokens: targetNoti,
-      condition: 'I don,t know',
     };
 
     //*FB
+    // messaging()
+    //   .send(message)
+    //   .then((response) => {
+    //     // Response is a message ID string.
+    //     console.log('Successfully sent message:', response);
+    //   })
+    //   .catch((error) => {
+    //     console.log('Error sending message:', error);
+    //   });
     messaging()
-      .send(message)
+      .sendMulticast(message)
       .then((response) => {
-        // Response is a message ID string.
-        console.log('Successfully sent message:', response);
-      })
-      .catch((error) => {
-        console.log('Error sending message:', error);
+        console.log(response.successCount + ' messages were sent successfully');
       });
 
     console.log('rejectedNoti has been sent.');
@@ -158,14 +185,32 @@ export class AppService {
   }
 
   // hostNotiToken used to be host.
-  roomCreated(msg: RoomCreatedRequest) {
-    console.log(msg);
-    const { roomId, hostNotiToken } = msg;
-    this.roomHost[roomId] = hostNotiToken;
-    this.roomMembers[roomId] = [hostNotiToken];
-    console.log('room has been created.');
-    console.log('host', this.roomHost[roomId]);
-    console.log('member', this.roomMembers[roomId]);
-    return 'Room and hosts stored.';
+  // roomCreated(msg: RoomCreatedRequest) {
+  //   console.log(msg);
+  //   const { roomId, hostNotiToken } = msg;
+  //   this.roomHost[roomId] = hostNotiToken;
+  //   this.roomMembers[roomId] = [hostNotiToken];
+  //   console.log('room has been created.');
+  //   console.log('host', this.roomHost[roomId]);
+  //   console.log('member', this.roomMembers[roomId]);
+  //   return 'Room and hosts stored.';
+  // }
+
+  async addNotiToken(msg: userIdExpoTokenPair) {
+    const { userId, token } = msg;
+    const existedNotiToken = await this.notificationTokenModel.findOne({
+      userId: userId,
+    });
+    if (existedNotiToken) {
+      existedNotiToken.expoToken.push(token);
+      await existedNotiToken.save();
+    } else {
+      const newNotiToken = new this.notificationTokenModel({
+        userId,
+        expoToken: token,
+      });
+      await newNotiToken.save();
+    }
+    return { msg: 'Add successful' };
   }
 }

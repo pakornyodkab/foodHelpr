@@ -1,8 +1,9 @@
+import { Party } from './room.dto';
+
 export class AcceptedRequest {
   constructor(
     public joinerName: string,
-    // public joinerId: string,
-    public joinerNotiToken: string,
-    public roomId: string,
+    public joinerId: string,
+    public room: Party,
   ) {}
 }

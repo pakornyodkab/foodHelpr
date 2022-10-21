@@ -15,7 +15,8 @@ export class PartyService {
   constructor(
     @Inject('FOODFRIEND') private readonly foodFriendService: ClientProxy,
     @Inject('USER') private readonly userService: ClientProxy,
-    @Inject('NOTIFICATION_SERVICE') private readonly notificationClient: ClientProxy,
+    @Inject('NOTIFICATION_SERVICE')
+    private readonly notificationClient: ClientProxy,
     private readonly restaurantService: RestaurantService,
     private readonly appService: AppService,
   ) {}
@@ -24,15 +25,19 @@ export class PartyService {
     return this.foodFriendService.send({ cmd: 'getAllParty' }, {});
   }
 
+  getPartyById(id: string) {
+    return this.foodFriendService.send({ cmd: 'getPartyById' }, {});
+  }
+
   getHostParty() {
     return this.foodFriendService.send({ cmd: 'getHostParty' }, {});
   }
 
-  async getPartyById(id: string) {
+  async getPartyListByUserId(id: string) {
     try {
       let parties = [];
       await this.foodFriendService
-        .send({ cmd: 'getPartyById' }, id)
+        .send({ cmd: 'getPartyListByUserId' }, id)
         .forEach((resultParties) => (parties = resultParties));
       return await this.populateMemberInPartyList(parties);
     } catch (error) {
@@ -43,18 +48,17 @@ export class PartyService {
 
   async createHostParty(createHostPartyDto: CreateHostPartyDto) {
     let hostPartyResult;
-    await this.foodFriendService.send<CreateHostPartyDto>(
-      { cmd: 'createHostParty' },
-      createHostPartyDto,
-    ).forEach(data => hostPartyResult = data);
+    await this.foodFriendService
+      .send<CreateHostPartyDto>({ cmd: 'createHostParty' }, createHostPartyDto)
+      .forEach((data) => (hostPartyResult = data));
 
-    const sendMessage = {
-      roomId: hostPartyResult._id,
-      // host: createHostPartyDto.ownerId,
-      hostNotiToken: createHostPartyDto.notiToken,
-    }
-    this.notificationClient.emit('room_created', sendMessage)
-    return hostPartyResult
+    // const sendMessage = {
+    //   roomId: hostPartyResult._id,
+    //   // host: createHostPartyDto.ownerId,
+    //   hostNotiToken: createHostPartyDto.notiToken,
+    // };
+    // this.notificationClient.emit('room_created', sendMessage);
+    return hostPartyResult;
   }
 
   deleteHostParty(id: string) {
@@ -71,14 +75,15 @@ export class PartyService {
 
   async guestJoinParty(guestJoinPartyDto: GuestJoinPartyDto) {
     let userData;
-      await this.userService
-        .send({ cmd: 'getUserById' }, guestJoinPartyDto.memberId)
-        .forEach((data) => (userData = data));
+    await this.userService
+      .send({ cmd: 'getUserById' }, guestJoinPartyDto.memberId)
+      .forEach((data) => (userData = data));
+    const party = await this.getPartyById(guestJoinPartyDto.partyId);
     const sendMessage = {
-      joinerName: userData.firstname, 
-      roomId: guestJoinPartyDto.partyId,
-    }
-    this.notificationClient.emit('wannaJoin_noti', sendMessage)
+      joinerName: userData.firstname,
+      room: party,
+    };
+    this.notificationClient.emit('wannaJoin_noti', sendMessage);
     return this.foodFriendService.send<any, GuestJoinPartyDto>(
       { cmd: 'guestJoinParty' },
       guestJoinPartyDto,
@@ -87,16 +92,16 @@ export class PartyService {
 
   async guestLeaveParty(guestLeavePartyDto: GuestLeavePartyDto) {
     let userData;
-      await this.userService
-        .send({ cmd: 'getUserById' }, guestLeavePartyDto.memberId)
-        .forEach((data) => (userData = data));
+    await this.userService
+      .send({ cmd: 'getUserById' }, guestLeavePartyDto.memberId)
+      .forEach((data) => (userData = data));
+    const party = await this.getPartyById(guestLeavePartyDto.partyId);
     const sendMessage = {
-      // leaverId: guestLeavePartyDto.memberId,
-      leaverNotiToken: guestLeavePartyDto.notiToken,
+      leaverId: guestLeavePartyDto.memberId,
       leaverName: userData.firstname,
-      roomId: guestLeavePartyDto.partyId,
-    }
-    this.notificationClient.emit('leave_noti', sendMessage)
+      room: party,
+    };
+    this.notificationClient.emit('leave_noti', sendMessage);
     return this.foodFriendService.send<any, GuestLeavePartyDto>(
       { cmd: 'guestLeaveParty' },
       guestLeavePartyDto,
@@ -105,23 +110,22 @@ export class PartyService {
 
   async hostPartyAction(hostPartyActionDto: HostPartyActionDto) {
     let userData;
-      await this.userService
-        .send({ cmd: 'getUserById' }, hostPartyActionDto.memberId)
-        .forEach((data) => (userData = data));
-    if(hostPartyActionDto.action === 'accept'){
+    await this.userService
+      .send({ cmd: 'getUserById' }, hostPartyActionDto.memberId)
+      .forEach((data) => (userData = data));
+    if (hostPartyActionDto.action === 'accept') {
+      const party = await this.getPartyById(hostPartyActionDto.partyId);
       const sendMessage = {
         joinerName: userData.firstname,
-        // joinerId: hostPartyActionDto.memberId,
-        joinerNotiToken: hostPartyActionDto.memberNotiToken,
-        roomId: hostPartyActionDto.partyId,
-      }
-      this.notificationClient.emit('accepted_noti', sendMessage)
-    }else if (hostPartyActionDto.action === 'decline'){
+        joinerId: hostPartyActionDto.memberId,
+        room: party,
+      };
+      this.notificationClient.emit('accepted_noti', sendMessage);
+    } else if (hostPartyActionDto.action === 'decline') {
       const sendMessage = {
-        // joinerId: hostPartyActionDto.memberId,
-        joinerNotiToken: hostPartyActionDto.memberNotiToken,
-      }
-      this.notificationClient.emit('rejected_noti', sendMessage)
+        joinerId: hostPartyActionDto.memberId,
+      };
+      this.notificationClient.emit('rejected_noti', sendMessage);
     }
     return this.foodFriendService.send<any, HostPartyActionDto>(
       { cmd: 'hostPartyAction' },

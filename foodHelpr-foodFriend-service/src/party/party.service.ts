@@ -39,6 +39,10 @@ export class PartyService {
   }
 
   async getPartyById(id: string) {
+    return await this.partyModel.findById(id).exec();
+  }
+
+  async getPartyListByUserId(id: string) {
     return await this.partyModel
       .find({
         $or: [{ memberList: id }, { pendingMemberList: id }],
@@ -170,8 +174,8 @@ export class PartyService {
     }
     if (action === 'accept') {
       return { message: `Action party complete` };
-    }else{
-      throw new BadRequestException('Wrong Action Command')
+    } else {
+      throw new BadRequestException('Wrong Action Command');
     }
   }
 
