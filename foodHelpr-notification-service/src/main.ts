@@ -1,7 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
-import { initializeApp, credential, ServiceAccount } from 'firebase-admin';
+
+//* don't know
+// import { initializeApp, credential, ServiceAccount } from 'firebase-admin';
+import * as admin from 'firebase-admin';
 import * as dotenv from 'dotenv';
 // import serviceAccount from '../testnoti-sw-arch-firebase-adminsdk-ji9oy-75e07990d4.json';
 
@@ -12,6 +15,7 @@ async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
   // await app.listen(3000);
 
+  //* don't know
   // initializeApp({
   //   credential: credential.cert({
   //     privateKey: process.env.FIREBASE_PRIVATE_KEY,
@@ -24,6 +28,16 @@ async function bootstrap() {
   // initializeApp({
   //   credential: credential.cert(serviceAccount),
   // });
+
+  // new approach
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      privateKey: process.env.FIREBASE_PRIVATE_KEY,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+    } as Partial<admin.ServiceAccount>),
+    // databaseURL: process.env.FIREBASE_DATABASE_URL,
+  });
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
