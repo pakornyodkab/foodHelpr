@@ -18,4 +18,7 @@ export class CreateHostPartyDto {
 
     @IsNotEmpty()
     ownerId: string;
+
+    @IsNotEmpty()
+    notiToken: string;
 }

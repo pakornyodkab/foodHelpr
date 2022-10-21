@@ -6,4 +6,7 @@ export class GuestLeavePartyDto {
 
   @IsNotEmpty()
   memberId: string;
+
+  @IsNotEmpty()
+  notiToken: string;
 }

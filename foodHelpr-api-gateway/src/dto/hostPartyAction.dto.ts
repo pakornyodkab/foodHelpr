@@ -8,5 +8,8 @@ export class HostPartyActionDto {
   memberId: string;
 
   @IsNotEmpty()
+  memberNotiToken: string;
+
+  @IsNotEmpty()
   action: 'accept' | 'decline';
 }

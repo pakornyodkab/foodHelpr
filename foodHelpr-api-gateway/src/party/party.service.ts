@@ -50,7 +50,8 @@ export class PartyService {
 
     const sendMessage = {
       roomId: hostPartyResult._id,
-      host: createHostPartyDto.ownerId,
+      // host: createHostPartyDto.ownerId,
+      hostNotiToken: createHostPartyDto.notiToken,
     }
     this.notificationClient.emit('room_created', sendMessage)
     return hostPartyResult
@@ -90,7 +91,8 @@ export class PartyService {
         .send({ cmd: 'getUserById' }, guestLeavePartyDto.memberId)
         .forEach((data) => (userData = data));
     const sendMessage = {
-      leaverId: guestLeavePartyDto.memberId,
+      // leaverId: guestLeavePartyDto.memberId,
+      leaverNotiToken: guestLeavePartyDto.notiToken,
       leaverName: userData.firstname,
       roomId: guestLeavePartyDto.partyId,
     }
@@ -109,13 +111,15 @@ export class PartyService {
     if(hostPartyActionDto.action === 'accept'){
       const sendMessage = {
         joinerName: userData.firstname,
-        joinerId: hostPartyActionDto.memberId,
+        // joinerId: hostPartyActionDto.memberId,
+        joinerNotiToken: hostPartyActionDto.memberNotiToken,
         roomId: hostPartyActionDto.partyId,
       }
       this.notificationClient.emit('accepted_noti', sendMessage)
     }else if (hostPartyActionDto.action === 'decline'){
       const sendMessage = {
-        joinerId: hostPartyActionDto.memberId,
+        // joinerId: hostPartyActionDto.memberId,
+        joinerNotiToken: hostPartyActionDto.memberNotiToken,
       }
       this.notificationClient.emit('rejected_noti', sendMessage)
     }
