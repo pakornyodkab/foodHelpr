@@ -41,7 +41,7 @@ function CreateParty({ navigation }) {
   const [maxGuests, setMaxGuests] = useState<Number>(null);
   const [ageRestriction, setAgeRestriction] = useState<Number>(null);
   //const [restaurant, setRestaurant] = useState<string>('Select Restaurant');
-  const restaurant = useSelector((state: RootState) => state.partyReducer.name);
+  const restaurant = useSelector((state: RootState) => state.partyReducer);
 
   const handleTimeChange = (time, validTime) => {
     if (!validTime) return;
@@ -71,7 +71,7 @@ function CreateParty({ navigation }) {
 
     const createPartyData = {
       name: partyName,
-      restaurant: restaurant,
+      restaurant: restaurant.id,
       apptDate: partyStartDate,
       ageRestriction: Number(ageRestriction),
       maxGuests: Number(maxGuests),
@@ -84,12 +84,14 @@ function CreateParty({ navigation }) {
 
     try {
       const accessToken = await getToken();
-
       console.log("====================================");
-      console.log(`access Token: ${accessToken}`);
+      console.log(`JWT: ${accessToken}`);
       console.log("====================================");
-
-      await FoodFriendService.CreateHostParty(accessToken, createPartyData);
+      const foodFriendService = new FoodFriendService(accessToken);
+      const response = await foodFriendService.CreateHostParty(createPartyData);
+      console.log("====================================");
+      console.log(response);
+      console.log("====================================");
       console.log("Create party Successfully!!");
       navigation.goBack();
     } catch (error) {
@@ -118,7 +120,8 @@ function CreateParty({ navigation }) {
           style={{ width: 50, height: 60, flex: 0.75, resizeMode: "contain" }}
         />
       </View>
-      <ScrollView className="h-full w-full ">
+      {/* <ScrollView className="h-full w-full "> */}
+      <View>
         <View className="top-5 flex pl-5 pr-5">
           <View className="flex-1 pb-3">
             <Text
@@ -153,6 +156,7 @@ function CreateParty({ navigation }) {
                 openCalendar={openCalendar}
                 partyStartDate={partyStartDate}
                 setPartyStartDate={setPartyStartDate}
+                isAgeModal={false}
               />
               <PartyTime
                 setTimePickerVisible={setTimePickerVisible}
@@ -226,7 +230,7 @@ function CreateParty({ navigation }) {
                   fontWeight: "500",
                 }}
               >
-                {restaurant}
+                {restaurant.name}
               </Text>
               <Pressable
                 onPress={() =>
@@ -249,7 +253,7 @@ function CreateParty({ navigation }) {
               }}
             >
               <Pressable
-                className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700 "
                 onPress={() => onCreateHostParty()}
               >
                 <Text className="text-center text-lg font-semibold text-white">
@@ -257,14 +261,11 @@ function CreateParty({ navigation }) {
                 </Text>
               </Pressable>
             </View>
-            <Text className="top-10">Wow</Text>
-            <Text className="top-10">Wow</Text>
-            <Text className="top-10">Wow</Text>
           </View>
         </View>
-      </ScrollView>
+      </View>
+      {/* </ScrollView> */}
     </SafeAreaView>
-    //</RestaurantContext.Provider>
   );
 }
 

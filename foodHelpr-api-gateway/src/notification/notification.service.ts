@@ -21,7 +21,14 @@ export class NotificationService {
   }
 
   async saveExpoToken(userId: number, token: string) {
+    console.log('saveExpoToken function was called');
     this.notificationClient.emit('save_noti_token', { userId, token });
     return 'Token has been save.';
+  }
+
+  async removeExpoToken(userId: number, token: string) {
+    console.log('removeExpoToken function was called');
+    this.notificationClient.emit('remove_noti_token', { userId, token });
+    return 'Token has been removed.';
   }
 }

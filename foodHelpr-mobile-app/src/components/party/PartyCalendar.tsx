@@ -23,6 +23,7 @@ const PartyCalendar = ({
   openCalendar,
   partyStartDate,
   setPartyStartDate,
+  isAgeModal,
 }) => {
   return (
     <TouchableOpacity
@@ -52,7 +53,7 @@ const PartyCalendar = ({
             onDateChange={setPartyStartDate}
             disabledDates={(date) => {
               let yesterday = moment().subtract(1, "days");
-              return date <= yesterday;
+              return isAgeModal ? null : date <= yesterday;
             }}
           />
           <View

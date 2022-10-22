@@ -47,6 +47,7 @@ export class AuthService {
   }
 
   async verifyJwt(token: string) {
+    console.log('inverify', token);
     return await this.jwtService.verifyAsync(token);
   }
 

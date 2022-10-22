@@ -4,13 +4,12 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Carousel from "react-native-reanimated-carousel";
 import Button from "../common/Button";
 import * as Linking from "expo-linking";
-import { useContext } from "react";
-import { RestaurantContext } from "../../../App";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../redux";
 
 type RestaurantModalProp = {
+  restaurantId: string;
   isVisible: boolean;
   onClose: () => void;
   restaurantName: string;
@@ -27,6 +26,7 @@ type RestaurantModalProp = {
 };
 
 const RestaurantModal = ({
+  restaurantId,
   isVisible,
   onClose,
   restaurantName,
@@ -39,7 +39,7 @@ const RestaurantModal = ({
 }: RestaurantModalProp) => {
   const dispatch = useDispatch();
 
-  const { setRestaurantName } = bindActionCreators(actionCreators, dispatch);
+  const { setRestaurant } = bindActionCreators(actionCreators, dispatch);
 
   function renderRestaurantImage({ item, index }) {
     return (
@@ -121,7 +121,7 @@ const RestaurantModal = ({
               <Button
                 className="mt-4 h-10 w-16"
                 onPress={() => {
-                  setRestaurantName(restaurantName);
+                  setRestaurant({ id: restaurantId, name: restaurantName });
                   onClose();
                 }}
               >

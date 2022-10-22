@@ -188,7 +188,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
       });
       const restaurantData: IRestaurant[] = res.data.map((restaurant) => {
         return {
-          id: restaurant._id,
+          _id: restaurant._id,
           restaurantName: restaurant.name,
           tags: restaurant.tag,
           imageUrls: restaurant.restaurantPictureLink,
@@ -300,7 +300,8 @@ export default function RandomRestaurantsScreen({ navigation }) {
         )}
         {restaurants.map((restaurant) => (
           <RestaurantMarker
-            key={restaurant.id}
+            key={restaurant._id}
+            restaurantId={restaurant._id}
             restaurantName={restaurant.restaurantName}
             tags={restaurant.tags}
             imageUrls={restaurant.imageUrls}

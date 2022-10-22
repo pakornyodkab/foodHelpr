@@ -5,6 +5,7 @@ import RestaurantModal from "./RestaurantModal";
 import { Ionicons } from "@expo/vector-icons";
 
 type RestaurantMarkerProp = {
+  restaurantId: string;
   restaurantName: string;
   tags: string[];
   imageUrls: string[];
@@ -20,6 +21,7 @@ type RestaurantMarkerProp = {
 };
 
 const RestaurantMarker = ({
+  restaurantId,
   restaurantName,
   tags,
   imageUrls,
@@ -40,6 +42,7 @@ const RestaurantMarker = ({
         </Text>
       </View>
       <RestaurantModal
+        restaurantId={restaurantId}
         restaurantName={restaurantName}
         tags={tags}
         imageUrls={imageUrls}

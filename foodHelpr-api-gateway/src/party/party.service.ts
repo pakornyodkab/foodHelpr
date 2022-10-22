@@ -26,7 +26,7 @@ export class PartyService {
   }
 
   getPartyById(id: string) {
-    return this.foodFriendService.send({ cmd: 'getPartyById' }, {});
+    return this.foodFriendService.send({ cmd: 'getPartyById' }, id);
   }
 
   getHostParty() {
@@ -78,7 +78,10 @@ export class PartyService {
     await this.userService
       .send({ cmd: 'getUserById' }, guestJoinPartyDto.memberId)
       .forEach((data) => (userData = data));
-    const party = await this.getPartyById(guestJoinPartyDto.partyId);
+    let party;
+    await this.getPartyById(guestJoinPartyDto.partyId).forEach(
+      (partyResult) => (party = partyResult),
+    );
     const sendMessage = {
       joinerName: userData.firstname,
       room: party,
@@ -95,7 +98,10 @@ export class PartyService {
     await this.userService
       .send({ cmd: 'getUserById' }, guestLeavePartyDto.memberId)
       .forEach((data) => (userData = data));
-    const party = await this.getPartyById(guestLeavePartyDto.partyId);
+    let party;
+    await this.getPartyById(guestLeavePartyDto.partyId).forEach(
+      (partyResult) => (party = partyResult),
+    );
     const sendMessage = {
       leaverId: guestLeavePartyDto.memberId,
       leaverName: userData.firstname,
@@ -114,7 +120,10 @@ export class PartyService {
       .send({ cmd: 'getUserById' }, hostPartyActionDto.memberId)
       .forEach((data) => (userData = data));
     if (hostPartyActionDto.action === 'accept') {
-      const party = await this.getPartyById(hostPartyActionDto.partyId);
+      let party;
+      await this.getPartyById(hostPartyActionDto.partyId).forEach(
+        (partyResult) => (party = partyResult),
+      );
       const sendMessage = {
         joinerName: userData.firstname,
         joinerId: hostPartyActionDto.memberId,

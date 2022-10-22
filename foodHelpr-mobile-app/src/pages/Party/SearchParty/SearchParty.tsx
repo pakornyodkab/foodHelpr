@@ -25,6 +25,9 @@ import PartyMarker from "../../../components/party/PartyMarker";
 import MapStyle from "../../../constants/MapStyle";
 import { findFocusedRoute } from "@react-navigation/native";
 import PartyDistancePanel from "../../../components/party/PartyDistancePanel";
+import FoodFriendService from "../../../apis/foodFriend";
+import { getToken } from "../../../libs/token";
+import IRestaurant from "../../../models/Restaurant";
 
 const mockParties = [
   {
@@ -110,6 +113,13 @@ type LocationInfo = {
   address: string;
 };
 
+type restaurantMapPartyType = {
+  [key: string]: {
+    restaurantData: IRestaurant;
+    partyList: IParty[];
+  };
+};
+
 export default function SearchParty({ navigation }) {
   const [region, setRegion] = useState<Region>({
     latitude: INITIAL_LAT,
@@ -142,6 +152,9 @@ export default function SearchParty({ navigation }) {
   const debouncedPinCoordinate = useDebounce<LatLng>(pinCoordinate, 1000);
 
   const [parties, setParties] = useState<IParty[]>([]);
+
+  const [restaurantMapParty, setRestaurantMapParty] =
+    useState<restaurantMapPartyType>({});
 
   //   const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
   //   const [restaurantsLoading, setRestaurantsLoading] = useState<boolean>(false);
@@ -219,10 +232,59 @@ export default function SearchParty({ navigation }) {
   const [partiesLoading, setPartiesLoading] = useState<boolean>(false);
   const [toggleDistancePanel, setToggleDistancePanel] = useState<boolean>(true);
 
+  function mapPartiesToRestaurant() {
+    const formatted: restaurantMapPartyType = {};
+    const restaurantList = [
+      ...new Set(parties.map((party) => party.restaurant)),
+    ];
+    restaurantList.forEach(
+      (restaurant) =>
+        (formatted[restaurant._id] = {
+          restaurantData: restaurant,
+          partyList: [],
+        })
+    );
+    parties.forEach((party) => {
+      formatted[party.restaurant._id].partyList.push(party);
+    });
+    setRestaurantMapParty(formatted);
+  }
+
+  useEffect(() => {
+    mapPartiesToRestaurant();
+  }, [parties]);
+
   async function findPartiesNearMe() {
     try {
       setPartiesLoading(true);
-      setParties(mockParties);
+      const accessToken = await getToken();
+      const foodFriendService = new FoodFriendService(accessToken);
+      const res = await foodFriendService.GetGuestSearchParty({
+        distance: randomDistance,
+        location: { lat: pinCoordinate.latitude, lng: pinCoordinate.longitude },
+      });
+      const partiesData: IParty[] = res.data.map((partyRes) => {
+        const { restaurant, ...rest } = partyRes;
+
+        return {
+          ...rest,
+          restaurant: {
+            _id: restaurant._id,
+            restaurantName: restaurant.name,
+            tags: restaurant.tag,
+            imageUrls: restaurant.restaurantPictureLink,
+            rating: restaurant.rating,
+            recommendedDishes: restaurant.recommendedDish,
+            address: restaurant.address,
+            coordinate: {
+              latitude: restaurant.coordinate.Latitude,
+              longitude: restaurant.coordinate.Longitude,
+            },
+            deliveryInfo: restaurant.deliveryInfo,
+          },
+        };
+      });
+      setParties(partiesData);
       setToggleDistancePanel(false);
       // const accessToken = await getToken();
       // const res = await RestaurantService.GetRandomRestaurant(accessToken, {
@@ -272,7 +334,7 @@ export default function SearchParty({ navigation }) {
         }),
       PARTY_LOAD_DELAY
     );
-  }, [parties]);
+  }, [restaurantMapParty]);
 
   const CurrentLocationPanel = () => (
     <View className="my-2 w-full rounded-lg border-[1px] border-green-500 bg-white px-2 py-1">
@@ -296,6 +358,7 @@ export default function SearchParty({ navigation }) {
   function handleOnPressBack() {
     if (parties.length > 0) {
       setParties([]);
+      setRestaurantMapParty({});
       setToggleDistancePanel(true);
       console.log(`Toggle: ${toggleDistancePanel}`);
       return;
@@ -351,18 +414,18 @@ export default function SearchParty({ navigation }) {
               fillColor={"rgba(34, 197, 94, 0.1)"}
             />
           )}
-          {parties.map((party) => (
-            <PartyMarker
-              key={party._id}
-              partyName={party.partyName}
-              restaurant={party.restaurant}
-              apptDate={party.apptDate}
-              memberList={party.memberList}
-              ageRestriction={party.ageRestriction}
-              maxGuests={party.maxGuests}
-              ownerId={party.ownerId}
-            />
-          ))}
+          {Object.values(restaurantMapParty).map((restaurantMapPartyData) => {
+            const { restaurantData, partyList } = restaurantMapPartyData;
+            console.log("test");
+            console.log("coord OUT", restaurantData.coordinate);
+            return (
+              <PartyMarker
+                // key={restaurantData._id}
+                restaurant={restaurantData}
+                parties={partyList}
+              />
+            );
+          })}
         </MapView>
 
         {parties.length === 0 && (

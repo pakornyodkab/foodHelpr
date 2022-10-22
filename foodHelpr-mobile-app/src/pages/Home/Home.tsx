@@ -19,6 +19,8 @@ import MainRoutes from "../../routes/main";
 import AgeModal from "../../components/party/AgeModal";
 import { getUser, saveUser } from "../../libs/user";
 import UserService from "../../apis/user";
+import * as Notifications from "expo-notifications";
+import NotificationService from "../../apis/notification";
 
 //WebBrowser.maybeCompleteAuthSession();
 // const discovery = {
@@ -55,14 +57,36 @@ export default function HomeScreen({ navigation }) {
   //   discovery
   // );
 
-  const ageValidation = async ()  => {
+  const ageValidation = async () => {
     const user = await getUser();
-    return user.age <= 5;
-  }
+    return Number(user.age) == 0;
+  };
 
   const getFoodHelprToken = async (googleToken: string) => {
     try {
       return await AuthService.GetToken(googleToken);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const sendExpoNotiToken = async () => {
+    const expoToken = await Notifications.getExpoPushTokenAsync();
+    const accessToken = await getToken();
+    try {
+      await NotificationService.sendExpotoken(accessToken, expoToken.data);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const removeExpoNotiToken = async () => {
+    const expoToken = await Notifications.getExpoPushTokenAsync();
+    const accessToken = await getToken();
+    try {
+      await NotificationService.removeExpoToken(accessToken, expoToken.data);
     } catch (error) {
       console.error(error);
       throw error;
@@ -84,15 +108,22 @@ export default function HomeScreen({ navigation }) {
         const myUserResponse = await UserService.GetMyUser(token);
         await saveUser(myUserResponse.data);
         console.log(myUserResponse.data);
+        setAgeModal(myUserResponse.data.age === 0);
         // SecureStore.setItemAsync(MY_SECURE_AUTH_STATE_KEY, response.authentication.accessToken);
         // console.log(response.authentication.accessToken);
-
         // console.log(await getToken())
+        console.log("Call Send Expo Token");
+        await sendExpoNotiToken();
       }
     } catch (error) {
       console.error(error.message);
       throw error;
     }
+  };
+
+  const handleSignOut = async () => {
+    setAccessToken("");
+    await removeExpoNotiToken();
   };
 
   React.useEffect(() => {
@@ -265,12 +296,13 @@ export default function HomeScreen({ navigation }) {
                   </Text>
                 </View>
               </Pressable> */}
+              {ageModal && <AgeModal></AgeModal>}
             </View>
             <View>
               <Pressable
                 className="top-20 flex h-10 w-40 justify-center self-center rounded-full border-[1px] border-green-500 bg-white active:scale-95 active:bg-gray-300"
                 onPress={() => {
-                  setAccessToken("");
+                  handleSignOut();
                 }}
               >
                 <Text className="text-center font-normal text-green-500">
@@ -281,7 +313,6 @@ export default function HomeScreen({ navigation }) {
           </>
         )}
       </View>
-      { ageValidation() && <AgeModal></AgeModal> }
     </View>
   );
 }

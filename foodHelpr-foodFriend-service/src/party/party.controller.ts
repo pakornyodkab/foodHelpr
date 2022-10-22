@@ -1,9 +1,7 @@
 import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { throws } from 'assert';
 import { CreateHostPartyDto } from './dto/createHostParty.dto';
 import { PartyService } from './party.service';
-import { RestaurantNameRequest } from './dto/restaurantNameRequest';
 import { HostPartyActionDto } from './dto/hostPartyAction.dto';
 import { GuestFindPartyDto } from './dto/guestFindParty.dto';
 import { GuestJoinPartyDto } from './dto/guestJoinParty.dto';

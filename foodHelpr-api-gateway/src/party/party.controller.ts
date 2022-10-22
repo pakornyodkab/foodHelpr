@@ -45,10 +45,10 @@ export class PartyController {
     return this.partyService.getPartyById(id);
   }
 
-  @Get('get-party-list-by-user-id/:id')
+  @Get('get-party-list-by-user-id')
   @UseGuards(JwtAuthGuard)
-  async getPartyListByUserId(@Param('id') id: string) {
-    return await this.partyService.getPartyListByUserId(id);
+  async getPartyListByUserId(@GetCurrentUserId() userId: number) {
+    return await this.partyService.getPartyListByUserId(userId.toString());
   }
 
   @Post('create-host-party')
@@ -85,12 +85,17 @@ export class PartyController {
   @UseGuards(JwtAuthGuard)
   async getGuestFindParty(
     @GetCurrentUserId() userId: number,
-    @Body() guestFindPartyDto: Omit<GuestFindPartyDto, 'userId'>,
+    @Query('distance') distance: number,
+    @Query('lat') lat: number,
+    @Query('lng') lng: number,
   ) {
     return await this.partyService.getGuestFindParty({
       userId: userId.toString(),
-      distance: guestFindPartyDto.distance,
-      location: guestFindPartyDto.location,
+      distance: distance,
+      location: {
+        lat: lat,
+        lng: lng,
+      },
     });
   }
 

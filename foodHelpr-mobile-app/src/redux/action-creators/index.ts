@@ -12,15 +12,10 @@ interface payloadDetail {
   random_amount: number;
 }
 
-// interface partyInfoPayload {
-//   name: string;
-//   restaurant: string;
-//   apptDate: string;
-//   memberList: Array<string>;
-//   ageRestriction: number;
-//   maxGuests: number;
-//   ownerId: string;
-// }
+interface restaurantPayload {
+  id: string;
+  name: string;
+}
 
 export const setFilter = (filters: payloadDetail) => {
   return (dispatch: Dispatch<Action>) => {
@@ -31,21 +26,11 @@ export const setFilter = (filters: payloadDetail) => {
   };
 };
 
-// export const setCreatePartyInfo = (partyInfo: partyInfoPayload) => {
-//   return (dispatch: Dispatch<PartyAction>) => {
-//     dispatch({
-//       type: ActionType.SET_CREATE_PARTY_INFO,
-//       payload: partyInfo,
-//     });
-//   };
-// };
-
-export const setRestaurantName = (name: string) => {
+export const setRestaurant = (restaurant: restaurantPayload) => {
   return (dispatch: Dispatch<SetRestaurantAction>) => {
     dispatch({
-      type: ActionType.SET_RESTAURANT_NAME,
-      payload: { name },
+      type: ActionType.SET_RESTAURANT,
+      payload: restaurant,
     });
   };
 };
-

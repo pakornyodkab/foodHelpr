@@ -13,7 +13,8 @@ config();
 @Module({
   imports: [
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret:
+        'E42A202A9FE79695B612294008166B348DE44C0EEC6C8E3CFEF0787583B21A81',
       signOptions: { expiresIn: '7d' },
     }),
     ClientsModule.register([

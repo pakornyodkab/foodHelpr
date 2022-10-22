@@ -40,12 +40,21 @@ export class NotificationController {
   //   );
   // }
 
-  @Post('save-expo-token')
+  @Post('save-expo-token/:expoToken')
   @UseGuards(JwtAuthGuard)
   saveExpoToken(
     @GetCurrentUserId() userId: number,
-    @Query('expoToken') token: string,
+    @Param('expoToken') token: string,
   ) {
     return this.notificationService.saveExpoToken(userId, token);
+  }
+
+  @Post('remove-expo-token/:expoToken')
+  @UseGuards(JwtAuthGuard)
+  removeExpoToken(
+    @GetCurrentUserId() userId: number,
+    @Param('expoToken') token: string,
+  ) {
+    return this.notificationService.removeExpoToken(userId, token);
   }
 }

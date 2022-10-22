@@ -9,12 +9,14 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { NotificationToken } from './app.model';
 import { userIdExpoTokenPair } from './dto/userIdExpoTokenPair';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AppService {
   constructor(
     @InjectModel('NotificationToken')
     private readonly notificationTokenModel: Model<NotificationToken>,
+    private readonly httpService: HttpService,
   ) {}
   // private roomHost = new Map<string, string>(); // {roomId, host noti id}
   // private roomMembers = new Map<string, Array<string>>(); // {roomId, [member noti ids]}
@@ -57,17 +59,29 @@ export class AppService {
     const notiMessage = `${leaverName} has leaved the party.`;
 
     //Send noti to targetNoti
+    // const message = {
+    //   data: { message: notiMessage },
+    //   tokens: targetNoti,
+    // };
+
+    //message for expo noti
     const message = {
-      data: { message: notiMessage },
-      tokens: targetNoti,
+      title: 'FoodHelpr',
+      to: targetNoti,
+      body: notiMessage,
     };
 
+    await this.httpService.axiosRef.post(
+      'https://exp.host/--/api/v2/push/send',
+      message,
+    );
+
     //*FB
-    messaging()
-      .sendMulticast(message)
-      .then((response) => {
-        console.log(response.successCount + ' messages were sent successfully');
-      });
+    // messaging()
+    //   .sendMulticast(message)
+    //   .then((response) => {
+    //     console.log(response.successCount + ' messages were sent successfully');
+    //   });
 
     console.log('leaveNoti has been sent.');
     console.log('Noti message', notiMessage);
@@ -79,18 +93,28 @@ export class AppService {
   async wannaJoinNoti(msg: WannaJoinRequest) {
     console.log(msg);
     const { room, joinerName } = msg;
-    const hostNotiToken = await this.notificationTokenModel.findOne({
-      userId: room.ownerId,
-    });
+    const hostNotiToken = await this.notificationTokenModel
+      .findOne({
+        userId: room.ownerId,
+      })
+      .exec();
+    console.log('query noti token res', hostNotiToken);
     const targetNoti = hostNotiToken.expoToken;
     const notiMessage = `${joinerName} want to join your party!`;
 
     //Send Noti to targetNoti
     const message = {
-      data: { message: notiMessage },
-      tokens: targetNoti,
-      // condition: 'I don,t know',
+      title: 'FoodHelpr',
+      to: targetNoti,
+      body: notiMessage,
+      // condition: 'I don,t know', // used in firebase.
     };
+
+    // const message = targetNoti.map((token) => {
+    //   return {
+    //     to: token,
+    //   };
+    // });
 
     //*FB
     // messaging()
@@ -102,11 +126,16 @@ export class AppService {
     //   .catch((error) => {
     //     console.log('Error sending message:', error);
     //   });
-    messaging()
-      .sendMulticast(message)
-      .then((response) => {
-        console.log(response.successCount + ' messages were sent successfully');
-      });
+    // messaging()
+    //   .sendMulticast(message)
+    //   .then((response) => {
+    //     console.log(response.successCount + ' messages were sent successfully');
+    //   });
+
+    await this.httpService.axiosRef.post(
+      'https://exp.host/--/api/v2/push/send',
+      message,
+    );
 
     console.log('wannaJoin has been sent.');
     console.log('Noti message', notiMessage);
@@ -127,17 +156,29 @@ export class AppService {
     const notiMessage = `${joinerName} has joined the party!`;
 
     //send noti to targetNoti
+    // const message = {
+    //   data: { message: notiMessage },
+    //   tokens: targetNoti,
+    // };
+
+    //message for expo noti
     const message = {
-      data: { message: notiMessage },
-      tokens: targetNoti,
+      title: 'FoodHelpr',
+      to: targetNoti,
+      body: notiMessage,
     };
 
+    await this.httpService.axiosRef.post(
+      'https://exp.host/--/api/v2/push/send',
+      message,
+    );
+
     //*FB
-    messaging()
-      .sendMulticast(message)
-      .then((response) => {
-        console.log(response.successCount + ' messages were sent successfully');
-      });
+    // messaging()
+    //   .sendMulticast(message)
+    //   .then((response) => {
+    //     console.log(response.successCount + ' messages were sent successfully');
+    //   });
 
     console.log('acceptedNoti has been sent.');
     console.log('Noti message', notiMessage);
@@ -156,10 +197,22 @@ export class AppService {
     const notiMessage = 'Sorry, you have been rejected from the party host.';
 
     //send noti to targetNoti
+    // const message = {
+    //   data: { message: notiMessage },
+    //   tokens: targetNoti,
+    // };
+
+    //message for expo noti
     const message = {
-      data: { message: notiMessage },
-      tokens: targetNoti,
+      title: 'FoodHelpr',
+      to: targetNoti,
+      body: notiMessage,
     };
+
+    await this.httpService.axiosRef.post(
+      'https://exp.host/--/api/v2/push/send',
+      message,
+    );
 
     //*FB
     // messaging()
@@ -171,11 +224,11 @@ export class AppService {
     //   .catch((error) => {
     //     console.log('Error sending message:', error);
     //   });
-    messaging()
-      .sendMulticast(message)
-      .then((response) => {
-        console.log(response.successCount + ' messages were sent successfully');
-      });
+    // messaging()
+    //   .sendMulticast(message)
+    //   .then((response) => {
+    //     console.log(response.successCount + ' messages were sent successfully');
+    //   });
 
     console.log('rejectedNoti has been sent.');
     console.log('Noti message', notiMessage);
@@ -198,19 +251,52 @@ export class AppService {
 
   async addNotiToken(msg: userIdExpoTokenPair) {
     const { userId, token } = msg;
+    console.log('Enter addNoti from RabbitMQ');
     const existedNotiToken = await this.notificationTokenModel.findOne({
-      userId: userId,
+      userId: userId.toString(),
     });
     if (existedNotiToken) {
-      existedNotiToken.expoToken.push(token);
-      await existedNotiToken.save();
+      if (!existedNotiToken.expoToken.includes(token)) {
+        existedNotiToken.expoToken.push(token);
+        await existedNotiToken.save();
+      } else {
+        console.log('Token already exist.');
+      }
     } else {
       const newNotiToken = new this.notificationTokenModel({
-        userId,
+        userId: userId.toString(),
         expoToken: token,
       });
       await newNotiToken.save();
     }
+    console.log('save token successful');
+    return { msg: 'Add successful' };
+  }
+
+  async removeNotiToken(msg: userIdExpoTokenPair) {
+    const { userId, token } = msg;
+    console.log('Enter removeNoti from RabbitMQ');
+    const existedNotiToken = await this.notificationTokenModel.findOne({
+      userId: userId.toString(),
+    });
+    if (existedNotiToken) {
+      // existedNotiToken.expoToken.push(token);
+      // await existedNotiToken.save();
+      existedNotiToken.expoToken = existedNotiToken.expoToken.filter(
+        (currentToken) => currentToken !== token,
+      );
+      await existedNotiToken.save();
+    } else {
+      console.log('Noti token not found.');
+    }
+    // else {
+    //   const newNotiToken = new this.notificationTokenModel({
+    //     userId,
+    //     expoToken: token,
+    //   });
+    //   await newNotiToken.save();
+    // }
+    console.log('remove token successful');
     return { msg: 'Add successful' };
   }
 }

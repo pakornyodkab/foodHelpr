@@ -18,7 +18,7 @@ import { getUser } from "../../libs/user";
 import IUser from "../../models/User";
 
 const Chat = ({ route, navigation }) => {
-  const { party }= route.params;
+  const { party } = route.params;
   const handleOnPressBack = () => {
     navigation.goBack();
   };
@@ -123,7 +123,7 @@ const Chat = ({ route, navigation }) => {
   const connectSocket = async () => {
     await getMyUser();
     console.log("Run connectSocket");
-    socketRef.current = io("http://10.0.2.2:3010", {
+    socketRef.current = io("ws://192.168.43.128:3010", {
       transports: ["websocket"],
       extraHeaders: {
         Authorization: `Bearer ${await getToken()}`,
@@ -133,7 +133,7 @@ const Chat = ({ route, navigation }) => {
         registrationToken: "123",
       },
     });
-
+    console.log("Connect To Socket Complete");
     socketRef.current.on("allChats", (msgs) => {
       console.log("Msg from allChats");
       const formattedMsgs = msgs

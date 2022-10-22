@@ -2,14 +2,16 @@ import { Action, SetRestaurantAction } from "../actions";
 import { ActionType } from "../action-types";
 
 const initialState = {
-  name: 'Select Restaurant'
+  id: "",
+  name: "Select Restaurant",
 };
 
 function partyReducer(state: any = initialState, action: SetRestaurantAction) {
   switch (action.type) {
-    case ActionType.SET_RESTAURANT_NAME:
+    case ActionType.SET_RESTAURANT:
       return {
         ...state,
+        id: action.payload.id,
         name: action.payload.name,
       };
     default:

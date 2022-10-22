@@ -1,7 +1,7 @@
 import { LatLng } from "react-native-maps";
 
 export default interface IRestaurant {
-  id: string;
+  _id: string;
   restaurantName: string;
   tags: string[];
   imageUrls: string[];

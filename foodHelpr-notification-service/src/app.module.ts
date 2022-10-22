@@ -3,6 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationTokenSchema } from './app.model';
+import { config } from 'dotenv';
+import { HttpModule } from '@nestjs/axios';
+
+config();
 
 @Module({
   imports: [
@@ -10,6 +14,7 @@ import { NotificationTokenSchema } from './app.model';
     MongooseModule.forFeature([
       { name: 'NotificationToken', schema: NotificationTokenSchema },
     ]),
+    HttpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

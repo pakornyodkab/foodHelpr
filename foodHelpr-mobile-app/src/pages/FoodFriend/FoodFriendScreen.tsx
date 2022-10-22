@@ -13,7 +13,7 @@ const FoodFriendScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView className="relative h-full w-full bg-white">
+    <SafeAreaView className="relative h-full w-full bg-white pt-5">
       <Image
         className="absolute -top-36"
         source={require("../../../assets/topBanner.png")}

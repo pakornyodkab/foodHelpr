@@ -1,16 +1,31 @@
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import UserService from "../../apis/user";
+import { getToken } from "../../libs/token";
 import PartyCalendar from "./PartyCalendar";
 
 const AgeModal = () => {
   const [modalVisible, setModalVisible] = useState(true);
   const [openCalendar, setOpenCalender] = useState(false);
-  const [birthdate, setBirthdate] = useState(null);
+  const [birthdate, setBirthdate] = useState<Date>(null);
 
   // set user's birthdate when the user pressed confirm
-  const onSetBirthdate = (birthdate) => {
-    console.log(birthdate);
+  const onSetBirthdate = async (birthdate: Date) => {
+    const accessToken = await getToken();
+    try {
+      const response = await UserService.UpdateUserBirthdate(
+        accessToken,
+        birthdate
+      );
+      console.log("====================================");
+      console.log(response);
+      console.log("====================================");
+    } catch (error) {
+      console.log("====================================");
+      console.log(error);
+      console.log("====================================");
+    }
   };
 
   return (
@@ -25,7 +40,9 @@ const AgeModal = () => {
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text className=' font-bold text-green-500 text-lg'>Please Enter You Birthdate</Text>
+          <Text className=" text-lg font-bold text-green-500">
+            Please Enter You Birthdate
+          </Text>
           <View className="flex-row items-center space-x-5 px-5">
             <Text
               className="text-green-500"
@@ -39,6 +56,7 @@ const AgeModal = () => {
                 openCalendar={openCalendar}
                 partyStartDate={birthdate}
                 setPartyStartDate={setBirthdate}
+                isAgeModal={true}
               />
             </View>
           </View>

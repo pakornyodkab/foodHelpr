@@ -23,23 +23,23 @@ export class AppController {
   }
 
   @EventPattern('wannaJoin_noti')
-  wannaJoineNoti(msg: WannaJoinRequest) {
-    return this.appService.wannaJoinNoti(msg);
+  async wannaJoineNoti(msg: WannaJoinRequest) {
+    return await this.appService.wannaJoinNoti(msg);
   }
 
   @EventPattern('accepted_noti')
-  acceptedNoti(msg: AcceptedRequest) {
-    return this.appService.acceptedNoti(msg);
+  async acceptedNoti(msg: AcceptedRequest) {
+    return await this.appService.acceptedNoti(msg);
   }
 
   @EventPattern('rejected_noti')
-  rejectedNoti(msg: RejectedRequest) {
-    return this.appService.rejectedNoti(msg);
+  async rejectedNoti(msg: RejectedRequest) {
+    return await this.appService.rejectedNoti(msg);
   }
 
   @EventPattern('leave_noti')
-  leaveNoti(msg: LeaveRequest) {
-    return this.appService.leaveNoti(msg);
+  async leaveNoti(msg: LeaveRequest) {
+    return await this.appService.leaveNoti(msg);
   }
 
   // @EventPattern('room_created')
@@ -48,7 +48,12 @@ export class AppController {
   // }
 
   @EventPattern('save_noti_token')
-  addNotiToken(msg: userIdExpoTokenPair) {
-    return this.appService.addNotiToken(msg);
+  async addNotiToken(msg: userIdExpoTokenPair) {
+    return await this.appService.addNotiToken(msg);
+  }
+
+  @EventPattern('remove_noti_token')
+  async removeNotiToken(msg: userIdExpoTokenPair) {
+    return await this.appService.removeNotiToken(msg);
   }
 }
