@@ -26,14 +26,9 @@ const PartyCalendar = ({
 }) => {
   return (
     <TouchableOpacity
-      className="top-2 h-10 flex-1 justify-center rounded-full border-2 border-green-500  px-[20px] text-left"
+      className="top-2 h-10 flex-row justify-center space-x-2 rounded-full border-2  border-green-500 px-[20px] text-left"
       onPress={() => {
         setOpenCalendar(!openCalendar);
-      }}
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginRight: 5,
       }}
     >
       <TextInput
@@ -50,7 +45,7 @@ const PartyCalendar = ({
             : null
         }
       ></TextInput>
-      <Ionicons name="calendar-sharp" size={32} color="#2CBB54" />
+      <Ionicons name="calendar-sharp" size={30} color="#2CBB54" />
       <Modal animationType="slide" visible={openCalendar}>
         <View className="h-fit">
           <CalendarPicker

@@ -4,6 +4,11 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Carousel from "react-native-reanimated-carousel";
 import Button from "../common/Button";
 import * as Linking from "expo-linking";
+import { useContext } from "react";
+import { RestaurantContext } from "../../../App";
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../../redux";
 
 type RestaurantModalProp = {
   isVisible: boolean;
@@ -32,6 +37,10 @@ const RestaurantModal = ({
   address,
   deliveryInfo,
 }: RestaurantModalProp) => {
+  const dispatch = useDispatch();
+
+  const { setRestaurantName } = bindActionCreators(actionCreators, dispatch);
+
   function renderRestaurantImage({ item, index }) {
     return (
       <Image
@@ -50,7 +59,7 @@ const RestaurantModal = ({
       visible={isVisible}
       onRequestClose={() => onClose()}
     >
-      <View className="flex h-screen w-screen items-center justify-center bg-black/50">
+      <View className="flex h-screen w-screen items-center justify-center">
         <View className="flex h-fit w-10/12 items-center rounded-xl border-[1px] border-green-500 bg-white p-4">
           <GestureHandlerRootView className="flex-1">
             <Carousel
@@ -99,7 +108,7 @@ const RestaurantModal = ({
             {deliveryInfo.map((info) => (
               <Button
                 key={info._id}
-                className="mt-4 h-10 w-24 mx-1"
+                className="mx-1 mt-4 h-10 w-24"
                 onPress={() => Linking.openURL(info.link)}
               >
                 <Text className="text-center text-white">{info.platform}</Text>
@@ -107,11 +116,30 @@ const RestaurantModal = ({
             ))}
           </View>
 
-          <Button className="mt-4 h-10 w-10" onPress={() => onClose()}>
-            <Text className="text-center text-white">
-              <Ionicons name="close" size={32} />
-            </Text>
-          </Button>
+          {true ? (
+            <View className="flex-row">
+              <Button
+                className="mt-4 h-10 w-16"
+                onPress={() => {
+                  setRestaurantName(restaurantName);
+                  onClose();
+                }}
+              >
+                <Text className="text-center text-white">Select</Text>
+              </Button>
+              <Button className="mt-4 h-10 w-10" onPress={() => onClose()}>
+                <Text className="text-center text-white">
+                  <Ionicons name="close" size={32} />
+                </Text>
+              </Button>
+            </View>
+          ) : (
+            <Button className="mt-4 h-10 w-10" onPress={() => onClose()}>
+              <Text className="text-center text-white">
+                <Ionicons name="close" size={32} />
+              </Text>
+            </Button>
+          )}
         </View>
       </View>
     </Modal>

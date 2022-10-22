@@ -10,15 +10,15 @@ import {
   Req,
   Query,
 } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
-import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
-import { CreateHostPartyDto } from 'src/dto/createHostParty.dto';
+import { AuthService } from '../auth/auth.service';
+import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
+import { CreateHostPartyDto } from '../dto/createHostParty.dto';
 import { PartyService } from './party.service';
-import { GuestFindPartyDto } from 'src/dto/guestFindParty.dto';
-import { GuestJoinPartyDto } from 'src/dto/guestJoinParty.dto';
-import { GuestLeavePartyDto } from 'src/dto/guestLeaveParty.dto';
-import { HostPartyActionDto } from 'src/dto/hostPartyAction.dto';
-import { GetCurrentUserId } from 'src/auth/decorator';
+import { GuestFindPartyDto } from '../dto/guestFindParty.dto';
+import { GuestJoinPartyDto } from '../dto/guestJoinParty.dto';
+import { GuestLeavePartyDto } from '../dto/guestLeaveParty.dto';
+import { HostPartyActionDto } from '../dto/hostPartyAction.dto';
+import { GetCurrentUserId } from '../auth/decorator';
 
 @Controller('party')
 export class PartyController {

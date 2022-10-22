@@ -2,7 +2,8 @@ import axios from "axios";
 import { AUTH_URI } from "@env";
 
 const authService = axios.create({
-  baseURL: AUTH_URI,
+  //baseURL: "http://192.168.43.128:3000/",
+  baseURL: "http://10.0.2.2:3000/",
   timeout: 5000,
 });
 
@@ -15,6 +16,8 @@ export default class AuthService {
   constructor() {}
 
   static GetToken = (accessToken: string) => {
+    console.log(AUTH_URI);
+
     console.log("here", accessToken);
     const request = authService.get<IGetTokenResponse>(
       `user-jwt-token/${accessToken}`
