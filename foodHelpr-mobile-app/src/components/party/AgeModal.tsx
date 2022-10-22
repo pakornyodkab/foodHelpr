@@ -3,6 +3,7 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import UserService from "../../apis/user";
 import { getToken } from "../../libs/token";
+import { getUser } from "../../libs/user";
 import PartyCalendar from "./PartyCalendar";
 
 const AgeModal = () => {
@@ -13,9 +14,11 @@ const AgeModal = () => {
   // set user's birthdate when the user pressed confirm
   const onSetBirthdate = async (birthdate: Date) => {
     const accessToken = await getToken();
+    const user = await getUser();
+    const userService = new UserService(accessToken);
     try {
-      const response = await UserService.UpdateUserBirthdate(
-        accessToken,
+      const response = await userService.UpdateUserBirthdate(
+        user.user_id.toString(),
         birthdate
       );
       console.log("====================================");

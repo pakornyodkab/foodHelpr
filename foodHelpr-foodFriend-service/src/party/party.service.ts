@@ -172,7 +172,7 @@ export class PartyService {
     if (result.modifiedCount === 0) {
       throw new BadRequestException('Action Fail');
     }
-    if (action === 'accept') {
+    if (action === 'accept' || action === 'decline') {
       return { message: `Action party complete` };
     } else {
       throw new BadRequestException('Wrong Action Command');

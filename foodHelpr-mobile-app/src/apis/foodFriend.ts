@@ -24,6 +24,21 @@ export interface IJoinPartyRequest {
   partyId: string;
 }
 
+export interface IHostEndPartyRequest {
+  partyId: string;
+}
+
+export interface IGuestLeavePartyRequest {
+  partyId: string;
+  memberId: string;
+}
+
+export interface IHostPartyActionRequest {
+  partyId: string;
+  memberId: string;
+  action: "accept" | "decline";
+}
+
 export default class FoodFriendService {
   private client: AxiosInstance;
   private accessToken: string;
@@ -77,6 +92,37 @@ export default class FoodFriendService {
       "guest-join-party",
       { partyId: requestParams.partyId },
       { headers: { Authorization: `Bearer ${this.accessToken}` } }
+    );
+  }
+
+  HostPartyAction(requestParams: IHostPartyActionRequest) {
+    return this.client.post(
+      "host-party-action",
+      {
+        partyId: requestParams.partyId,
+        memberId: requestParams.memberId,
+        action: requestParams.action,
+      },
+      { headers: { Authorization: `Bearer ${this.accessToken}` } }
+    );
+  }
+
+  HostEndParty(requestParams: IHostEndPartyRequest) {
+    return this.client.delete(`delete-host-party/${requestParams.partyId}`, {
+      headers: { Authorization: `Bearer ${this.accessToken}` },
+    });
+  }
+
+  GuestLeaveParty(requestParams: IGuestLeavePartyRequest) {
+    return this.client.post(
+      "guest-leave-party",
+      {
+        partyId: requestParams.partyId,
+        memberId: requestParams.memberId,
+      },
+      {
+        headers: { Authorization: `Bearer ${this.accessToken}` },
+      }
     );
   }
 }

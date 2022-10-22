@@ -1,16 +1,17 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { LatLng } from "react-native-maps";
 
-const googleApis = axios.create({
-  baseURL: "https://www.googleapis.com/",
-  timeout: 5000,
-});
-
 export default class GoogleApis {
-  constructor() {}
+  private client: AxiosInstance;
+  constructor() {
+    this.client = axios.create({
+      baseURL: "https://www.googleapis.com/",
+      timeout: 5000,
+    });
+  }
 
-  static GetUserData(accessToken: string) {
-    return googleApis.get("userinfo/v2/me", {
+  GetUserData(accessToken: string) {
+    return this.client.get("userinfo/v2/me", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
   }

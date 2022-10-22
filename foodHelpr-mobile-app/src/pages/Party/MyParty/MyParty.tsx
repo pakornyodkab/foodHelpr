@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Button from "../../../components/common/Button";
@@ -19,12 +20,14 @@ import HostAcceptDenyCard from "../../../components/party/HostAcceptDenyCard";
 
 const MyParty = ({ navigation }) => {
   const [partyList, setPartyList] = useState<IParty[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function handleOnPressBack() {
     navigation.goBack();
   }
 
   async function getMyPartyList() {
+    setIsLoading(true);
     try {
       const accessToken = await getToken();
       const foodFriendService = new FoodFriendService(accessToken);
@@ -54,12 +57,16 @@ const MyParty = ({ navigation }) => {
       setPartyList(partiesData);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
     getMyPartyList();
   }, []);
+
+  function refreshMyPartyCard() {}
 
   return (
     <SafeAreaView className="relative h-full w-full bg-white">
@@ -80,15 +87,27 @@ const MyParty = ({ navigation }) => {
           style={{ width: 50, height: 60, flex: 0.4, resizeMode: "contain" }}
         />
       </View>
-      <ScrollView className="top-5 p-5">
-        {partyList.map((party) => {
-          return (
-            //<MyPartyPendingCard party={party} />
-            <MyPartyCard navigation={navigation} party={party}></MyPartyCard>
-            //<HostAcceptDenyCard partyName={party.name} guestName="test" />
-          );
-        })}
-      </ScrollView>
+      {isLoading ? (
+        <View className="absolute -z-10 flex h-full w-full items-center justify-center">
+          <ActivityIndicator size="large" color="rgb(34, 197, 94)" />
+        </View>
+      ) : partyList.length === 0 ? (
+        <View className="absolute -z-10 flex h-full w-full items-center justify-center">
+          <Text className="text-xl font-semibold text-green-500/70">
+            {"No party waiting :)"}
+          </Text>
+        </View>
+      ) : (
+        <ScrollView className="top-5 p-5">
+          {partyList.map((party) => {
+            return (
+              //<MyPartyPendingCard party={party} />
+              <MyPartyCard navigation={navigation} party={party}></MyPartyCard>
+              //<HostAcceptDenyCard partyName={party.name} guestName="test" />
+            );
+          })}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };

@@ -7,7 +7,9 @@ export default interface IParty {
   restaurant: IRestaurant;
   apptDate: string;
   memberList: IUser[];
+  pendingMemberList: IUser[];
   ageRestriction: number;
   maxGuests: number;
-  owner: IUser;
+  ownerId: string;
+  ownerData: IUser;
 }

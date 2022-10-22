@@ -56,7 +56,7 @@ export class AppService {
       userId: { $in: room.memberList },
     });
     const targetNoti = notiTokens.map((e) => e.expoToken).flat();
-    const notiMessage = `${leaverName} has leaved the party.`;
+    const notiMessage = `${leaverName} has left the party.`;
 
     //Send noti to targetNoti
     // const message = {
@@ -69,6 +69,10 @@ export class AppService {
       title: 'FoodHelpr',
       to: targetNoti,
       body: notiMessage,
+      data: {
+        action: 'leave',
+        userId: leaverId,
+      },
     };
 
     await this.httpService.axiosRef.post(
@@ -107,6 +111,9 @@ export class AppService {
       title: 'FoodHelpr',
       to: targetNoti,
       body: notiMessage,
+      data: {
+        action: 'join',
+      },
       // condition: 'I don,t know', // used in firebase.
     };
 
@@ -166,6 +173,10 @@ export class AppService {
       title: 'FoodHelpr',
       to: targetNoti,
       body: notiMessage,
+      data: {
+        action: 'accept',
+        userId: joinerId,
+      },
     };
 
     await this.httpService.axiosRef.post(
@@ -207,6 +218,10 @@ export class AppService {
       title: 'FoodHelpr',
       to: targetNoti,
       body: notiMessage,
+      data: {
+        action: 'reject',
+        userId: joinerId,
+      },
     };
 
     await this.httpService.axiosRef.post(

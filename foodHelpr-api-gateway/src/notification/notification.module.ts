@@ -18,24 +18,24 @@ import { NotificationService } from './notification.service';
           urls: ['amqp://localhost:5672'],
           queue: 'notification_queue',
           queueOptions: {
-            durable: false
+            durable: false,
           },
         },
       },
     ]),
     ClientsModule.register([
-        {
-          name: 'USER',
-          transport: Transport.TCP,
-          options: {
-            host: 'localhost',
-            port: 3001,
-          },
+      {
+        name: 'USER',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          port: 3001,
         },
-      ]),
+      },
+    ]),
     HttpModule,
   ],
   controllers: [NotificationController],
-  providers: [NotificationService, AuthService, JwtService, AppService],
+  providers: [NotificationService],
 })
 export class NotificationModule {}

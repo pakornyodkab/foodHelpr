@@ -52,8 +52,8 @@ export default function App() {
   }
   return (
     <Provider store={Store}>
-      <Notification />
       <NavigationContainer>
+        <Notification />
         <View className="h-full w-full flex-1" onLayout={onLayoutRootView}>
           <Stack.Navigator
             initialRouteName={MainRoutes.home}

@@ -19,7 +19,7 @@ const FoodFriendScreen = ({ navigation }) => {
         source={require("../../../assets/topBanner.png")}
         style={{ height: 200, width: 400, flex: 1 }}
       />
-      <View className="flex">
+      <View className="flex justify-center">
         <View className="mx-4 mt-4 flex flex-row items-center space-x-5">
           <Button className="h-12 w-12" onPress={handleOnPressBack}>
             <Text className="text-center font-semibold text-white">
@@ -70,6 +70,19 @@ const FoodFriendScreen = ({ navigation }) => {
                 </Text>
                 <Text className="text-center font-normal text-white">
                   My Party
+                </Text>
+              </View>
+            </Pressable>
+            <Pressable
+              className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+              onPress={() => navigation.navigate(FoodFriendRoutes.waitingLists)}
+            >
+              <View className="relative flex h-full justify-center">
+                <Text className="absolute left-4 text-white">
+                  <MaterialIcons name="people" size={24} />
+                </Text>
+                <Text className="text-center font-normal text-white">
+                  Waiting Lists
                 </Text>
               </View>
             </Pressable>

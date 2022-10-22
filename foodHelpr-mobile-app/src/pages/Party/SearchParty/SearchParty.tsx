@@ -164,7 +164,8 @@ export default function SearchParty({ navigation }) {
 
   async function getLocationName() {
     try {
-      const { data } = await GoogleMapsApi.ReverseGeocode(pinCoordinate);
+      const googleMapsApi = new GoogleMapsApi();
+      const { data } = await googleMapsApi.ReverseGeocode(pinCoordinate);
       const locationProperties = data?.results[0];
       setLocationInfo({
         name: `${locationProperties.address_components[0].long_name} ${locationProperties.address_components[1].long_name}`,
@@ -416,8 +417,6 @@ export default function SearchParty({ navigation }) {
           )}
           {Object.values(restaurantMapParty).map((restaurantMapPartyData) => {
             const { restaurantData, partyList } = restaurantMapPartyData;
-            console.log("test");
-            console.log("coord OUT", restaurantData.coordinate);
             return (
               <PartyMarker
                 // key={restaurantData._id}

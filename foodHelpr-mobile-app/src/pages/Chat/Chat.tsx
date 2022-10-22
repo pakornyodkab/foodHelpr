@@ -19,6 +19,9 @@ import IUser from "../../models/User";
 
 const Chat = ({ route, navigation }) => {
   const { party } = route.params;
+  console.log("====================================");
+  console.log(`Party: ${JSON.stringify(party)}`);
+  console.log("====================================");
   const handleOnPressBack = () => {
     navigation.goBack();
   };

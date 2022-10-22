@@ -7,6 +7,11 @@ import * as Linking from "expo-linking";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../redux";
+import {
+  createNavigationContainerRef,
+  useNavigation,
+} from "@react-navigation/native";
+import FoodFriendRoutes from "../../routes/foodFriend";
 
 type RestaurantModalProp = {
   restaurantId: string;
@@ -40,6 +45,11 @@ const RestaurantModal = ({
   const dispatch = useDispatch();
 
   const { setRestaurant } = bindActionCreators(actionCreators, dispatch);
+  const navigation = useNavigation();
+
+  function navigate(name, params = {}) {
+    navigation.navigate(name as never, params as never);
+  }
 
   function renderRestaurantImage({ item, index }) {
     return (
@@ -123,13 +133,15 @@ const RestaurantModal = ({
                 onPress={() => {
                   setRestaurant({ id: restaurantId, name: restaurantName });
                   onClose();
+                  navigate(FoodFriendRoutes.createParty);
                 }}
               >
                 <Text className="text-center text-white">Select</Text>
               </Button>
-              <Button className="mt-4 h-10 w-10" onPress={() => onClose()}>
+              <Button className="mt-4 h-10 w-16" onPress={() => onClose()}>
                 <Text className="text-center text-white">
-                  <Ionicons name="close" size={32} />
+                  <Text className="text-center text-white">Close</Text>
+                  {/* <Ionicons name="close" size={32} /> */}
                 </Text>
               </Button>
             </View>

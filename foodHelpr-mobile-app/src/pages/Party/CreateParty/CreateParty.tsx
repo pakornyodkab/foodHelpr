@@ -34,8 +34,8 @@ function CreateParty({ navigation }) {
   };
 
   const [openCalendar, setOpenCalender] = useState(false);
-  const [partyStartDate, setPartyStartDate] = useState(null);
-  const [time, setTime] = useState(new Date(Date.now()));
+  const [partyStartDate, setPartyStartDate] = useState<Date>(null);
+  const [time, setTime] = useState<Date>(new Date(Date.now()));
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const [partyName, setPartyName] = useState<string>(null);
   const [maxGuests, setMaxGuests] = useState<Number>(null);
@@ -72,7 +72,11 @@ function CreateParty({ navigation }) {
     const createPartyData = {
       name: partyName,
       restaurant: restaurant.id,
-      apptDate: partyStartDate,
+      apptDate: new Date(
+        `${partyStartDate.toISOString().substring(0, 10)}T${time
+          .toISOString()
+          .substring(11)}`
+      ),
       ageRestriction: Number(ageRestriction),
       maxGuests: Number(maxGuests),
       ownerId: user.user_id.toString(),

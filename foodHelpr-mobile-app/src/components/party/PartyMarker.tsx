@@ -18,8 +18,6 @@ type PartyMarkerProp = {
 const PartyMarker = ({ restaurant, parties }: PartyMarkerProp) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  console.log("coord", restaurant.coordinate);
-
   return (
     <Marker
       // key={key}

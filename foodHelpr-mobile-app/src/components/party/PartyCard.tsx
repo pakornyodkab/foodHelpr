@@ -16,8 +16,6 @@ export default function PartyCard({ party }: PartyCardProp) {
     await foodFriendService.GuestJoinParty({ partyId: party._id });
   };
 
-  console.log("key", party.memberList);
-
   return (
     <View className="mb-4 flex max-w-sm rounded-lg border-2 border-green-500 bg-transparent p-4 shadow-lg ">
       <View className="flex-row space-x-2">
@@ -29,18 +27,18 @@ export default function PartyCard({ party }: PartyCardProp) {
       </View>
       <View className="flex items-center">
         {party.memberList.map((member) => (
-          <View className="h-10 w-10" key={member.user_id}>
+          <View className="h-6 w-6" key={member.user_id}>
             <Image
               key={member.user_id}
               source={{ uri: member.profile_picture }}
-              className="rounded-md object-cover"
+              className="flex-1 rounded-full object-cover"
             />
           </View>
         ))}
       </View>
       <View className="flex-row items-center space-x-3">
         <Text>
-          {moment(party.apptDate.toString()).format("DD MMM YYYY h:mm:ss a")}
+          {moment(party.apptDate.toString()).format("DD MMM YYYY h:mm:ss A")}
         </Text>
         <Button
           className="rounded-lg bg-green-500 px-2 py-1 shadow-md duration-150 hover:shadow-lg focus:shadow-lg active:scale-95 active:bg-green-700 active:shadow-lg"

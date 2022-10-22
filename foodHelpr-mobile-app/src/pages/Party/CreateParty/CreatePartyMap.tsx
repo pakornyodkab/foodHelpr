@@ -86,7 +86,8 @@ export default function CreatePartyMap({ navigation, setRestaurant }) {
 
   async function getLocationName() {
     try {
-      const { data } = await GoogleMapsApi.ReverseGeocode(pinCoordinate);
+      const googleMapsApi = new GoogleMapsApi();
+      const { data } = await googleMapsApi.ReverseGeocode(pinCoordinate);
       const locationProperties = data?.results[0];
       setLocationInfo({
         name: `${locationProperties.address_components[0].long_name} ${locationProperties.address_components[1].long_name}`,

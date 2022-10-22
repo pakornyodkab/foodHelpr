@@ -64,7 +64,8 @@ export default function HomeScreen({ navigation }) {
 
   const getFoodHelprToken = async (googleToken: string) => {
     try {
-      return await AuthService.GetToken(googleToken);
+      const authService = new AuthService();
+      return await authService.GetToken(googleToken);
     } catch (error) {
       console.error(error);
       throw error;
@@ -74,8 +75,9 @@ export default function HomeScreen({ navigation }) {
   const sendExpoNotiToken = async () => {
     const expoToken = await Notifications.getExpoPushTokenAsync();
     const accessToken = await getToken();
+    const notificationService = new NotificationService(accessToken);
     try {
-      await NotificationService.sendExpotoken(accessToken, expoToken.data);
+      await notificationService.sendExpotoken(expoToken.data);
     } catch (error) {
       console.error(error);
       throw error;
@@ -85,8 +87,9 @@ export default function HomeScreen({ navigation }) {
   const removeExpoNotiToken = async () => {
     const expoToken = await Notifications.getExpoPushTokenAsync();
     const accessToken = await getToken();
+    const notificationService = new NotificationService(accessToken);
     try {
-      await NotificationService.removeExpoToken(accessToken, expoToken.data);
+      await notificationService.removeExpoToken(expoToken.data);
     } catch (error) {
       console.error(error);
       throw error;
@@ -96,16 +99,15 @@ export default function HomeScreen({ navigation }) {
   const handleSignInResponse = async () => {
     try {
       if (response?.type === "success") {
-        console.log("haha", response.authentication.accessToken);
         setStealChickenToken(response.authentication.accessToken);
         const tokenResponse = await getFoodHelprToken(
           response.authentication.accessToken
         );
-        console.log("hoho", tokenResponse);
         const token = tokenResponse.data.access_token;
         setAccessToken(token);
         await saveToken(token);
-        const myUserResponse = await UserService.GetMyUser(token);
+        const userService = new UserService(token);
+        const myUserResponse = await userService.GetMyUser();
         await saveUser(myUserResponse.data);
         console.log(myUserResponse.data);
         setAgeModal(myUserResponse.data.age === 0);
@@ -132,8 +134,8 @@ export default function HomeScreen({ navigation }) {
 
   //!
   const getUserData = async () => {
-    const { data } = await GoogleApis.GetUserData(stealCheckenToken);
-    // console.log(data)
+    const googleApis = new GoogleApis();
+    const { data } = await googleApis.GetUserData(stealCheckenToken);
     setUserInfo(data);
   };
 

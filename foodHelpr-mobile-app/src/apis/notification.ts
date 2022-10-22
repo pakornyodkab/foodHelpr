@@ -1,10 +1,4 @@
-import axios from "axios";
-
-const notificationService = axios.create({
-  baseURL: "http://192.168.43.128:3000/notification/",
-  //baseURL: "http://10.0.2.2:3000/notification/",
-  timeout: 5000,
-});
+import axios, { AxiosInstance } from "axios";
 
 export interface IGetTokenResponse {
   message: string;
@@ -12,33 +6,35 @@ export interface IGetTokenResponse {
 }
 
 export default class NotificationService {
-  constructor() {}
+  private client: AxiosInstance;
+  private accessToken: string;
 
-  static sendExpotoken = async (accessToken: string, expoToken: string) => {
-    console.log("Send Expo Token To Backend", expoToken);
-    const request = await notificationService.post(
+  constructor(accessToken: string) {
+    this.client = axios.create({
+      baseURL: "http://192.168.43.128:3000/notification/",
+      //baseURL: "http://10.0.2.2:3000/notification/",
+      timeout: 10000,
+    });
+    this.accessToken = accessToken;
+  }
+
+  sendExpotoken(expoToken: string) {
+    return this.client.post(
       `save-expo-token/${expoToken}`,
       {},
       {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${this.accessToken}` },
       }
     );
-    console.log("====================================");
-    console.log(request);
-    console.log("====================================");
-  };
+  }
 
-  static removeExpoToken = async (accessToken: string, expoToken: string) => {
-    console.log("Send Remove Expo Token To Backend", expoToken);
-    const request = await notificationService.post(
+  removeExpoToken(expoToken: string) {
+    return this.client.post(
       `remove-expo-token/${expoToken}`,
       {},
       {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${this.accessToken}` },
       }
     );
-    console.log("====================================");
-    console.log(request);
-    console.log("====================================");
-  };
+  }
 }
