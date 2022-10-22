@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { AppService } from 'src/app.service';
-import { CreateHostPartyDto } from 'src/dto/createHostParty.dto';
+import { AppService } from '../app.service';
+import { CreateHostPartyDto } from '../dto/createHostParty.dto';
 import { forkJoin } from 'rxjs';
 import IGuestFindPartyRequest from './model/guestFindParty.model';
-import { GuestFindPartyDto } from 'src/dto/guestFindParty.dto';
-import { GuestJoinPartyDto } from 'src/dto/guestJoinParty.dto';
-import { GuestLeavePartyDto } from 'src/dto/guestLeaveParty.dto';
-import { HostPartyActionDto } from 'src/dto/hostPartyAction.dto';
-import { RestaurantService } from 'src/restaurant/restaurant.service';
+import { GuestFindPartyDto } from '../dto/guestFindParty.dto';
+import { GuestJoinPartyDto } from '../dto/guestJoinParty.dto';
+import { GuestLeavePartyDto } from '../dto/guestLeaveParty.dto';
+import { HostPartyActionDto } from '../dto/hostPartyAction.dto';
+import { RestaurantService } from '../restaurant/restaurant.service';
 
 @Injectable()
 export class PartyService {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -13,22 +13,35 @@ import {
 } from "react-native";
 
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import Button from "../../components/common/Button";
+import Button from "../../../components/common/Button";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import CalendarPicker from "react-native-calendar-picker";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import PartyTime from "../../components/party/PartyTime";
-import PartyCalendar from "../../components/party/PartyCalendar";
+import PartyCalendar from "../../../components/party/PartyCalendar";
+import PartyTime from "../../../components/party/PartyTime";
+import FoodFriendIndex from "../../FoodFriend";
+import FoodFriendRoutes from "../../../routes/foodFriend";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux";
+import { getToken } from "../../../libs/token";
+import FoodFriendService from "../../../apis/foodFriend";
+import { getUser } from "../../../libs/user";
+
 function CreateParty({ navigation }) {
   const handleOnPressBack = () => {
     navigation.goBack();
   };
 
-  const [openCalendar, SetOpenCalender] = useState(false);
-  const [partyStartDate, SetPartyStartDate] = useState(null);
+  const [openCalendar, setOpenCalender] = useState(false);
+  const [partyStartDate, setPartyStartDate] = useState(null);
   const [time, setTime] = useState(new Date(Date.now()));
-  const [isTimePickerVisible, SetTimePickerVisible] = useState(false);
+  const [isTimePickerVisible, setTimePickerVisible] = useState(false);
+  const [partyName, setPartyName] = useState<string>(null);
+  const [maxGuests, setMaxGuests] = useState<Number>(null);
+  const [ageRestriction, setAgeRestriction] = useState<Number>(null);
+  //const [restaurant, setRestaurant] = useState<string>('Select Restaurant');
+  const restaurant = useSelector((state: RootState) => state.partyReducer.name);
 
   const handleTimeChange = (time, validTime) => {
     if (!validTime) return;
@@ -39,15 +52,58 @@ function CreateParty({ navigation }) {
   const onChangeTime = (event, value) => {
     setTime(value);
     if (Platform.OS === "android") {
-      SetTimePickerVisible(false);
+      setTimePickerVisible(false);
     }
   };
 
+  // useEffect(() => {
+  //   console.log("partyStartDate",partyStartDate);
+  //   console.log("time",time);
+  //   console.log("partyName",partyName);
+  //   console.log("maxGuests",maxGuests);
+  //   console.log("ageRestriction",ageRestriction);
+  // },[partyStartDate,time,partyName,maxGuests,ageRestriction])
+
+  async function onCreateHostParty() {
+    const user = await getUser();
+
+    console.log("Get into onCreateHostParty");
+
+    const createPartyData = {
+      name: partyName,
+      restaurant: restaurant,
+      apptDate: partyStartDate,
+      ageRestriction: Number(ageRestriction),
+      maxGuests: Number(maxGuests),
+      ownerId: user.user_id.toString(),
+    };
+
+    console.log("====================================");
+    console.log(`createPartyData: ${JSON.stringify(createPartyData)}`);
+    console.log("====================================");
+
+    try {
+      const accessToken = await getToken();
+
+      console.log("====================================");
+      console.log(`access Token: ${accessToken}`);
+      console.log("====================================");
+
+      await FoodFriendService.CreateHostParty(accessToken, createPartyData);
+      console.log("Create party Successfully!!");
+      navigation.goBack();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   return (
+    //<RestaurantContext.Provider value={{ restaurant, setRestaurant}}>
     <SafeAreaView className="relative h-full w-full bg-white">
       <Image
         className="absolute -top-36"
-        source={require("../../../assets/topBanner.png")}
+        source={require("../../../../assets/topBanner.png")}
         style={{ height: 200, width: 400, flex: 1 }}
       />
       <View className="top-8 mx-4 mt-4 flex flex-row items-center pb-5">
@@ -58,7 +114,7 @@ function CreateParty({ navigation }) {
         </Button>
         <Image
           className="left-2 top-1"
-          source={require("../../../assets/CreateParty.png")}
+          source={require("../../../../assets/CreateParty.png")}
           style={{ width: 50, height: 60, flex: 0.75, resizeMode: "contain" }}
         />
       </View>
@@ -75,6 +131,8 @@ function CreateParty({ navigation }) {
               className="top-2 h-10 flex-1 rounded-full border-2 border-green-500 px-[20px] text-left"
               placeholder="Enter name"
               keyboardType="default"
+              value={partyName}
+              onChangeText={(value) => setPartyName(value)}
             />
           </View>
           <View className="top-5 flex-1 pb-3">
@@ -88,15 +146,16 @@ function CreateParty({ navigation }) {
               style={{
                 flexDirection: "row",
               }}
+              className="items-center"
             >
               <PartyCalendar
-                setOpenCalendar={SetOpenCalender}
+                setOpenCalendar={setOpenCalender}
                 openCalendar={openCalendar}
                 partyStartDate={partyStartDate}
-                setPartyStartDate={SetPartyStartDate}
+                setPartyStartDate={setPartyStartDate}
               />
               <PartyTime
-                setTimePickerVisible={SetTimePickerVisible}
+                setTimePickerVisible={setTimePickerVisible}
                 isTimePickerVisible={isTimePickerVisible}
                 time={time}
                 onChangeTime={onChangeTime}
@@ -122,6 +181,12 @@ function CreateParty({ navigation }) {
                     placeholder="Select Number"
                     keyboardType="number-pad"
                     style={{ marginRight: 5, fontSize: 16 }}
+                    value={maxGuests?.toString()}
+                    onChangeText={(value) =>
+                      setMaxGuests(
+                        Number.isNaN(Number(value)) ? 0 : Number(value)
+                      )
+                    }
                   />
                 </View>
                 <View>
@@ -136,12 +201,18 @@ function CreateParty({ navigation }) {
                     placeholder="Select Number"
                     keyboardType="number-pad"
                     style={{ marginLeft: 5, fontSize: 16 }}
+                    value={ageRestriction?.toString()}
+                    onChangeText={(value) =>
+                      setAgeRestriction(
+                        Number.isNaN(Number(value)) ? 0 : Number(value)
+                      )
+                    }
                   />
                 </View>
               </View>
             </View>
             <View
-              className="top-5 h-20 flex-1 rounded-full border-2 border-green-500 px-[20px] text-left"
+              className="top-5 h-16 flex-1 rounded-full border-2 border-green-500 px-[20px] text-left"
               style={{
                 justifyContent: "space-around",
                 alignItems: "center",
@@ -151,18 +222,24 @@ function CreateParty({ navigation }) {
               <Text
                 className="text-green-500"
                 style={{
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: "500",
                 }}
               >
-                Select Restaurant
+                {restaurant}
               </Text>
-              <Ionicons
-                className="bg-green-500"
-                name="md-arrow-forward-circle"
-                size={48}
-                color="#2CBB54"
-              ></Ionicons>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate(FoodFriendRoutes.createPartyMap)
+                }
+              >
+                <Ionicons
+                  className="bg-green-500"
+                  name="md-arrow-forward-circle"
+                  size={48}
+                  color="#2CBB54"
+                ></Ionicons>
+              </Pressable>
             </View>
             <View
               className="top-10 flex-1 pb-3"
@@ -171,7 +248,10 @@ function CreateParty({ navigation }) {
                 alignItems: "center",
               }}
             >
-              <Pressable className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700">
+              <Pressable
+                className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                onPress={() => onCreateHostParty()}
+              >
                 <Text className="text-center text-lg font-semibold text-white">
                   Confirm
                 </Text>
@@ -184,6 +264,7 @@ function CreateParty({ navigation }) {
         </View>
       </ScrollView>
     </SafeAreaView>
+    //</RestaurantContext.Provider>
   );
 }
 

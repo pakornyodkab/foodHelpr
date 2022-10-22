@@ -16,7 +16,8 @@ import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import * as Linking from "expo-linking";
 import AuthService from "../../apis/auth";
 import MainRoutes from "../../routes/main";
-import { saveUser } from "../../libs/user";
+import AgeModal from "../../components/party/AgeModal";
+import { getUser, saveUser } from "../../libs/user";
 import UserService from "../../apis/user";
 
 //WebBrowser.maybeCompleteAuthSession();
@@ -31,6 +32,7 @@ export default function HomeScreen({ navigation }) {
   const [accessToken, setAccessToken] = React.useState<string>("");
   const [userInfo, setUserInfo] = React.useState<any>();
   const [stealCheckenToken, setStealChickenToken] = React.useState<string>("");
+  const [ageModal, setAgeModal] = React.useState<boolean>(false);
 
   // console.log('hello',discovery);
   // return <Text>
@@ -52,6 +54,11 @@ export default function HomeScreen({ navigation }) {
   //   },
   //   discovery
   // );
+
+  const ageValidation = async ()  => {
+    const user = await getUser();
+    return user.age <= 5;
+  }
 
   const getFoodHelprToken = async (googleToken: string) => {
     try {
@@ -102,31 +109,6 @@ export default function HomeScreen({ navigation }) {
   React.useEffect(() => {
     getUserData();
   }, [stealCheckenToken]);
-
-  function handleChatPress() {
-    const props = {
-      party: {
-        _id: "1",
-        name: "Let's Party",
-        restaurant: "",
-        memberList: [
-          {
-            user_id: 1,
-            name: "Anthony",
-          },
-          {
-            user_id: 2,
-            name: "Bryan",
-          },
-          {
-            user_id: 3,
-            name: "Yod",
-          },
-        ],
-      },
-    };
-    navigation.navigate(MainRoutes.chat, props);
-  }
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -245,9 +227,8 @@ export default function HomeScreen({ navigation }) {
                 </View>
               </Pressable>
               <Pressable
-                className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 opacity-40 active:scale-95 active:bg-green-700"
-                onPress={() => console.log("comming soon")}
-                disabled
+                className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                onPress={() => navigation.navigate(MainRoutes.foodFriend)}
               >
                 <View className="relative flex h-full justify-center">
                   <Text className="absolute left-4 text-white">
@@ -258,7 +239,7 @@ export default function HomeScreen({ navigation }) {
                   </Text>
                 </View>
               </Pressable>
-              <Pressable
+              {/* <Pressable
                 className="flex h-10 w-72 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
                 onPress={() => navigation.navigate(MainRoutes.createParty)}
               >
@@ -283,7 +264,7 @@ export default function HomeScreen({ navigation }) {
                     Let's Chat
                   </Text>
                 </View>
-              </Pressable>
+              </Pressable> */}
             </View>
             <View>
               <Pressable
@@ -300,6 +281,7 @@ export default function HomeScreen({ navigation }) {
           </>
         )}
       </View>
+      { ageValidation() && <AgeModal></AgeModal> }
     </View>
   );
 }

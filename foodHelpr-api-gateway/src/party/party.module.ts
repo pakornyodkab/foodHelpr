@@ -2,13 +2,13 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AppService } from 'src/app.service';
-import { AuthModule } from 'src/auth/auth.module';
-import { AuthService } from 'src/auth/auth.service';
-import { RestaurantService } from 'src/restaurant/restaurant.service';
+import { AppService } from '../app.service';
+import { AuthModule } from '../auth/auth.module';
+import { AuthService } from '../auth/auth.service';
+import { RestaurantService } from '../restaurant/restaurant.service';
 import { PartyController } from './party.controller';
 import { PartyService } from './party.service';
-import { RestaurantModule } from 'src/restaurant/restaurant.module';
+import { RestaurantModule } from '../restaurant/restaurant.module';
 
 @Module({
   imports: [
