@@ -75,6 +75,11 @@ const Notification = () => {
           screen: FoodFriendRoutes.waitingLists,
         });
         break;
+      case "goBoom":
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.myParty,
+        });
+        break;
       default:
         navigate(MainRoutes.home);
     }

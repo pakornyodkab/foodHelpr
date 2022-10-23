@@ -65,8 +65,11 @@ export class PartyController {
 
   @Delete('delete-host-party/:id')
   @UseGuards(JwtAuthGuard)
-  deleteHostParty(@Param('id') id: string) {
-    return this.partyService.deleteHostParty(id);
+  deleteHostParty(
+    @Param('id') id: string,
+    @GetCurrentUserId() userId: number,
+    ) {
+    return this.partyService.deleteHostParty(id, userId);
   }
 
   @Delete('delete-all-host-party')

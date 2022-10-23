@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { AcceptedRequest } from './dto/acceptedRequest';
 import { RoomCreatedRequest } from './dto/createdRoomRequest';
 import { LeaveRequest } from './dto/leaveRequest';
+import { PartyGoBoom } from './dto/partyGoBoomRequest';
 import { RejectedRequest } from './dto/rejectedRequest';
 import { userIdExpoTokenPair } from './dto/userIdExpoTokenPair';
 import { WannaJoinRequest } from './dto/wannaJoinRequest';
@@ -55,5 +56,10 @@ export class AppController {
   @EventPattern('remove_noti_token')
   async removeNotiToken(msg: userIdExpoTokenPair) {
     return await this.appService.removeNotiToken(msg);
+  }
+
+  @EventPattern('party_go_boom')
+  async partyGoBoom(msg: PartyGoBoom) {
+    return await this.appService.partyGoBoom(msg);
   }
 }

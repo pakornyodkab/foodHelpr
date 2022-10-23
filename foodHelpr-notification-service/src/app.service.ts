@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { AcceptedRequest } from './dto/acceptedRequest';
-import { RoomCreatedRequest } from './dto/createdRoomRequest';
 import { LeaveRequest } from './dto/leaveRequest';
 import { RejectedRequest } from './dto/rejectedRequest';
 import { WannaJoinRequest } from './dto/wannaJoinRequest';
-import { messaging } from 'firebase-admin';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { NotificationToken } from './app.model';
 import { userIdExpoTokenPair } from './dto/userIdExpoTokenPair';
 import { HttpService } from '@nestjs/axios';
+import { PartyGoBoom } from './dto/partyGoBoomRequest';
 
 @Injectable()
 export class AppService {
@@ -313,5 +312,39 @@ export class AppService {
     // }
     console.log('remove token successful');
     return { msg: 'Add successful' };
+  }
+
+  async partyGoBoom(msg: PartyGoBoom) {
+    const { room, hostId } = msg;
+    const index = room.memberList.indexOf(hostId, 0);
+    if (index > -1) {
+      room.memberList.splice(index, 1);
+    }
+    const notiTokens = await this.notificationTokenModel.find({
+      userId: { $in: room.memberList },
+    });
+    const targetNoti = notiTokens.map((e) => e.expoToken).flat();
+    const notiMessage = 'The party you have been the member had gone boom.';
+
+    //message for expo noti
+    const message = {
+      title: 'FoodHelpr',
+      to: targetNoti,
+      body: notiMessage,
+      data: {
+        action: 'goBoom',
+        room: room,
+      },
+    };
+
+    await this.httpService.axiosRef.post(
+      'https://exp.host/--/api/v2/push/send',
+      message,
+    );
+
+    console.log('partyGoBoomNoti has been sent.');
+    console.log('Noti message', notiMessage);
+
+    return msg;
   }
 }

@@ -61,7 +61,16 @@ export class PartyService {
     return hostPartyResult;
   }
 
-  deleteHostParty(id: string) {
+  async deleteHostParty(id: string, userId: number) {
+    let party;
+      await this.getPartyById(id).forEach(
+        (partyResult) => (party = partyResult),
+      );
+    const sendMessage = {
+      room: party,
+      hostId: userId,
+    }
+    this.notificationClient.emit('party_go_boom', sendMessage);
     return this.foodFriendService.send<String>({ cmd: 'deleteHostParty' }, id);
   }
 
