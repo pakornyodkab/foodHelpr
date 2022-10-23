@@ -316,6 +316,7 @@ export class AppService {
 
   async partyGoBoom(msg: PartyGoBoom) {
     const { room, hostId } = msg;
+    console.log('room member', room.memberList);
     const index = room.memberList.indexOf(hostId, 0);
     if (index > -1) {
       room.memberList.splice(index, 1);
@@ -324,7 +325,8 @@ export class AppService {
       userId: { $in: room.memberList },
     });
     const targetNoti = notiTokens.map((e) => e.expoToken).flat();
-    const notiMessage = 'The party you have been the member had gone boom.';
+    console.log('target noti num', targetNoti.length);
+    const notiMessage = 'The party you joined has been destroied by host.';
 
     //message for expo noti
     const message = {
