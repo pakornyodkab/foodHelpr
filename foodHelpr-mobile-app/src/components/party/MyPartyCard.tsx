@@ -6,36 +6,11 @@ import LeaveRoomModal from "./LeaveRoomModal";
 import MainRoutes from "../../routes/main";
 import { getUser } from "../../libs/user";
 
-const MyPartyCard = ({ navigation, party }) => {
+const MyPartyCard = ({ navigation, party, refreshRoom }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
 
   function handleChatPress() {
-    // const props = {
-    //   party: {
-    //     _id: "1",
-    //     name: "Let's Party",
-    //     restaurant: "",
-    //     memberList: [
-    //       {
-    //         user_id: 1,
-    //         name: "Anthony",
-    //       },
-    //       {
-    //         user_id: 2,
-    //         name: "Bryan",
-    //       },
-    //       {
-    //         user_id: 3,
-    //         name: "Yod",
-    //       },
-    //       {
-    //         user_id: 16,
-    //         name: "Aof",
-    //       },
-    //     ],
-    //   },
-    // };
     navigation.navigate(MainRoutes.chat, { party: party });
   }
 
@@ -110,6 +85,7 @@ const MyPartyCard = ({ navigation, party }) => {
         onClose={onClose}
         partyId={party._id}
         isOwner={isOwner}
+        refreshRoom={refreshRoom}
       ></LeaveRoomModal>
     </View>
   );

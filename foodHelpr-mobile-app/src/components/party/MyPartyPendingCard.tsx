@@ -24,11 +24,19 @@ const MyPartyPendingCard = ({ party }) => {
       </View>
 
       <View className="flex-row items-center justify-between">
-        <Image
-          source={require("../../../assets/member.png")}
-          style={{ height: 20 }}
-          className=" rounded-md"
-        />
+      <View className="flex flex-row gap-1">
+          {party.memberList.map((member) => (
+            <View className="h-6 w-6" key={member.user_id}>
+              <Image
+                key={member.user_id}
+                source={{
+                  uri: member.profile_picture,
+                }}
+                className="flex-1 rounded-full object-cover"
+              />
+            </View>
+          ))}
+        </View>
         <View className="flex-row">
           <View className="rounded-lg bg-blue-500 px-2 py-1 shadow-md duration-150 hover:shadow-lg focus:shadow-lg active:scale-95 active:bg-red-700 active:shadow-lg">
             <Text className="text-white">Pending</Text>

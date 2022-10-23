@@ -55,17 +55,25 @@ const Notification = () => {
     const { action } = response.notification.request.content.data;
     switch (action) {
       case "accept":
-        navigate(FoodFriendRoutes.myParty);
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.myParty,
+        });
         break;
       case "reject":
-        navigate(FoodFriendRoutes.waitingLists);
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.waitingLists,
+        });
         break;
       case "leave":
-        navigate(FoodFriendRoutes.myParty);
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.myParty,
+        });
         break;
       case "join":
         //wannajoin
-        navigate(FoodFriendRoutes.waitingLists);
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.waitingLists,
+        });
         break;
       default:
         navigate(MainRoutes.home);

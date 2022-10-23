@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ActivityIndicator,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Button from "../../../components/common/Button";
@@ -22,9 +23,17 @@ const WaitingList = ({ navigation }) => {
     []
   );
   const [filteredHostParty, setFilteredHostParty] = useState<IParty[]>([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [color, changeColor] = useState("red");
 
   const handleOnPressBack = () => {
     navigation.goBack();
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getWaitingList();
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -115,7 +124,12 @@ const WaitingList = ({ navigation }) => {
           </Text>
         </View>
       ) : (
-        <ScrollView className="top-5 p-5">
+        <ScrollView
+          className="top-5 p-5"
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {filteredHostParty.map((party) =>
             party.pendingMemberList
               .map((user) => (

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -27,6 +33,8 @@ import { RootState } from "../../../redux";
 import { getToken } from "../../../libs/token";
 import FoodFriendService from "../../../apis/foodFriend";
 import { getUser } from "../../../libs/user";
+import IUser from "../../../models/User";
+import AgeRestrictionModal from "../../../components/party/AgeRestrictionModal";
 
 function CreateParty({ navigation }) {
   const handleOnPressBack = () => {
@@ -40,8 +48,11 @@ function CreateParty({ navigation }) {
   const [partyName, setPartyName] = useState<string>(null);
   const [maxGuests, setMaxGuests] = useState<Number>(null);
   const [ageRestriction, setAgeRestriction] = useState<Number>(null);
+  const [ageRestrictionModalVisible, SetAgeRestrictionModalVisible] =
+    useState<boolean>(false);
   //const [restaurant, setRestaurant] = useState<string>('Select Restaurant');
   const restaurant = useSelector((state: RootState) => state.partyReducer);
+  const userRef = useRef<IUser>();
 
   const handleTimeChange = (time, validTime) => {
     if (!validTime) return;
@@ -56,19 +67,23 @@ function CreateParty({ navigation }) {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("partyStartDate",partyStartDate);
-  //   console.log("time",time);
-  //   console.log("partyName",partyName);
-  //   console.log("maxGuests",maxGuests);
-  //   console.log("ageRestriction",ageRestriction);
-  // },[partyStartDate,time,partyName,maxGuests,ageRestriction])
+  const getMyUser = async () => {
+    userRef.current = await getUser();
+  };
+
+  const handleAgeRestrictionModal = (status) => {
+    SetAgeRestrictionModalVisible(status);
+  };
+
+  useEffect(() => {
+    getMyUser();
+  }, []);
 
   async function onCreateHostParty() {
-    const user = await getUser();
-
-    console.log("Get into onCreateHostParty");
-
+    if (ageRestriction > userRef.current.age) {
+      handleAgeRestrictionModal(true);
+      return;
+    }
     const createPartyData = {
       name: partyName,
       restaurant: restaurant.id,
@@ -79,25 +94,14 @@ function CreateParty({ navigation }) {
       ),
       ageRestriction: Number(ageRestriction),
       maxGuests: Number(maxGuests),
-      ownerId: user.user_id.toString(),
+      ownerId: userRef.current.user_id.toString(),
     };
-
-    console.log("====================================");
-    console.log(`createPartyData: ${JSON.stringify(createPartyData)}`);
-    console.log("====================================");
-
     try {
       const accessToken = await getToken();
-      console.log("====================================");
-      console.log(`JWT: ${accessToken}`);
-      console.log("====================================");
       const foodFriendService = new FoodFriendService(accessToken);
       const response = await foodFriendService.CreateHostParty(createPartyData);
-      console.log("====================================");
-      console.log(response);
-      console.log("====================================");
       console.log("Create party Successfully!!");
-      navigation.goBack();
+      navigation.navigate(FoodFriendRoutes.myParty);
     } catch (error) {
       console.error(error);
       throw error;
@@ -107,6 +111,12 @@ function CreateParty({ navigation }) {
   return (
     //<RestaurantContext.Provider value={{ restaurant, setRestaurant}}>
     <SafeAreaView className="relative h-full w-full bg-white">
+      <AgeRestrictionModal
+        visible={ageRestrictionModalVisible}
+        onClose={() => {
+          handleAgeRestrictionModal(false);
+        }}
+      />
       <Image
         className="absolute -top-36"
         source={require("../../../../assets/topBanner.png")}

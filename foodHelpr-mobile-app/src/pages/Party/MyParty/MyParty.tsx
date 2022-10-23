@@ -7,6 +7,7 @@ import {
   Pressable,
   TextInput,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Button from "../../../components/common/Button";
@@ -21,10 +22,20 @@ import HostAcceptDenyCard from "../../../components/party/HostAcceptDenyCard";
 const MyParty = ({ navigation }) => {
   const [partyList, setPartyList] = useState<IParty[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [color, changeColor] = useState("red");
 
   function handleOnPressBack() {
     navigation.goBack();
   }
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      changeColor("green");
+      setRefreshing(false);
+    }, 2000);
+  };
 
   async function getMyPartyList() {
     setIsLoading(true);
@@ -98,11 +109,20 @@ const MyParty = ({ navigation }) => {
           </Text>
         </View>
       ) : (
-        <ScrollView className="top-5 p-5">
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          className="top-5 mb-5 p-5"
+        >
           {partyList.map((party) => {
             return (
               //<MyPartyPendingCard party={party} />
-              <MyPartyCard navigation={navigation} party={party}></MyPartyCard>
+              <MyPartyCard
+                navigation={navigation}
+                party={party}
+                refreshRoom={getMyPartyList}
+              ></MyPartyCard>
               //<HostAcceptDenyCard partyName={party.name} guestName="test" />
             );
           })}

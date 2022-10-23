@@ -137,6 +137,7 @@ export default function HomeScreen({ navigation }) {
     const googleApis = new GoogleApis();
     const { data } = await googleApis.GetUserData(stealCheckenToken);
     setUserInfo(data);
+    console.log("userInfo picture", userInfo.picture);
   };
 
   React.useEffect(() => {

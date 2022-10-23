@@ -3,7 +3,7 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import UserService from "../../apis/user";
 import { getToken } from "../../libs/token";
-import { getUser } from "../../libs/user";
+import { getUser, saveUser } from "../../libs/user";
 import PartyCalendar from "./PartyCalendar";
 
 const AgeModal = () => {
@@ -29,6 +29,8 @@ const AgeModal = () => {
       console.log(error);
       console.log("====================================");
     }
+    const myUserResponse = await userService.GetMyUser();
+    await saveUser(myUserResponse.data);
   };
 
   return (

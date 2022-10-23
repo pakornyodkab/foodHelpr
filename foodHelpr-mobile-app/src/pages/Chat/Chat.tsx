@@ -118,7 +118,10 @@ const Chat = ({ route, navigation }) => {
       user: {
         _id: message.senderData.user_id.toString(),
         name: message.senderData.firstname + " " + message.senderData.lastname,
-        avatar: avatar,
+        avatar:
+          avatar === "N/A"
+            ? "https://icon-library.com/images/default-user-icon/default-user-icon-8.jpg"
+            : avatar,
       },
     };
   }

@@ -75,16 +75,16 @@ const PartyTime = ({
               />
               <View style={{ alignItems: "center", justifyContent: "center" }}>
                 <Button
+                  className="items-center bg-green-500 "
                   onPress={() => setTimePickerVisible(false)}
                   style={{
                     borderRadius: 15,
                     padding: 10,
                     elevation: 2,
-                    backgroundColor: "#2CBB54",
-                    width: 100,
+                    width: 70,
                   }}
                 >
-                  <Text>Hide Modal</Text>
+                  <Text>OK</Text>
                 </Button>
               </View>
             </View>

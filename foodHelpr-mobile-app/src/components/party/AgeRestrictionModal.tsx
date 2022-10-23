@@ -16,34 +16,9 @@ import { getUser } from "../../libs/user";
 import Button from "../common/Button";
 import PartyCard from "./PartyCard";
 
-const LeaveRoomModal = ({
-  isVisible,
-  onClose,
-  partyId,
-  isOwner,
-  refreshRoom,
-}) => {
-  const onDeleteRoom = async () => {
-    const user = await getUser();
-    try {
-      const accessToken = await getToken();
-      const foodFriendService = new FoodFriendService(accessToken);
-      isOwner
-        ? await foodFriendService.HostEndParty({ partyId })
-        : await foodFriendService.GuestLeaveParty({
-            partyId: partyId,
-            memberId: user.user_id.toString(),
-          });
-      console.log("====================================");
-      console.log("Leave|End Party leawwww");
-      console.log("====================================");
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
+const AgeRestrictionModal = ({ onClose, visible }) => {
   return (
-    <Modal animationType="fade" transparent={true} visible={isVisible}>
+    <Modal animationType="fade" transparent={true} visible={visible}>
       <View style={styles.centeredView}>
         <View style={styles.modalView} className="mb-10 flex space-y-5">
           <View className="flex-row items-center space-x-2">
@@ -52,31 +27,19 @@ const LeaveRoomModal = ({
             </Text>
 
             <Text className="text-lg font-semibold text-green-500">
-              Are you sure ?
+              False Input
             </Text>
           </View>
           <Text className="w-48 flex-wrap text-green-500">
-            Do you want to leave this room ? This process cannot be undoned
+            Age Restriction cannot more than your age
           </Text>
           <View className="flex-row items-end justify-between">
             <View></View>
             <Button
-              className="rounded-lg bg-green-500 px-2 py-1 shadow-md duration-150 hover:shadow-lg focus:shadow-lg active:scale-95 active:bg-green-700 active:shadow-lg"
+              className="rounded-lg bg-green-500 px-2 py-1 shadow-md duration-150 hover:shadow-lg focus:shadow-lg active:scale-95 active:bg-red-700 active:shadow-lg"
               onPress={() => onClose()}
             >
-              <Text className="text-white">Cancel</Text>
-            </Button>
-            <Button
-              className="rounded-lg bg-red-500 px-2 py-1 shadow-md duration-150 hover:shadow-lg focus:shadow-lg active:scale-95 active:bg-red-700 active:shadow-lg"
-              onPress={async () => {
-                await onDeleteRoom();
-                onClose();
-                refreshRoom();
-              }}
-            >
-              <Text className="text-white">
-                {isOwner ? "End Room" : "Leave Room"}
-              </Text>
+              <Text className="text-white">OK</Text>
             </Button>
           </View>
         </View>
@@ -109,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LeaveRoomModal;
+export default AgeRestrictionModal;
