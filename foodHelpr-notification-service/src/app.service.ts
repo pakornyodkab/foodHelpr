@@ -316,16 +316,13 @@ export class AppService {
 
   async partyGoBoom(msg: PartyGoBoom) {
     const { room, hostId } = msg;
-    console.log('room member', room.memberList);
-    const index = room.memberList.indexOf(hostId, 0);
-    if (index > -1) {
-      room.memberList.splice(index, 1);
-    }
+    const roomMemberNoHost = room.memberList.filter((element) => {
+      return element !== hostId.toString();
+    });
     const notiTokens = await this.notificationTokenModel.find({
-      userId: { $in: room.memberList },
+      userId: { $in: roomMemberNoHost },
     });
     const targetNoti = notiTokens.map((e) => e.expoToken).flat();
-    console.log('target noti num', targetNoti.length);
     const notiMessage = 'The party you joined has been destroied by host.';
 
     //message for expo noti

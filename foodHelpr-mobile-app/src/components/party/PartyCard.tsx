@@ -6,14 +6,23 @@ import moment from "moment";
 import IParty from "../../models/Party";
 import FoodFriendService from "../../apis/foodFriend";
 import { saveToken, getToken } from "../../libs/token";
+import { useNavigation } from "@react-navigation/native";
+import FoodFriendRoutes from "../../routes/foodFriend";
 
 type PartyCardProp = { party: IParty };
 
 export default function PartyCard({ party }: PartyCardProp) {
+  const navigation = useNavigation();
+
+  function navigate(name, params = {}) {
+    navigation.navigate(name as never, params as never);
+  }
+
   const onJoinPressedHandler = async () => {
     const accessToken = await getToken();
     const foodFriendService = new FoodFriendService(accessToken);
     await foodFriendService.GuestJoinParty({ partyId: party._id });
+    navigate(FoodFriendRoutes.waitingLists);
   };
 
   return (

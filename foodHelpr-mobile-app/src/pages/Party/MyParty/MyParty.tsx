@@ -18,6 +18,8 @@ import { getToken } from "../../../libs/token";
 import IParty from "../../../models/Party";
 import MyPartyPendingCard from "../../../components/party/MyPartyPendingCard";
 import HostAcceptDenyCard from "../../../components/party/HostAcceptDenyCard";
+import FoodFriendRoutes from "../../../routes/foodFriend";
+import { getUser } from "../../../libs/user";
 
 const MyParty = ({ navigation }) => {
   const [partyList, setPartyList] = useState<IParty[]>([]);
@@ -26,7 +28,8 @@ const MyParty = ({ navigation }) => {
   const [color, changeColor] = useState("red");
 
   function handleOnPressBack() {
-    navigation.goBack();
+    //navigation.goBack();
+    navigation.navigate(FoodFriendRoutes.main);
   }
 
   const onRefresh = () => {
@@ -40,9 +43,11 @@ const MyParty = ({ navigation }) => {
   async function getMyPartyList() {
     setIsLoading(true);
     try {
+      const user = await getUser();
       const accessToken = await getToken();
       const foodFriendService = new FoodFriendService(accessToken);
       const res = await foodFriendService.GetMyParty();
+
       const partiesData: IParty[] = res.data.map((partyRes) => {
         const { restaurant, ...rest } = partyRes;
 
@@ -65,7 +70,13 @@ const MyParty = ({ navigation }) => {
         };
       });
 
-      setPartyList(partiesData);
+      const myParty = partiesData.filter((party) => {
+        return party.memberList.some(
+          (member) => member.user_id === user.user_id
+        );
+      });
+
+      setPartyList(myParty);
     } catch (error) {
       console.log(error);
     } finally {

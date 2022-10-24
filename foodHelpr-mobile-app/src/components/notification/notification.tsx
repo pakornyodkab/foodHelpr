@@ -75,6 +75,7 @@ const Notification = () => {
           screen: FoodFriendRoutes.waitingLists,
         });
         break;
+      // Host ends room
       case "goBoom":
         navigate(MainRoutes.foodFriend, {
           screen: FoodFriendRoutes.myParty,

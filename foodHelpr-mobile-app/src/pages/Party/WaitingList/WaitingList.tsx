@@ -16,6 +16,7 @@ import FoodFriendService from "../../../apis/foodFriend";
 import IParty from "../../../models/Party";
 import { getUser } from "../../../libs/user";
 import HostAcceptDenyCard from "../../../components/party/HostAcceptDenyCard";
+import FoodFriendRoutes from "../../../routes/foodFriend";
 
 const WaitingList = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -27,7 +28,8 @@ const WaitingList = ({ navigation }) => {
   const [color, changeColor] = useState("red");
 
   const handleOnPressBack = () => {
-    navigation.goBack();
+    //navigation.goBack();
+    navigation.navigate(FoodFriendRoutes.main);
   };
 
   const onRefresh = async () => {

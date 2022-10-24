@@ -28,75 +28,76 @@ import PartyDistancePanel from "../../../components/party/PartyDistancePanel";
 import FoodFriendService from "../../../apis/foodFriend";
 import { getToken } from "../../../libs/token";
 import IRestaurant from "../../../models/Restaurant";
+import FoodFriendRoutes from "../../../routes/foodFriend";
 
-const mockParties = [
-  {
-    _id: "1",
-    partyName: "Let's gooooo",
-    restaurant: {
-      id: "632c5e0170317b4a00def2e5",
-      restaurantName: "Thongsmith (ทองสมิทธ์)",
-      tags: [],
-      imageUrls: [],
-      rating: 0,
-      recommendedDishes: [],
-      address: "",
-      coordinate: {
-        _id: "6349a6a9a35fbafa3270712a",
-        latitude: 13.74686293255921,
-        longitude: 100.53480742047664,
-      },
-      deliveryInfo: [],
-    },
-    apptDate: "",
-    memberList: [
-      {
-        user_id: "1",
-        name: "Jojo",
-      },
-      {
-        user_id: "2",
-        name: "Goku",
-      },
-    ],
-    ageRestriction: 15,
-    maxGuests: 7,
-    ownerId: "",
-  },
-  {
-    _id: "2",
-    partyName: "Party's time",
-    restaurant: {
-      id: "632c5e0270317b4a00def2e7",
-      restaurantName: "สวนผัก โอ้กะจู๋ (Ohkajhu)",
-      tags: [],
-      imageUrls: [],
-      rating: 0,
-      recommendedDishes: [],
-      address: "",
-      coordinate: {
-        _id: "6349a6a9a35fbafa3270712a",
-        latitude: 13.745417660339225,
-        longitude: 100.53380164686013,
-      },
-      deliveryInfo: [],
-    },
-    apptDate: "",
-    memberList: [
-      {
-        user_id: "1",
-        name: "Jojo",
-      },
-      {
-        user_id: "2",
-        name: "Goku",
-      },
-    ],
-    ageRestriction: 15,
-    maxGuests: 7,
-    ownerId: "",
-  },
-];
+// const mockParties = [
+//   {
+//     _id: "1",
+//     partyName: "Let's gooooo",
+//     restaurant: {
+//       id: "632c5e0170317b4a00def2e5",
+//       restaurantName: "Thongsmith (ทองสมิทธ์)",
+//       tags: [],
+//       imageUrls: [],
+//       rating: 0,
+//       recommendedDishes: [],
+//       address: "",
+//       coordinate: {
+//         _id: "6349a6a9a35fbafa3270712a",
+//         latitude: 13.74686293255921,
+//         longitude: 100.53480742047664,
+//       },
+//       deliveryInfo: [],
+//     },
+//     apptDate: "",
+//     memberList: [
+//       {
+//         user_id: "1",
+//         name: "Jojo",
+//       },
+//       {
+//         user_id: "2",
+//         name: "Goku",
+//       },
+//     ],
+//     ageRestriction: 15,
+//     maxGuests: 7,
+//     ownerId: "",
+//   },
+//   {
+//     _id: "2",
+//     partyName: "Party's time",
+//     restaurant: {
+//       id: "632c5e0270317b4a00def2e7",
+//       restaurantName: "สวนผัก โอ้กะจู๋ (Ohkajhu)",
+//       tags: [],
+//       imageUrls: [],
+//       rating: 0,
+//       recommendedDishes: [],
+//       address: "",
+//       coordinate: {
+//         _id: "6349a6a9a35fbafa3270712a",
+//         latitude: 13.745417660339225,
+//         longitude: 100.53380164686013,
+//       },
+//       deliveryInfo: [],
+//     },
+//     apptDate: "",
+//     memberList: [
+//       {
+//         user_id: "1",
+//         name: "Jojo",
+//       },
+//       {
+//         user_id: "2",
+//         name: "Goku",
+//       },
+//     ],
+//     ageRestriction: 15,
+//     maxGuests: 7,
+//     ownerId: "",
+//   },
+// ];
 
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
@@ -365,7 +366,8 @@ export default function SearchParty({ navigation }) {
       return;
     }
 
-    navigation.goBack();
+    //navigation.goBack();
+    navigation.navigate(FoodFriendRoutes.main);
   }
 
   return (

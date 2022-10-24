@@ -38,7 +38,8 @@ import AgeRestrictionModal from "../../../components/party/AgeRestrictionModal";
 
 function CreateParty({ navigation }) {
   const handleOnPressBack = () => {
-    navigation.goBack();
+    //navigation.goBack();
+    navigation.navigate(FoodFriendRoutes.main);
   };
 
   const [openCalendar, setOpenCalender] = useState(false);

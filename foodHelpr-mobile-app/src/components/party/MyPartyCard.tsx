@@ -24,10 +24,6 @@ const MyPartyCard = ({ navigation, party, refreshRoom }) => {
 
   const checkOwnerParty = async () => {
     const user = await getUser();
-    console.log("====================================");
-    console.log(`UserId: ${user.user_id.toString()}`);
-    console.log(`OwnerId: ${party.ownerId}`);
-    console.log("====================================");
     setIsOwner(party.ownerId === user.user_id.toString());
   };
 
