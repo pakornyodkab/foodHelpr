@@ -41,8 +41,14 @@ export class PartyController {
 
   @Get('get-party-by-id/:id')
   @UseGuards(JwtAuthGuard)
-  async getPartyById(@Param('id') id: string) {
-    return await this.partyService.getPartyById(id);
+  getPartyById(@Param('id') id: string) {
+    return this.partyService.getPartyById(id);
+  }
+
+  @Get('get-party-list-by-user-id')
+  @UseGuards(JwtAuthGuard)
+  async getPartyListByUserId(@GetCurrentUserId() userId: number) {
+    return await this.partyService.getPartyListByUserId(userId.toString());
   }
 
   @Post('create-host-party')
@@ -59,8 +65,11 @@ export class PartyController {
 
   @Delete('delete-host-party/:id')
   @UseGuards(JwtAuthGuard)
-  deleteHostParty(@Param('id') id: string) {
-    return this.partyService.deleteHostParty(id);
+  deleteHostParty(
+    @Param('id') id: string,
+    @GetCurrentUserId() userId: number,
+    ) {
+    return this.partyService.deleteHostParty(id, userId);
   }
 
   @Delete('delete-all-host-party')
@@ -79,12 +88,17 @@ export class PartyController {
   @UseGuards(JwtAuthGuard)
   async getGuestFindParty(
     @GetCurrentUserId() userId: number,
-    @Body() guestFindPartyDto: Omit<GuestFindPartyDto, 'userId'>,
+    @Query('distance') distance: number,
+    @Query('lat') lat: number,
+    @Query('lng') lng: number,
   ) {
     return await this.partyService.getGuestFindParty({
       userId: userId.toString(),
-      distance: guestFindPartyDto.distance,
-      location: guestFindPartyDto.location,
+      distance: distance,
+      location: {
+        lat: lat,
+        lng: lng,
+      },
     });
   }
 

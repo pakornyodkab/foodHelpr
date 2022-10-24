@@ -26,7 +26,9 @@ export class AuthenticatedSocketIoAdapter extends IoAdapter {
       try {
         if (socket.handshake?.headers?.authorization) {
           const token = socket.handshake.headers.authorization.split(' ')[1];
+          console.log('test1', token);
           const verified = token && (await this.authService.verifyJwt(token));
+          console.log('test2', verified);
           if (verified) {
             socket.user = {
               token: token,

@@ -4,6 +4,7 @@ const FoodFriendRoutes = {
   searchParty: "Search Party",
   myParty: "My Party",
   createPartyMap: "Create Party Map",
+  waitingLists: "Waiting Lists",
 };
 
 export default FoodFriendRoutes;

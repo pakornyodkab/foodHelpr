@@ -60,6 +60,9 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   @Patch('update-user-by-id/:id')
   editUserById(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    console.log('====================================');
+    console.log(`GET into update ${id}`);
+    console.log('====================================');
     return this.appService.editUserById(id, updateUserDto);
   }
 

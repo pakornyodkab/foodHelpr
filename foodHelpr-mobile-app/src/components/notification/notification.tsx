@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Notifications from "expo-notifications";
 import { Platform, View, Text } from "react-native";
+import MainRoutes from "../../routes/main";
+import { useNavigation } from "@react-navigation/native";
+import FoodFriendRoutes from "../../routes/foodFriend";
 
 const Notification = () => {
   Notifications.setNotificationHandler({
@@ -13,22 +16,74 @@ const Notification = () => {
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState({});
+  const notificationListener = useRef(null);
+  const responseListener = useRef(null);
+  const navigation = useNavigation();
+
+  function navigate(name, params = {}) {
+    navigation.navigate(name as never, params as never);
+  }
 
   useEffect(() => {
     console.log("Run Use Effect In Notification");
     registerForPushNotificationsAsync();
-    Notifications.addNotificationReceivedListener(_handleNotification);
-    Notifications.addNotificationResponseReceivedListener(
-      _handleNotificationResponse
-    );
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(_handleNotification);
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(
+        _handleNotificationResponse
+      );
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   const _handleNotification = (notification) => {
     setNotification(notification);
+    console.log("Handle Noti");
+    if (notification.origin === "selected") {
+      console.log("Handle Noti in If");
+      navigate(MainRoutes.home);
+    }
   };
 
+  //TODO: noti when party go boom
   const _handleNotificationResponse = (response) => {
-    console.log(response);
+    const { action } = response.notification.request.content.data;
+    switch (action) {
+      case "accept":
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.myParty,
+        });
+        break;
+      case "reject":
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.waitingLists,
+        });
+        break;
+      case "leave":
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.myParty,
+        });
+        break;
+      case "join":
+        //wannajoin
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.waitingLists,
+        });
+        break;
+      // Host ends room
+      case "goBoom":
+        navigate(MainRoutes.foodFriend, {
+          screen: FoodFriendRoutes.myParty,
+        });
+        break;
+      default:
+        navigate(MainRoutes.home);
+    }
   };
 
   const registerForPushNotificationsAsync = async () => {

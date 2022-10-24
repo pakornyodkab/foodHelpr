@@ -9,7 +9,11 @@ import { IngredientModule } from './ingredient/ingredient.module';
 config();
 
 @Module({
-  imports: [RecipeModule,MongooseModule.forRoot(process.env.DATABASE_URL), IngredientModule],
+  imports: [
+    RecipeModule,
+    MongooseModule.forRoot(process.env.DATABASE_URL),
+    IngredientModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

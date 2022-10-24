@@ -32,6 +32,8 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/platform-socket.io": "^9.1.4",
     "@nestjs/websockets": "^9.1.4",
+    "amqp-connection-manager": "^4.1.7",
+    "amqplib": "^0.10.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "dotenv": "^16.0.2",

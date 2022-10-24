@@ -1,9 +1,7 @@
 import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { throws } from 'assert';
 import { CreateHostPartyDto } from './dto/createHostParty.dto';
 import { PartyService } from './party.service';
-import { RestaurantNameRequest } from './dto/restaurantNameRequest';
 import { HostPartyActionDto } from './dto/hostPartyAction.dto';
 import { GuestFindPartyDto } from './dto/guestFindParty.dto';
 import { GuestJoinPartyDto } from './dto/guestJoinParty.dto';
@@ -27,6 +25,11 @@ export class PartyController {
   @MessagePattern({ cmd: 'getAllParty' })
   getAllParty() {
     return this.partyService.getAllParty();
+  }
+
+  @MessagePattern({ cmd: 'getPartyListByUserId' })
+  getPartyListByUserId(id: string) {
+    return this.partyService.getPartyListByUserId(id);
   }
 
   @MessagePattern({ cmd: 'getPartyById' })
@@ -67,7 +70,7 @@ export class PartyController {
 
   @MessagePattern({ cmd: 'guestLeaveParty' })
   guestLeaveParty(guestLeavePartyDto: GuestLeavePartyDto) {
-    return this.partyService.guestLeaveParty(guestLeavePartyDto)
+    return this.partyService.guestLeaveParty(guestLeavePartyDto);
   }
 
   @MessagePattern({ cmd: 'hostPartyAction' })
@@ -75,8 +78,8 @@ export class PartyController {
     return this.partyService.hostPartyAction(hostPartyActionDto);
   }
 
-  @MessagePattern({ cmd: 'getGuestPartyViewModel'})
-  getGuestPartyViewModel(){
+  @MessagePattern({ cmd: 'getGuestPartyViewModel' })
+  getGuestPartyViewModel() {
     this.LOGGER.log('Call Get Guest Party View Model');
     return this.partyService.getGuestPartyViewModel();
   }

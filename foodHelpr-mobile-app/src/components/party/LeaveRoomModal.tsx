@@ -10,12 +10,36 @@ import {
   Image,
 } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
+import FoodFriendService from "../../apis/foodFriend";
+import { getToken } from "../../libs/token";
+import { getUser } from "../../libs/user";
 import Button from "../common/Button";
 import PartyCard from "./PartyCard";
 
-const LeaveRoomModal = ({ isVisible, onClose }) => {
-  const onDeleteRoom = () => {
-    console.log("Leave|End Room");
+const LeaveRoomModal = ({
+  isVisible,
+  onClose,
+  partyId,
+  isOwner,
+  refreshRoom,
+}) => {
+  const onDeleteRoom = async () => {
+    const user = await getUser();
+    try {
+      const accessToken = await getToken();
+      const foodFriendService = new FoodFriendService(accessToken);
+      isOwner
+        ? await foodFriendService.HostEndParty({ partyId })
+        : await foodFriendService.GuestLeaveParty({
+            partyId: partyId,
+            memberId: user.user_id.toString(),
+          });
+      console.log("====================================");
+      console.log("Leave|End Party leawwww");
+      console.log("====================================");
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   return (
@@ -44,9 +68,15 @@ const LeaveRoomModal = ({ isVisible, onClose }) => {
             </Button>
             <Button
               className="rounded-lg bg-red-500 px-2 py-1 shadow-md duration-150 hover:shadow-lg focus:shadow-lg active:scale-95 active:bg-red-700 active:shadow-lg"
-              onPress={() => onDeleteRoom()}
+              onPress={async () => {
+                await onDeleteRoom();
+                onClose();
+                refreshRoom();
+              }}
             >
-              <Text className="text-white">Leave Room</Text>
+              <Text className="text-white">
+                {isOwner ? "End Room" : "Leave Room"}
+              </Text>
             </Button>
           </View>
         </View>

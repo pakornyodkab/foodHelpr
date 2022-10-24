@@ -18,7 +18,10 @@ import { getUser } from "../../libs/user";
 import IUser from "../../models/User";
 
 const Chat = ({ route, navigation }) => {
-  const { party }= route.params;
+  const { party } = route.params;
+  console.log("====================================");
+  console.log(`Party: ${JSON.stringify(party)}`);
+  console.log("====================================");
   const handleOnPressBack = () => {
     navigation.goBack();
   };
@@ -115,7 +118,10 @@ const Chat = ({ route, navigation }) => {
       user: {
         _id: message.senderData.user_id.toString(),
         name: message.senderData.firstname + " " + message.senderData.lastname,
-        avatar: avatar,
+        avatar:
+          avatar === "N/A"
+            ? "https://icon-library.com/images/default-user-icon/default-user-icon-8.jpg"
+            : avatar,
       },
     };
   }
@@ -123,7 +129,7 @@ const Chat = ({ route, navigation }) => {
   const connectSocket = async () => {
     await getMyUser();
     console.log("Run connectSocket");
-    socketRef.current = io("http://10.0.2.2:3010", {
+    socketRef.current = io("ws://192.168.43.128:3010", {
       transports: ["websocket"],
       extraHeaders: {
         Authorization: `Bearer ${await getToken()}`,
@@ -133,7 +139,7 @@ const Chat = ({ route, navigation }) => {
         registrationToken: "123",
       },
     });
-
+    console.log("Connect To Socket Complete");
     socketRef.current.on("allChats", (msgs) => {
       console.log("Msg from allChats");
       const formattedMsgs = msgs

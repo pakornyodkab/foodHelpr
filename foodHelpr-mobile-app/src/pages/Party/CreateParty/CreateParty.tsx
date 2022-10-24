@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -27,21 +33,27 @@ import { RootState } from "../../../redux";
 import { getToken } from "../../../libs/token";
 import FoodFriendService from "../../../apis/foodFriend";
 import { getUser } from "../../../libs/user";
+import IUser from "../../../models/User";
+import AgeRestrictionModal from "../../../components/party/AgeRestrictionModal";
 
 function CreateParty({ navigation }) {
   const handleOnPressBack = () => {
-    navigation.goBack();
+    //navigation.goBack();
+    navigation.navigate(FoodFriendRoutes.main);
   };
 
   const [openCalendar, setOpenCalender] = useState(false);
-  const [partyStartDate, setPartyStartDate] = useState(null);
-  const [time, setTime] = useState(new Date(Date.now()));
+  const [partyStartDate, setPartyStartDate] = useState<Date>(null);
+  const [time, setTime] = useState<Date>(new Date(Date.now()));
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const [partyName, setPartyName] = useState<string>(null);
   const [maxGuests, setMaxGuests] = useState<Number>(null);
   const [ageRestriction, setAgeRestriction] = useState<Number>(null);
+  const [ageRestrictionModalVisible, SetAgeRestrictionModalVisible] =
+    useState<boolean>(false);
   //const [restaurant, setRestaurant] = useState<string>('Select Restaurant');
-  const restaurant = useSelector((state: RootState) => state.partyReducer.name);
+  const restaurant = useSelector((state: RootState) => state.partyReducer);
+  const userRef = useRef<IUser>();
 
   const handleTimeChange = (time, validTime) => {
     if (!validTime) return;
@@ -56,42 +68,41 @@ function CreateParty({ navigation }) {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("partyStartDate",partyStartDate);
-  //   console.log("time",time);
-  //   console.log("partyName",partyName);
-  //   console.log("maxGuests",maxGuests);
-  //   console.log("ageRestriction",ageRestriction);
-  // },[partyStartDate,time,partyName,maxGuests,ageRestriction])
+  const getMyUser = async () => {
+    userRef.current = await getUser();
+  };
+
+  const handleAgeRestrictionModal = (status) => {
+    SetAgeRestrictionModalVisible(status);
+  };
+
+  useEffect(() => {
+    getMyUser();
+  }, []);
 
   async function onCreateHostParty() {
-    const user = await getUser();
-
-    console.log("Get into onCreateHostParty");
-
+    if (ageRestriction > userRef.current.age) {
+      handleAgeRestrictionModal(true);
+      return;
+    }
     const createPartyData = {
       name: partyName,
-      restaurant: restaurant,
-      apptDate: partyStartDate,
+      restaurant: restaurant.id,
+      apptDate: new Date(
+        `${partyStartDate.toISOString().substring(0, 10)}T${time
+          .toISOString()
+          .substring(11)}`
+      ),
       ageRestriction: Number(ageRestriction),
       maxGuests: Number(maxGuests),
-      ownerId: user.user_id.toString(),
+      ownerId: userRef.current.user_id.toString(),
     };
-
-    console.log("====================================");
-    console.log(`createPartyData: ${JSON.stringify(createPartyData)}`);
-    console.log("====================================");
-
     try {
       const accessToken = await getToken();
-
-      console.log("====================================");
-      console.log(`access Token: ${accessToken}`);
-      console.log("====================================");
-
-      await FoodFriendService.CreateHostParty(accessToken, createPartyData);
+      const foodFriendService = new FoodFriendService(accessToken);
+      const response = await foodFriendService.CreateHostParty(createPartyData);
       console.log("Create party Successfully!!");
-      navigation.goBack();
+      navigation.navigate(FoodFriendRoutes.myParty);
     } catch (error) {
       console.error(error);
       throw error;
@@ -101,6 +112,12 @@ function CreateParty({ navigation }) {
   return (
     //<RestaurantContext.Provider value={{ restaurant, setRestaurant}}>
     <SafeAreaView className="relative h-full w-full bg-white">
+      <AgeRestrictionModal
+        visible={ageRestrictionModalVisible}
+        onClose={() => {
+          handleAgeRestrictionModal(false);
+        }}
+      />
       <Image
         className="absolute -top-36"
         source={require("../../../../assets/topBanner.png")}
@@ -118,7 +135,8 @@ function CreateParty({ navigation }) {
           style={{ width: 50, height: 60, flex: 0.75, resizeMode: "contain" }}
         />
       </View>
-      <ScrollView className="h-full w-full ">
+      {/* <ScrollView className="h-full w-full "> */}
+      <View>
         <View className="top-5 flex pl-5 pr-5">
           <View className="flex-1 pb-3">
             <Text
@@ -153,6 +171,7 @@ function CreateParty({ navigation }) {
                 openCalendar={openCalendar}
                 partyStartDate={partyStartDate}
                 setPartyStartDate={setPartyStartDate}
+                isAgeModal={false}
               />
               <PartyTime
                 setTimePickerVisible={setTimePickerVisible}
@@ -226,7 +245,7 @@ function CreateParty({ navigation }) {
                   fontWeight: "500",
                 }}
               >
-                {restaurant}
+                {restaurant.name}
               </Text>
               <Pressable
                 onPress={() =>
@@ -249,7 +268,7 @@ function CreateParty({ navigation }) {
               }}
             >
               <Pressable
-                className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+                className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700 "
                 onPress={() => onCreateHostParty()}
               >
                 <Text className="text-center text-lg font-semibold text-white">
@@ -257,14 +276,11 @@ function CreateParty({ navigation }) {
                 </Text>
               </Pressable>
             </View>
-            <Text className="top-10">Wow</Text>
-            <Text className="top-10">Wow</Text>
-            <Text className="top-10">Wow</Text>
           </View>
         </View>
-      </ScrollView>
+      </View>
+      {/* </ScrollView> */}
     </SafeAreaView>
-    //</RestaurantContext.Provider>
   );
 }
 

@@ -10,31 +10,20 @@ interface payloadDetail {
   random_amount: number;
 }
 
-// interface partyInfoPayload {
-//   name: string;
-//   restaurant: string;
-//   apptDate: string;
-//   memberList: Array<string>;
-//   ageRestriction: number;
-//   maxGuests: number;
-//   ownerId: string;
-// }
+interface restaurantPayload {
+  id: string;
+  name: string;
+}
 
 interface RecipeFilterAction {
   type: ActionType.SET_RECIPE_FILTER;
   payload: payloadDetail;
 }
 
-// interface CreatePartyAction {
-//   type: ActionType.SET_CREATE_PARTY_INFO;
-//   payload: partyInfoPayload;
-// }
-
 interface SetRestaurantNameAction {
-  type: ActionType.SET_RESTAURANT_NAME;
-  payload: { name: string };
+  type: ActionType.SET_RESTAURANT;
+  payload: restaurantPayload;
 }
 
-export type Action = RecipeFilterAction ;
-// export type PartyAction = CreatePartyAction;
-export type SetRestaurantAction = SetRestaurantNameAction ;
+export type Action = RecipeFilterAction;
+export type SetRestaurantAction = SetRestaurantNameAction;

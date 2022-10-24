@@ -23,6 +23,7 @@ const PartyCalendar = ({
   openCalendar,
   partyStartDate,
   setPartyStartDate,
+  isAgeModal,
 }) => {
   return (
     <TouchableOpacity
@@ -46,53 +47,58 @@ const PartyCalendar = ({
         }
       ></TextInput>
       <Ionicons name="calendar-sharp" size={30} color="#2CBB54" />
-      <Modal animationType="slide" visible={openCalendar}>
-        <View className="h-fit">
-          <CalendarPicker
-            onDateChange={setPartyStartDate}
-            disabledDates={(date) => {
-              let yesterday = moment().subtract(1, "days");
-              return date <= yesterday;
-            }}
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Ionicons
-                name="close-circle"
-                size={32}
-                color="red"
-                onPress={() => {
-                  setPartyStartDate(null);
-                  setOpenCalendar(false);
+      <Modal animationType="slide" visible={openCalendar} transparent={true}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View className="h-fit">
+              <CalendarPicker
+                onDateChange={setPartyStartDate}
+                disabledDates={(date) => {
+                  let yesterday = moment().subtract(1, "days");
+                  return isAgeModal ? null : date <= yesterday;
                 }}
               />
-              <Text>Cancel</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Ionicons
-                name="md-checkmark-circle"
-                size={32}
-                color="#2CBB54"
-                onPress={() => setOpenCalendar(false)}
-              />
-              <Text>Confirm</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  padding: 20,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Ionicons
+                    name="close-circle"
+                    size={32}
+                    color="red"
+                    onPress={() => {
+                      setPartyStartDate(null);
+                      setOpenCalendar(false);
+                    }}
+                  />
+                  <Text>Cancel</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Ionicons
+                    name="md-checkmark-circle"
+                    size={32}
+                    color="#2CBB54"
+                    onPress={() => setOpenCalendar(false)}
+                  />
+                  <Text>Confirm</Text>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -100,5 +106,29 @@ const PartyCalendar = ({
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 10,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+});
 
 export default PartyCalendar;

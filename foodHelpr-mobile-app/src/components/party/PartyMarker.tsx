@@ -3,40 +3,42 @@ import { Text, View } from "react-native";
 import { LatLng, Marker } from "react-native-maps";
 //import RestaurantModal from "./RestaurantModal";
 import { Ionicons } from "@expo/vector-icons";
-import { IMember } from "../../models/Party";
 import IRestaurant from "../../models/Restaurant";
 import PartyModal from "./PartyListModal";
+import IUser from "../../models/User";
+import IParty from "../../models/Party";
+import restaurant from "../../apis/restaurant";
 
 type PartyMarkerProp = {
-  partyName: string;
   restaurant: IRestaurant;
-  apptDate: string;
-  memberList: IMember[];
-  ageRestriction: number;
-  maxGuests: number;
-  ownerId: string;
+  parties: IParty[];
+  // key: string;
 };
 
-const PartyMarker = ({
-  partyName,
-  restaurant,
-  apptDate,
-  memberList,
-  ageRestriction,
-  maxGuests,
-  ownerId
-}: PartyMarkerProp) => {
+const PartyMarker = ({ restaurant, parties }: PartyMarkerProp) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <Marker coordinate={restaurant.coordinate} onPress={() => setModalVisible(true)}>
+    <Marker
+      // key={key}
+      coordinate={{
+        latitude: restaurant.coordinate.latitude,
+        longitude: restaurant.coordinate.longitude,
+      }}
+      onPress={() => setModalVisible(true)}
+    >
       <View className="flex items-center">
         <Text className="text-green-700">{restaurant.restaurantName}</Text>
         <Text className="text-green-700">
-          <Ionicons name='people' size={32} />
+          <Ionicons name="people" size={32} />
         </Text>
       </View>
-      <PartyModal isVisible={modalVisible} onClose={() => setModalVisible(false)}></PartyModal>
+      <PartyModal
+        parties={parties}
+        restaurant={restaurant}
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      ></PartyModal>
     </Marker>
   );
 };

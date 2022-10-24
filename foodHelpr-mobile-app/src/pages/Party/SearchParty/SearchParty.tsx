@@ -25,75 +25,79 @@ import PartyMarker from "../../../components/party/PartyMarker";
 import MapStyle from "../../../constants/MapStyle";
 import { findFocusedRoute } from "@react-navigation/native";
 import PartyDistancePanel from "../../../components/party/PartyDistancePanel";
+import FoodFriendService from "../../../apis/foodFriend";
+import { getToken } from "../../../libs/token";
+import IRestaurant from "../../../models/Restaurant";
+import FoodFriendRoutes from "../../../routes/foodFriend";
 
-const mockParties = [
-  {
-    _id: "1",
-    partyName: "Let's gooooo",
-    restaurant: {
-      id: "632c5e0170317b4a00def2e5",
-      restaurantName: "Thongsmith (ทองสมิทธ์)",
-      tags: [],
-      imageUrls: [],
-      rating: 0,
-      recommendedDishes: [],
-      address: "",
-      coordinate: {
-        _id: "6349a6a9a35fbafa3270712a",
-        latitude: 13.74686293255921,
-        longitude: 100.53480742047664,
-      },
-      deliveryInfo: [],
-    },
-    apptDate: "",
-    memberList: [
-      {
-        user_id: "1",
-        name: "Jojo",
-      },
-      {
-        user_id: "2",
-        name: "Goku",
-      },
-    ],
-    ageRestriction: 15,
-    maxGuests: 7,
-    ownerId: "",
-  },
-  {
-    _id: "2",
-    partyName: "Party's time",
-    restaurant: {
-      id: "632c5e0270317b4a00def2e7",
-      restaurantName: "สวนผัก โอ้กะจู๋ (Ohkajhu)",
-      tags: [],
-      imageUrls: [],
-      rating: 0,
-      recommendedDishes: [],
-      address: "",
-      coordinate: {
-        _id: "6349a6a9a35fbafa3270712a",
-        latitude: 13.745417660339225,
-        longitude: 100.53380164686013,
-      },
-      deliveryInfo: [],
-    },
-    apptDate: "",
-    memberList: [
-      {
-        user_id: "1",
-        name: "Jojo",
-      },
-      {
-        user_id: "2",
-        name: "Goku",
-      },
-    ],
-    ageRestriction: 15,
-    maxGuests: 7,
-    ownerId: "",
-  },
-];
+// const mockParties = [
+//   {
+//     _id: "1",
+//     partyName: "Let's gooooo",
+//     restaurant: {
+//       id: "632c5e0170317b4a00def2e5",
+//       restaurantName: "Thongsmith (ทองสมิทธ์)",
+//       tags: [],
+//       imageUrls: [],
+//       rating: 0,
+//       recommendedDishes: [],
+//       address: "",
+//       coordinate: {
+//         _id: "6349a6a9a35fbafa3270712a",
+//         latitude: 13.74686293255921,
+//         longitude: 100.53480742047664,
+//       },
+//       deliveryInfo: [],
+//     },
+//     apptDate: "",
+//     memberList: [
+//       {
+//         user_id: "1",
+//         name: "Jojo",
+//       },
+//       {
+//         user_id: "2",
+//         name: "Goku",
+//       },
+//     ],
+//     ageRestriction: 15,
+//     maxGuests: 7,
+//     ownerId: "",
+//   },
+//   {
+//     _id: "2",
+//     partyName: "Party's time",
+//     restaurant: {
+//       id: "632c5e0270317b4a00def2e7",
+//       restaurantName: "สวนผัก โอ้กะจู๋ (Ohkajhu)",
+//       tags: [],
+//       imageUrls: [],
+//       rating: 0,
+//       recommendedDishes: [],
+//       address: "",
+//       coordinate: {
+//         _id: "6349a6a9a35fbafa3270712a",
+//         latitude: 13.745417660339225,
+//         longitude: 100.53380164686013,
+//       },
+//       deliveryInfo: [],
+//     },
+//     apptDate: "",
+//     memberList: [
+//       {
+//         user_id: "1",
+//         name: "Jojo",
+//       },
+//       {
+//         user_id: "2",
+//         name: "Goku",
+//       },
+//     ],
+//     ageRestriction: 15,
+//     maxGuests: 7,
+//     ownerId: "",
+//   },
+// ];
 
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
@@ -108,6 +112,13 @@ const window = Dimensions.get("window");
 type LocationInfo = {
   name: string;
   address: string;
+};
+
+type restaurantMapPartyType = {
+  [key: string]: {
+    restaurantData: IRestaurant;
+    partyList: IParty[];
+  };
 };
 
 export default function SearchParty({ navigation }) {
@@ -143,6 +154,9 @@ export default function SearchParty({ navigation }) {
 
   const [parties, setParties] = useState<IParty[]>([]);
 
+  const [restaurantMapParty, setRestaurantMapParty] =
+    useState<restaurantMapPartyType>({});
+
   //   const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
   //   const [restaurantsLoading, setRestaurantsLoading] = useState<boolean>(false);
 
@@ -151,7 +165,8 @@ export default function SearchParty({ navigation }) {
 
   async function getLocationName() {
     try {
-      const { data } = await GoogleMapsApi.ReverseGeocode(pinCoordinate);
+      const googleMapsApi = new GoogleMapsApi();
+      const { data } = await googleMapsApi.ReverseGeocode(pinCoordinate);
       const locationProperties = data?.results[0];
       setLocationInfo({
         name: `${locationProperties.address_components[0].long_name} ${locationProperties.address_components[1].long_name}`,
@@ -219,10 +234,59 @@ export default function SearchParty({ navigation }) {
   const [partiesLoading, setPartiesLoading] = useState<boolean>(false);
   const [toggleDistancePanel, setToggleDistancePanel] = useState<boolean>(true);
 
+  function mapPartiesToRestaurant() {
+    const formatted: restaurantMapPartyType = {};
+    const restaurantList = [
+      ...new Set(parties.map((party) => party.restaurant)),
+    ];
+    restaurantList.forEach(
+      (restaurant) =>
+        (formatted[restaurant._id] = {
+          restaurantData: restaurant,
+          partyList: [],
+        })
+    );
+    parties.forEach((party) => {
+      formatted[party.restaurant._id].partyList.push(party);
+    });
+    setRestaurantMapParty(formatted);
+  }
+
+  useEffect(() => {
+    mapPartiesToRestaurant();
+  }, [parties]);
+
   async function findPartiesNearMe() {
     try {
       setPartiesLoading(true);
-      setParties(mockParties);
+      const accessToken = await getToken();
+      const foodFriendService = new FoodFriendService(accessToken);
+      const res = await foodFriendService.GetGuestSearchParty({
+        distance: randomDistance,
+        location: { lat: pinCoordinate.latitude, lng: pinCoordinate.longitude },
+      });
+      const partiesData: IParty[] = res.data.map((partyRes) => {
+        const { restaurant, ...rest } = partyRes;
+
+        return {
+          ...rest,
+          restaurant: {
+            _id: restaurant._id,
+            restaurantName: restaurant.name,
+            tags: restaurant.tag,
+            imageUrls: restaurant.restaurantPictureLink,
+            rating: restaurant.rating,
+            recommendedDishes: restaurant.recommendedDish,
+            address: restaurant.address,
+            coordinate: {
+              latitude: restaurant.coordinate.Latitude,
+              longitude: restaurant.coordinate.Longitude,
+            },
+            deliveryInfo: restaurant.deliveryInfo,
+          },
+        };
+      });
+      setParties(partiesData);
       setToggleDistancePanel(false);
       // const accessToken = await getToken();
       // const res = await RestaurantService.GetRandomRestaurant(accessToken, {
@@ -272,7 +336,7 @@ export default function SearchParty({ navigation }) {
         }),
       PARTY_LOAD_DELAY
     );
-  }, [parties]);
+  }, [restaurantMapParty]);
 
   const CurrentLocationPanel = () => (
     <View className="my-2 w-full rounded-lg border-[1px] border-green-500 bg-white px-2 py-1">
@@ -296,12 +360,14 @@ export default function SearchParty({ navigation }) {
   function handleOnPressBack() {
     if (parties.length > 0) {
       setParties([]);
+      setRestaurantMapParty({});
       setToggleDistancePanel(true);
       console.log(`Toggle: ${toggleDistancePanel}`);
       return;
     }
 
-    navigation.goBack();
+    //navigation.goBack();
+    navigation.navigate(FoodFriendRoutes.main);
   }
 
   return (
@@ -351,18 +417,16 @@ export default function SearchParty({ navigation }) {
               fillColor={"rgba(34, 197, 94, 0.1)"}
             />
           )}
-          {parties.map((party) => (
-            <PartyMarker
-              key={party._id}
-              partyName={party.partyName}
-              restaurant={party.restaurant}
-              apptDate={party.apptDate}
-              memberList={party.memberList}
-              ageRestriction={party.ageRestriction}
-              maxGuests={party.maxGuests}
-              ownerId={party.ownerId}
-            />
-          ))}
+          {Object.values(restaurantMapParty).map((restaurantMapPartyData) => {
+            const { restaurantData, partyList } = restaurantMapPartyData;
+            return (
+              <PartyMarker
+                // key={restaurantData._id}
+                restaurant={restaurantData}
+                parties={partyList}
+              />
+            );
+          })}
         </MapView>
 
         {parties.length === 0 && (

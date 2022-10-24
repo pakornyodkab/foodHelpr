@@ -31,7 +31,6 @@ import { getToken } from "../../../libs/token";
 import RestaurantService from "../../../apis/restaurant";
 import RestaurantMarker from "../../../components/restaurants/RestaurantMarker";
 
-
 const INITIAL_LAT = 13.7;
 const INITIAL_LNG = 100.5;
 
@@ -47,7 +46,7 @@ type LocationInfo = {
   address: string;
 };
 
-export default function CreatePartyMap({ navigation , setRestaurant}) {
+export default function CreatePartyMap({ navigation, setRestaurant }) {
   const [region, setRegion] = useState<Region>({
     latitude: INITIAL_LAT,
     longitude: INITIAL_LNG,
@@ -82,12 +81,13 @@ export default function CreatePartyMap({ navigation , setRestaurant}) {
   const [restaurantsLoading, setRestaurantsLoading] = useState<boolean>(false);
   const [toggleDistancePanel, setToggleDistancePanel] = useState<boolean>(true);
 
-    const [restaurantViewModel, setRestaurantViewModel] =
-      useState<IRestaurantViewModel>(null);
+  const [restaurantViewModel, setRestaurantViewModel] =
+    useState<IRestaurantViewModel>(null);
 
   async function getLocationName() {
     try {
-      const { data } = await GoogleMapsApi.ReverseGeocode(pinCoordinate);
+      const googleMapsApi = new GoogleMapsApi();
+      const { data } = await googleMapsApi.ReverseGeocode(pinCoordinate);
       const locationProperties = data?.results[0];
       setLocationInfo({
         name: `${locationProperties.address_components[0].long_name} ${locationProperties.address_components[1].long_name}`,
@@ -152,7 +152,6 @@ export default function CreatePartyMap({ navigation , setRestaurant}) {
     mapRef.current.animateToRegion(region);
   }, [region]);
 
- 
   async function findPartiesNearMe() {
     try {
       setRestaurantsLoading(true);
@@ -164,7 +163,7 @@ export default function CreatePartyMap({ navigation , setRestaurant}) {
       });
       const restaurantData: IRestaurant[] = res.data.map((restaurant) => {
         return {
-          id: restaurant._id,
+          _id: restaurant._id,
           restaurantName: restaurant.name,
           tags: restaurant.tag,
           imageUrls: restaurant.restaurantPictureLink,
@@ -281,18 +280,19 @@ export default function CreatePartyMap({ navigation , setRestaurant}) {
             />
           )}
           {restaurants.map((restaurant) => (
-          <RestaurantMarker
-            key={restaurant.id}
-            restaurantName={restaurant.restaurantName}
-            tags={restaurant.tags}
-            imageUrls={restaurant.imageUrls}
-            rating={restaurant.rating}
-            recommendedDishes={restaurant.recommendedDishes}
-            address={restaurant.address}
-            coordinate={restaurant.coordinate}
-            deliveryInfo={restaurant.deliveryInfo}
-          />
-        ))}
+            <RestaurantMarker
+              key={restaurant._id}
+              restaurantId={restaurant._id}
+              restaurantName={restaurant.restaurantName}
+              tags={restaurant.tags}
+              imageUrls={restaurant.imageUrls}
+              rating={restaurant.rating}
+              recommendedDishes={restaurant.recommendedDishes}
+              address={restaurant.address}
+              coordinate={restaurant.coordinate}
+              deliveryInfo={restaurant.deliveryInfo}
+            />
+          ))}
         </MapView>
 
         {restaurants.length === 0 && (

@@ -47,17 +47,76 @@ const PartyTime = ({
         value={time ? moment(time.toString()).format("h:mm A") : null}
       ></TextInput>
       <Ionicons name="time-sharp" size={32} color="#2CBB54" />
-      {isTimePickerVisible && (
+      {isTimePickerVisible && Platform.OS === "android" && (
         <DateTimePicker
           value={time}
           mode={"time"}
-          display={Platform.OS === "ios" ? "spinner" : "default"}
+          display={"default"}
           is24Hour={true}
           onChange={onChangeTime}
         />
       )}
+      {Platform.OS === "ios" && (
+        <Modal visible={isTimePickerVisible} transparent={true}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <DateTimePicker
+                value={time}
+                mode={"time"}
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                is24Hour={true}
+                onChange={onChangeTime}
+                textColor="black"
+                style={
+                  Platform.OS == "ios"
+                    ? { width: 320, backgroundColor: "white" }
+                    : {}
+                }
+              />
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+                <Button
+                  className="items-center bg-green-500 "
+                  onPress={() => setTimePickerVisible(false)}
+                  style={{
+                    borderRadius: 15,
+                    padding: 10,
+                    elevation: 2,
+                    width: 70,
+                  }}
+                >
+                  <Text>OK</Text>
+                </Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 10,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+});
 
 export default PartyTime;

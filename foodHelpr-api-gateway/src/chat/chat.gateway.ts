@@ -31,6 +31,7 @@ export class ChatGateway implements NestGateway {
   }
 
   async handleConnection(@ConnectedSocket() socket: CustomSocket) {
+    console.log('Mobile Start Connect');
     const userId = socket.user.userId.toString();
     let { roomId, registrationToken } = socket.handshake.query;
     if (!(typeof roomId === 'string')) roomId = roomId?.toString();

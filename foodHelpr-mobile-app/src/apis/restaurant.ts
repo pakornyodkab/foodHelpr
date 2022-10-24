@@ -3,6 +3,7 @@ import { RESTAURANT_URI } from "@env";
 import IRestaurantViewModel from "../models/RestaurantViewModel";
 
 const restaurantService = axios.create({
+  //baseURL: "http://10.0.2.2:3000/restaurant/",
   baseURL: RESTAURANT_URI,
   timeout: 10000,
 });
@@ -42,7 +43,8 @@ export interface IGetRestaurantInRangeRequest {
   range: number;
 }
 
-export interface IGetRestaurantInRangeResponse extends IGetRandomRestaurantResponse{}
+export interface IGetRestaurantInRangeResponse
+  extends IGetRandomRestaurantResponse {}
 
 export interface IGetRestaurantViewModel extends IRestaurantViewModel {}
 
@@ -80,18 +82,21 @@ export default class RestaurantService {
     return request;
   };
 
-  static GetRestaurantInRange = (accessToken: string , requestParams: IGetRestaurantInRangeRequest) => {
+  static GetRestaurantInRange = (
+    accessToken: string,
+    requestParams: IGetRestaurantInRangeRequest
+  ) => {
     const request = restaurantService.get<IGetRestaurantInRangeResponse[]>(
-      "get-restaurant-in-range",{
+      "get-restaurant-in-range",
+      {
         params: {
           lat: requestParams.latitude,
           lng: requestParams.longitude,
           range: requestParams.range,
         },
-        headers: { Authorization: `Bearer ${accessToken}` }
-      },
-        
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
     );
     return request;
-  }
+  };
 }
