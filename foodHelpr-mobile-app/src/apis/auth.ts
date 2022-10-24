@@ -10,7 +10,7 @@ export default class AuthService {
   private client: AxiosInstance;
   constructor() {
     this.client = axios.create({
-      baseURL: "http://192.168.43.128:3000/",
+      baseURL: AUTH_URI,
       //baseURL: "http://10.0.2.2:3000/",
       timeout: 5000,
     });

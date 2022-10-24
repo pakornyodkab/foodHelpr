@@ -45,7 +45,7 @@ export default class FoodFriendService {
 
   constructor(accessToken: string) {
     this.client = axios.create({
-      baseURL: "http://192.168.43.128:3000/party/",
+      baseURL: FOOD_FRIEND_URI,
       //baseURL: "http://10.0.2.2:3000/party/",
       timeout: 10000,
     });

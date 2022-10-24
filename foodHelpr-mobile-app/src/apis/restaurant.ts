@@ -4,7 +4,7 @@ import IRestaurantViewModel from "../models/RestaurantViewModel";
 
 const restaurantService = axios.create({
   //baseURL: "http://10.0.2.2:3000/restaurant/",
-  baseURL: "http://192.168.43.128:3000/restaurant/",
+  baseURL: RESTAURANT_URI,
   timeout: 10000,
 });
 

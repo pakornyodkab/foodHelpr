@@ -11,7 +11,7 @@ export default class UserService {
   constructor(accessToken: string) {
     this.client = axios.create({
       //baseURL: "http://10.0.2.2:3000/",
-      baseURL: "http://192.168.43.128:3000/",
+      baseURL: USER_URI,
       timeout: 5000,
     });
     this.accessToken = accessToken;
