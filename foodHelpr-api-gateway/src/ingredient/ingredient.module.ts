@@ -11,12 +11,12 @@ import { IngredientController } from './ingredient.controller';
         transport: Transport.GRPC,
         options: {
           package: 'ingredient',
-          protoPath: join(__dirname, '../../../proto/ingredient.proto'),
+          protoPath: join(__dirname, '../../proto/ingredient.proto'),
           url: 'localhost:3003',
         },
       },
     ]),
   ],
-  controllers:[IngredientController]
+  controllers: [IngredientController],
 })
 export class IngredientModule {}

@@ -20,7 +20,7 @@ import { PartyModule } from './party/party.module';
         name: 'USER',
         transport: Transport.TCP,
         options: {
-          host: 'localhost',
+          host: 'user-services',
           port: 3001,
         },
       },

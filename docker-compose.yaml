@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+    
+  user-services:
+    build: ./foodHelpr-user-service
+    container_name: foodHelpr-user-service
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./foodHelpr-user-service/.env
+    expose:
+      - "3001"
+    
+  api-gateway:
+    build: ./foodHelpr-api-gateway
+    container_name: foodHelpr-api-gateway
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./foodHelpr-api-gateway/.env
+    links:
+      - user-services:user-services
+    expose:
+      - "3000"

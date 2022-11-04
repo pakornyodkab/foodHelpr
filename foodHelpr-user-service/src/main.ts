@@ -10,7 +10,7 @@ async function bootstrap() {
     AppModule,
     {
       transport: Transport.TCP,
-      options: { host: 'localhost', port: 3001 },
+      options: { host: 'user-services', port: 3001 },
     },
   );
   LOGGER.log('User Microservices is listening');
