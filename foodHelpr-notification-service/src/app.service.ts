@@ -65,9 +65,10 @@ export class AppService {
 
     //message for expo noti
     notiTokens.forEach(async (token) => {
+      console.log(token);
       const message = {
         title: 'FoodHelpr',
-        to: [token],
+        to: token.expoToken,
         body: notiMessage,
         data: {
           action: 'leave',
@@ -203,9 +204,10 @@ export class AppService {
 
     //message for expo noti
     notiTokens.forEach(async (token) => {
+      console.log('acceceptToken', token);
       const message = {
         title: 'FoodHelpr',
-        to: [token],
+        to: token.expoToken,
         body: notiMessage,
         data: {
           action: 'accept',
@@ -217,6 +219,8 @@ export class AppService {
         '*******************************************notiMessage',
         notiMessage,
       );
+
+      console.log(JSON.stringify(message));
 
       await this.httpService.axiosRef.post(
         'https://exp.host/--/api/v2/push/send',
