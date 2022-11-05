@@ -6,7 +6,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Chat } from './Chat.model';
+import { Chat } from './chat.model';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SaveChatDto } from './dto/save-chat.dto';

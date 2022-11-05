@@ -7,30 +7,36 @@ import { AuthModule } from 'src/auth/auth.module';
 import { AuthService } from 'src/auth/auth.service';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
+import consul from '../utils/consul';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'NOTIFICATION_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://localhost:5672'],
-          queue: 'notification_queue',
-          queueOptions: {
-            durable: false,
-          },
+        useFactory: async (...args) => {
+          // const { host, port } = await consul('notification-service');
+          const { host, port } = await consul('user-service');
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: [`amqp://${host}:${port}`],
+              queue: 'notification_queue',
+              queueOptions: {
+                durable: false,
+              },
+            },
+          };
         },
       },
     ]),
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'USER',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3001,
-        },
+        useFactory: async (...args) => ({
+          transport: Transport.TCP,
+          options: await consul('user-service'),
+        }),
       },
     ]),
     HttpModule,

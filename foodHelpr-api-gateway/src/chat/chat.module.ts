@@ -6,29 +6,28 @@ import { ChatService } from './chat.service';
 import { AuthService } from 'src/auth/auth.service';
 import { config } from 'dotenv';
 import { AuthModule } from 'src/auth/auth.module';
+import consul from '../utils/consul';
 
 config();
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'FOODFRIEND',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3090,
-        },
+        useFactory: async (...args) => ({
+          transport: Transport.TCP,
+          options: await consul('foodfriend-service'),
+        }),
       },
     ]),
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'USER',
-        transport: Transport.TCP,
-        options: {
-          host: 'user-services',
-          port: 3001,
-        },
+        useFactory: async (...args) => ({
+          transport: Transport.TCP,
+          options: await consul('user-service'),
+        }),
       },
     ]),
     HttpModule,

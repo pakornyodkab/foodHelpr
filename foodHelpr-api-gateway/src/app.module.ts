@@ -12,27 +12,26 @@ import { HttpModule } from '@nestjs/axios';
 import { ChatModule } from './chat/chat.module';
 import { NotificationModule } from './notification/notification.module';
 import { PartyModule } from './party/party.module';
+import consul from './utils/consul';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'USER',
-        transport: Transport.TCP,
-        options: {
-          host: 'user-services',
-          port: 3001,
-        },
+        useFactory: async (...args) => ({
+          transport: Transport.TCP,
+          options: await consul('user-service'),
+        }),
       },
     ]),
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'RESTAURANT',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3002,
-        },
+        useFactory: async (...args) => ({
+          transport: Transport.TCP,
+          options: await consul('restaurant-service'),
+        }),
       },
     ]),
     AuthModule,

@@ -7,27 +7,26 @@ import { AuthModule } from 'src/auth/auth.module';
 import { AuthService } from 'src/auth/auth.service';
 import { RestaurantController } from './restaurant.controller';
 import { RestaurantService } from './restaurant.service';
+import consul from '../utils/consul';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'RESTAURANT',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3002,
-        },
+        useFactory: async (...args) => ({
+          transport: Transport.TCP,
+          options: await consul('restaurant-service'),
+        }),
       },
     ]),
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'USER',
-        transport: Transport.TCP,
-        options: {
-          host: 'user-services',
-          port: 3001,
-        },
+        useFactory: async (...args) => ({
+          transport: Transport.TCP,
+          options: await consul('user-service'),
+        }),
       },
     ]),
     HttpModule,

@@ -7,6 +7,7 @@ import { config } from 'dotenv';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { HttpModule } from '@nestjs/axios';
+import consul from '../utils/consul';
 
 config();
 
@@ -16,14 +17,13 @@ config();
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '7d' },
     }),
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'USER',
-        transport: Transport.TCP,
-        options: {
-          host: 'user-services',
-          port: 3001,
-        },
+        useFactory: async (...args) => ({
+          transport: Transport.TCP,
+          options: await consul('user-service'),
+        }),
       },
     ]),
     HttpModule,
