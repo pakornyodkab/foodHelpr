@@ -47,7 +47,6 @@ export class PartyService {
       .find({
         $or: [{ memberList: id }, { pendingMemberList: id }],
       })
-      .populate('restaurant')
       .exec();
   }
 
@@ -194,7 +193,6 @@ export class PartyService {
           { pendingMemberList: guestFindPartyDto.user.user_id },
         ],
       })
-      .populate('restaurant')
       .exec();
     return partyList;
   }

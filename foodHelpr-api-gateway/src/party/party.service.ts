@@ -40,7 +40,8 @@ export class PartyService {
         .send({ cmd: 'getPartyListByUserId' }, id)
         .forEach((resultParties) => (parties = resultParties));
 
-      return await this.populateRestaurantInPartyList(parties);
+      parties = await this.populateRestaurantInPartyList(parties);
+      return await this.populateMemberInPartyList(parties);
     } catch (error) {
       console.error(error.message);
       return error.message;
@@ -48,23 +49,17 @@ export class PartyService {
   }
 
   private async populateRestaurantInPartyList(parties: any[]) {
-    const memberIds = [
-      ...new Set([...parties.map((party) => party.restaurant).flat()]),
+    const restaurantIds = [
+      ...new Set([...parties.map((party) => party.restaurant)]),
     ];
 
-    let memberData = [];
+    let restaurantData = [];
     await forkJoin(
-      memberIds.map((id) => this.userService.send({ cmd: 'getUserById' }, id)),
-    ).forEach((data) => (memberData = data));
+      restaurantIds.map((id) => this.restaurantService.getRestaurantById(id)),
+    ).forEach((data) => (restaurantData = data));
     parties.forEach((party) => {
-      party.memberList = party.memberList.map((member) =>
-        memberData.find((data) => data.user_id.toString() === member),
-      );
-      party.pendingMemberList = party.pendingMemberList.map((member) =>
-        memberData.find((data) => data.user_id.toString() === member),
-      );
-      party.ownerData = memberData.find(
-        (data) => data.user_id.toString() === party.ownerId,
+      party.restaurant = restaurantData.find(
+        (data) => data._id === party.restaurant,
       );
     });
     return parties;
@@ -199,6 +194,9 @@ export class PartyService {
           },
         )
         .forEach((data) => (parties = data));
+      console.log(parties);
+      parties = await this.populateRestaurantInPartyList(parties);
+      console.log(parties);
       return await this.populateMemberInPartyList(parties);
     } catch (error) {
       console.error(error.message);
