@@ -39,11 +39,35 @@ export class PartyService {
       await this.foodFriendService
         .send({ cmd: 'getPartyListByUserId' }, id)
         .forEach((resultParties) => (parties = resultParties));
-      return await this.populateMemberInPartyList(parties);
+
+      return await this.populateRestaurantInPartyList(parties);
     } catch (error) {
       console.error(error.message);
       return error.message;
     }
+  }
+
+  private async populateRestaurantInPartyList(parties: any[]) {
+    const memberIds = [
+      ...new Set([...parties.map((party) => party.restaurant).flat()]),
+    ];
+
+    let memberData = [];
+    await forkJoin(
+      memberIds.map((id) => this.userService.send({ cmd: 'getUserById' }, id)),
+    ).forEach((data) => (memberData = data));
+    parties.forEach((party) => {
+      party.memberList = party.memberList.map((member) =>
+        memberData.find((data) => data.user_id.toString() === member),
+      );
+      party.pendingMemberList = party.pendingMemberList.map((member) =>
+        memberData.find((data) => data.user_id.toString() === member),
+      );
+      party.ownerData = memberData.find(
+        (data) => data.user_id.toString() === party.ownerId,
+      );
+    });
+    return parties;
   }
 
   async createHostParty(createHostPartyDto: CreateHostPartyDto) {
@@ -63,13 +87,11 @@ export class PartyService {
 
   async deleteHostParty(id: string, userId: number) {
     let party;
-      await this.getPartyById(id).forEach(
-        (partyResult) => (party = partyResult),
-      );
+    await this.getPartyById(id).forEach((partyResult) => (party = partyResult));
     const sendMessage = {
       room: party,
       hostId: userId,
-    }
+    };
     this.notificationClient.emit('party_go_boom', sendMessage);
     return this.foodFriendService.send<String>({ cmd: 'deleteHostParty' }, id);
   }

@@ -10,7 +10,15 @@ export default async (serviceName: string) => {
   });
 
   const serviceList = await consul.agent.service.list();
-  const service = serviceList[serviceName];
+  let service = serviceList[serviceName];
+
+  if (!service) {
+    Object.keys(serviceList).forEach((key) => {
+      if (key.includes(serviceName)) {
+        service = serviceList[key];
+      }
+    });
+  }
 
   return {
     host: service.Address,

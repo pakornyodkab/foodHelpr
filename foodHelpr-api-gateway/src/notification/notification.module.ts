@@ -16,7 +16,7 @@ import consul from '../utils/consul';
         name: 'NOTIFICATION_SERVICE',
         useFactory: async (...args) => {
           // const { host, port } = await consul('notification-service');
-          const { host, port } = await consul('user-service');
+          const { host, port } = await consul('rabbitmq');
           return {
             transport: Transport.RMQ,
             options: {

@@ -70,23 +70,23 @@ services:
       timeout: 5s
       retries: 5
   
-  # notification-service:
-  #   build: ./foodHelpr-notification-service
-  #   container_name: foodHelpr-notification-service
-  #   ports:
-  #     - "6672:6672"
-  #   env_file:
-  #     - ./foodHelpr-notification-service/.env
-  #   depends_on:
-  #     consul:
-  #       condition: service_healthy
-  #     rabbitmq:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: wget --no-verbose --tries=1 --spider http://localhost:6672/ || exit 1
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+  notification-service:
+    build: ./foodHelpr-notification-service
+    container_name: foodHelpr-notification-service
+    ports:
+      - "6672:6672"
+    env_file:
+      - ./foodHelpr-notification-service/.env
+    depends_on:
+      consul:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:6672/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   api-gateway:
     build: ./foodHelpr-api-gateway
@@ -103,8 +103,8 @@ services:
         condition: service_healthy
       recipe-service:
         condition: service_healthy
-      # notification-service:
-      #   condition: service_healthy
+      notification-service:
+        condition: service_healthy
       foodfriend-service:
         condition: service_healthy
   
@@ -122,17 +122,17 @@ services:
       timeout: 5s
       retries: 5
 
-  # rabbitmq:
-  #   image: rabbitmq:latest
-  #   container_name: rabbitmq
-  #   ports:
-  #     - 5672:5672
-  #     - 15672:15672
-  #   healthcheck:
-  #     test: rabbitmq-diagnostics -q ping
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+  rabbitmq:
+    build: ./foodHelpr-rabbitmq
+    container_name: foodHelpr-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   default:

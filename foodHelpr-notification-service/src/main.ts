@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import * as admin from 'firebase-admin';
 import * as dotenv from 'dotenv';
 import { Logger } from '@nestjs/common';
-import * as Consul from 'consul';
+import Consul from 'consul';
 // import serviceAccount from '../testnoti-sw-arch-firebase-adminsdk-ji9oy-75e07990d4.json';
 
 dotenv.config();
@@ -47,24 +47,36 @@ const consul = new Consul({
 async function bootstrap() {
   const LOGGER = new Logger();
 
-  await consul.agent.service.register({
-    name: 'notification-service',
-    address: process.env.HOST,
-    port: Number(process.env.PORT),
-    check: {
-      http: `http://${process.env.HOST}:6672/`,
-      interval: '30s',
-    },
-  });
+  // await consul.agent.service.register({
+  //   name: 'notification-service',
+  //   address: process.env.HOST,
+  //   port: Number(process.env.PORT),
+  //   check: {
+  //     http: `http://${process.env.HOST}:6672/`,
+  //     interval: '30s',
+  //   },
+  // });
+
+  // await consul.agent.service.register({
+  //   name: 'rabbitmq',
+  //   address: process.env.RABBITMQ_HOST,
+  //   port: Number(process.env.RABBITMQ_PORT),
+  //   check: {
+  //     http: `http://${process.env.HOST}:6672/`,
+  //     interval: '30s',
+  //   },
+  // });
   LOGGER.log('Consul registered');
 
   const app = await NestFactory.create(AppModule);
   const microservice = app.connectMicroservice({
     transport: Transport.RMQ,
-    options: { host: process.env.HOST, port: Number(process.env.PORT) },
-    queue: 'notification_queue',
-    queueOptions: {
-      durable: false,
+    options: {
+      urls: [`amqp://${process.env.RABBITMQ_HOST}:5672`],
+      queue: 'notification_queue',
+      queueOptions: {
+        durable: false,
+      },
     },
   });
 
