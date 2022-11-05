@@ -9,12 +9,13 @@ import {
 } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../components/common/Button";
+import MainRoutes from "../../routes/main";
 
 const FoodFriendScreen = ({ navigation }) => {
   const onHandlePartyButton = () => {};
 
   function handleOnPressBack() {
-    navigation.goBack();
+    navigation.navigate(MainRoutes.home);
   }
 
   return (
@@ -40,7 +41,7 @@ const FoodFriendScreen = ({ navigation }) => {
         <View className="m-5 flex items-center space-y-3 p-5">
           <View className="flex-row space-x-3">
             <Pressable
-              className=" flex h-40 w-40 justify-center rounded-lg border-[3px] border-green-500 shadow-lg shadow-indigo-500/40 active:scale-95 active:bg-green-200"
+              className=" flex h-40 w-40 justify-center rounded-lg border-[2px] border-green-500 active:scale-95 active:bg-green-200"
               onPress={() => navigation.navigate(FoodFriendRoutes.createParty)}
             >
               <View className="flex items-center justify-center space-y-3">
@@ -53,7 +54,7 @@ const FoodFriendScreen = ({ navigation }) => {
               </View>
             </Pressable>
             <Pressable
-              className="flex h-40 w-40 justify-center rounded-lg border-[3px] border-green-500 shadow-lg shadow-indigo-500/40 active:scale-95 active:bg-green-200"
+              className="flex h-40 w-40 justify-center rounded-lg border-[2px] border-green-500 active:scale-95 active:bg-green-200"
               onPress={() => navigation.navigate(FoodFriendRoutes.searchParty)}
             >
               <View className="flex items-center justify-center space-y-3">
@@ -68,7 +69,7 @@ const FoodFriendScreen = ({ navigation }) => {
           </View>
           <View className="flex-row space-x-3">
             <Pressable
-              className="flex h-40 w-40 justify-center rounded-lg border-[3px] border-green-500 shadow-lg shadow-indigo-500/40 active:scale-95 active:bg-green-200"
+              className="flex h-40 w-40 justify-center rounded-lg border-[2px] border-green-500 active:scale-95 active:bg-green-200"
               onPress={() => navigation.navigate(FoodFriendRoutes.myParty)}
             >
               <View className="flex items-center justify-center space-y-3">
@@ -81,7 +82,7 @@ const FoodFriendScreen = ({ navigation }) => {
               </View>
             </Pressable>
             <Pressable
-              className="flex h-40 w-40 justify-center rounded-lg border-[3px] border-green-500 shadow-lg shadow-indigo-500/40 active:scale-95 active:bg-green-200"
+              className="flex h-40 w-40 justify-center rounded-lg border-[2px] border-green-500 active:scale-95 active:bg-green-200"
               onPress={() => navigation.navigate(FoodFriendRoutes.waitingLists)}
             >
               <View className="flex items-center justify-center space-y-3">
@@ -96,7 +97,7 @@ const FoodFriendScreen = ({ navigation }) => {
           </View>
           {/* <View className=" top-5 flex items-center justify-center gap-1">
             <Pressable
-              className="flex h-16 w-64 justify-center rounded-lg border-[2px] border-green-500 shadow-lg shadow-indigo-500/40 active:scale-95 active:bg-green-700"
+              className="flex h-16 w-64 justify-center rounded-lg border-[2px] border-green-500 active:scale-95 active:bg-green-700"
               onPress={() => navigation.navigate(FoodFriendRoutes.createParty)}
             >
               <View className="relative flex h-full justify-center">

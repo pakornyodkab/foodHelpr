@@ -129,7 +129,7 @@ const Chat = ({ route, navigation }) => {
   const connectSocket = async () => {
     await getMyUser();
     console.log("Run connectSocket");
-    socketRef.current = io("ws://192.168.43.128:3010", {
+    socketRef.current = io(`${process.env.CHAT_URI}`, {
       transports: ["websocket"],
       extraHeaders: {
         Authorization: `Bearer ${await getToken()}`,

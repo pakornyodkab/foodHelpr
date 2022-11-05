@@ -13,6 +13,7 @@ import {
   Pressable,
   ActivityIndicator,
   Dimensions,
+  SafeAreaView,
 } from "react-native";
 import * as Location from "expo-location";
 import { LocationAccuracy } from "expo-location";
@@ -279,7 +280,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
   }
 
   return (
-    <View className="relative inset-0 flex-1">
+    <SafeAreaView className="relative inset-0 flex-1">
       <MapView
         ref={mapRef}
         className="absolute h-full w-full"
@@ -374,7 +375,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
           )}
         </>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

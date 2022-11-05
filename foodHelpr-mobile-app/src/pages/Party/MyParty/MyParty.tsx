@@ -116,7 +116,7 @@ const MyParty = ({ navigation }) => {
       ) : partyList.length === 0 ? (
         <View className="absolute -z-10 flex h-full w-full items-center justify-center">
           <Text className="text-xl font-semibold text-green-500/70">
-            {"No party waiting :)"}
+            {"No party for you :("}
           </Text>
         </View>
       ) : (

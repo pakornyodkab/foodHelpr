@@ -194,9 +194,7 @@ export class PartyService {
           },
         )
         .forEach((data) => (parties = data));
-      console.log(parties);
       parties = await this.populateRestaurantInPartyList(parties);
-      console.log(parties);
       return await this.populateMemberInPartyList(parties);
     } catch (error) {
       console.error(error.message);

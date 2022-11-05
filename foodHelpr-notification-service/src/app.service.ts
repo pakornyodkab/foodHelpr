@@ -152,12 +152,17 @@ export class AppService {
 
   // joinerNotiToken used to be joinerId
   async acceptedNoti(msg: AcceptedRequest) {
+    console.log('************************************enter accpet logic.');
     const { joinerName, room, joinerId } = msg;
     room.memberList.push(joinerId);
     const notiTokens = await this.notificationTokenModel.find({
       userId: { $in: room.memberList },
     });
     const targetNoti = notiTokens.map((e) => e.expoToken).flat();
+    console.log(
+      '*****************************************target noti.',
+      targetNoti,
+    );
 
     const notiMessage = `${joinerName} has joined the party!`;
 
@@ -177,6 +182,11 @@ export class AppService {
         userId: joinerId,
       },
     };
+
+    console.log(
+      '*******************************************notiMessage',
+      notiMessage,
+    );
 
     await this.httpService.axiosRef.post(
       'https://exp.host/--/api/v2/push/send',
