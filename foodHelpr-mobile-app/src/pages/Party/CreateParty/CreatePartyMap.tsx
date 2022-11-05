@@ -156,7 +156,8 @@ export default function CreatePartyMap({ navigation, setRestaurant }) {
     try {
       setRestaurantsLoading(true);
       const accessToken = await getToken();
-      const res = await RestaurantService.GetRestaurantInRange(accessToken, {
+      const restaurantService = new RestaurantService(accessToken);
+      const res = await restaurantService.GetRestaurantInRange({
         latitude: pinCoordinate.latitude,
         longitude: pinCoordinate.longitude,
         range: 5,

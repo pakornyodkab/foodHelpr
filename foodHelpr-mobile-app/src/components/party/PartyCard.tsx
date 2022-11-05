@@ -34,7 +34,7 @@ export default function PartyCard({ party }: PartyCardProp) {
         </View>
         <Text>{party.name}</Text>
       </View>
-      <View className="flex items-center">
+      <View className="flex flex-row items-center">
         {party.memberList.map((member) => (
           <View className="h-6 w-6" key={member.user_id}>
             <Image

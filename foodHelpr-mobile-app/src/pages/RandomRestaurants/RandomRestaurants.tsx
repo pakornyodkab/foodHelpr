@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   Dimensions,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import * as Location from "expo-location";
 import { LocationAccuracy } from "expo-location";
@@ -180,7 +181,8 @@ export default function RandomRestaurantsScreen({ navigation }) {
     try {
       setRestaurantsLoading(true);
       const accessToken = await getToken();
-      const res = await RestaurantService.GetRandomRestaurant(accessToken, {
+      const restaurantService = new RestaurantService(accessToken);
+      const res = await restaurantService.GetRandomRestaurant({
         amount: randomAmount,
         latitude: pinCoordinate.latitude,
         longitude: pinCoordinate.longitude,
@@ -232,9 +234,8 @@ export default function RandomRestaurantsScreen({ navigation }) {
   const fetchViewModel = async () => {
     try {
       const accessToken = await getToken();
-      const result = await RestaurantService.GetRestaurantViewModel(
-        accessToken
-      );
+      const restaurantService = new RestaurantService(accessToken);
+      const result = await restaurantService.GetRestaurantViewModel();
       setRestaurantViewModel(result.data);
     } catch (error) {
       console.error(error);
@@ -348,7 +349,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
             <CurrentLocationPanel />
 
             <Pressable
-              className="mb-5 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
+              className="mb-8 flex h-12 w-32 justify-center rounded-full border-[1px] border-white bg-green-500 active:scale-95 active:bg-green-700"
               onPress={getRandomRestaurants}
               disabled={restaurantsLoading}
             >

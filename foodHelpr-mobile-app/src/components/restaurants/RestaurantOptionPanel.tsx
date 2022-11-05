@@ -1,12 +1,20 @@
 import { FontAwesome } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
-import { Animated, Dimensions, ScrollView, Text, View } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  ScrollView,
+  Text,
+  View,
+  SafeAreaView,
+} from "react-native";
 import SlidingUpPanel from "rn-sliding-up-panel";
 import ColorScheme from "../../constants/ColorScheme";
 import MultiSelectPanel from "../common/MultiSelectPanel";
 import StyledSlider from "../common/StyledSlider";
 
-const window = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
+const landScape = width > height;
 
 type RestaurantOptionPanelProp = {
   randomDistance: number;
@@ -23,8 +31,8 @@ type RestaurantOptionPanelProp = {
   onDeliveryOptionsChange: (newOptions: {}[]) => void;
 };
 
-const MIN_PANEL_HEIGHT = 20;
-const MAX_PANEL_HEIGHT = Math.round(window.height * 0.7);
+const MIN_PANEL_HEIGHT = 40;
+const MAX_PANEL_HEIGHT = Math.round(height * 0.7);
 
 function RestaurantOptionPanel({
   randomDistance,
@@ -39,58 +47,59 @@ function RestaurantOptionPanel({
   const panelAnimatedValue = useRef<Animated.Value>(new Animated.Value(0));
 
   return (
-    <View className="absolute h-full w-full">
-      <SlidingUpPanel
-        snappingPoints={[MAX_PANEL_HEIGHT]}
-        draggableRange={{ top: MAX_PANEL_HEIGHT, bottom: MIN_PANEL_HEIGHT }}
-        height={window.height}
-        friction={0.5}
-        animatedValue={panelAnimatedValue?.current}
-      >
-        <>
-          <View className="mx-auto h-5 w-14 rounded-t-lg bg-white">
-            <Animated.View
-              style={{
-                transform: [
-                  {
-                    rotate: panelAnimatedValue?.current?.interpolate({
-                      inputRange: [MIN_PANEL_HEIGHT, MAX_PANEL_HEIGHT],
-                      outputRange: ["0deg", "180deg"], // 0 : 150, 0.5 : 75, 1 : 0
-                    }),
-                  },
-                ],
-              }}
-            >
-              <Text className="text-center font-semibold text-green-500">
-                <FontAwesome name="angle-up" size={20} />
-              </Text>
-            </Animated.View>
-          </View>
-          <ScrollView className="h-full w-full rounded-t-lg bg-white p-4">
-            <DistancePanel
-              randomDistance={randomDistance}
-              onRandomDistanceChange={onRandomDistanceChange}
-            />
-            <MultiSelectPanel
-              title="Tags"
-              searchPlaceholderText="Search tags..."
-              selectText="Select tags"
-              items={tags}
-              selectedItems={selectedTags}
-              onSelectedItemsChange={onSelectedTagsChange}
-            />
-            <MultiSelectPanel
-              title="Delivery Options"
-              searchPlaceholderText="Search delivery options..."
-              selectText="Select delivery options"
-              items={deliveryOptions}
-              selectedItems={selectedDeliveryOptions}
-              onSelectedItemsChange={onDeliveryOptionsChange}
-            />
-          </ScrollView>
-        </>
-      </SlidingUpPanel>
-    </View>
+    <SlidingUpPanel
+      snappingPoints={[MAX_PANEL_HEIGHT]}
+      draggableRange={{
+        top: MAX_PANEL_HEIGHT,
+        bottom: MIN_PANEL_HEIGHT,
+      }}
+      height={height}
+      friction={0.5}
+      animatedValue={panelAnimatedValue?.current}
+    >
+      <SafeAreaView>
+        <View className="mx-auto h-5 w-14 rounded-t-lg bg-white">
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  rotate: panelAnimatedValue?.current?.interpolate({
+                    inputRange: [MIN_PANEL_HEIGHT, MAX_PANEL_HEIGHT],
+                    outputRange: ["0deg", "180deg"], // 0 : 150, 0.5 : 75, 1 : 0
+                  }),
+                },
+              ],
+            }}
+          >
+            <Text className="text-center font-semibold text-green-500">
+              <FontAwesome name="angle-up" size={20} />
+            </Text>
+          </Animated.View>
+        </View>
+        <ScrollView className="h-full w-full rounded-t-lg bg-white p-4">
+          <DistancePanel
+            randomDistance={randomDistance}
+            onRandomDistanceChange={onRandomDistanceChange}
+          />
+          <MultiSelectPanel
+            title="Tags"
+            searchPlaceholderText="Search tags..."
+            selectText="Select tags"
+            items={tags}
+            selectedItems={selectedTags}
+            onSelectedItemsChange={onSelectedTagsChange}
+          />
+          <MultiSelectPanel
+            title="Delivery Options"
+            searchPlaceholderText="Search delivery options..."
+            selectText="Select delivery options"
+            items={deliveryOptions}
+            selectedItems={selectedDeliveryOptions}
+            onSelectedItemsChange={onDeliveryOptionsChange}
+          />
+        </ScrollView>
+      </SafeAreaView>
+    </SlidingUpPanel>
   );
 }
 

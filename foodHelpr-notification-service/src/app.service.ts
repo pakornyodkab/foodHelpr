@@ -64,32 +64,61 @@ export class AppService {
     // };
 
     //message for expo noti
-    const message = {
-      title: 'FoodHelpr',
-      to: targetNoti,
-      body: notiMessage,
-      data: {
-        action: 'leave',
-        userId: leaverId,
-      },
-    };
+    notiTokens.forEach(async (token) => {
+      const message = {
+        title: 'FoodHelpr',
+        to: [token],
+        body: notiMessage,
+        data: {
+          action: 'leave',
+          userId: leaverId,
+        },
+      };
 
-    await this.httpService.axiosRef.post(
-      'https://exp.host/--/api/v2/push/send',
-      message,
-    );
+      await this.httpService.axiosRef.post(
+        'https://exp.host/--/api/v2/push/send',
+        message,
+      );
 
-    //*FB
-    // messaging()
-    //   .sendMulticast(message)
-    //   .then((response) => {
-    //     console.log(response.successCount + ' messages were sent successfully');
-    //   });
+      //*FB
+      // messaging()
+      //   .sendMulticast(message)
+      //   .then((response) => {
+      //     console.log(response.successCount + ' messages were sent successfully');
+      //   });
 
-    console.log('leaveNoti has been sent.');
-    console.log('Noti message', notiMessage);
-    console.log('host', room.ownerId);
-    console.log('member', room.memberList);
+      console.log('leaveNoti has been sent.');
+      console.log('Noti message', notiMessage);
+      console.log('host', room.ownerId);
+      console.log('member', room.memberList);
+    });
+
+    // const message = {
+    //   title: 'FoodHelpr',
+    //   to: targetNoti,
+    //   body: notiMessage,
+    //   data: {
+    //     action: 'leave',
+    //     userId: leaverId,
+    //   },
+    // };
+
+    // await this.httpService.axiosRef.post(
+    //   'https://exp.host/--/api/v2/push/send',
+    //   message,
+    // );
+
+    // //*FB
+    // // messaging()
+    // //   .sendMulticast(message)
+    // //   .then((response) => {
+    // //     console.log(response.successCount + ' messages were sent successfully');
+    // //   });
+
+    // console.log('leaveNoti has been sent.');
+    // console.log('Noti message', notiMessage);
+    // console.log('host', room.ownerId);
+    // console.log('member', room.memberList);
     return msg;
   }
 
@@ -173,37 +202,70 @@ export class AppService {
     // };
 
     //message for expo noti
-    const message = {
-      title: 'FoodHelpr',
-      to: targetNoti,
-      body: notiMessage,
-      data: {
-        action: 'accept',
-        userId: joinerId,
-      },
-    };
+    notiTokens.forEach(async (token) => {
+      const message = {
+        title: 'FoodHelpr',
+        to: [token],
+        body: notiMessage,
+        data: {
+          action: 'accept',
+          userId: joinerId,
+        },
+      };
 
-    console.log(
-      '*******************************************notiMessage',
-      notiMessage,
-    );
+      console.log(
+        '*******************************************notiMessage',
+        notiMessage,
+      );
 
-    await this.httpService.axiosRef.post(
-      'https://exp.host/--/api/v2/push/send',
-      message,
-    );
+      await this.httpService.axiosRef.post(
+        'https://exp.host/--/api/v2/push/send',
+        message,
+      );
 
-    //*FB
-    // messaging()
-    //   .sendMulticast(message)
-    //   .then((response) => {
-    //     console.log(response.successCount + ' messages were sent successfully');
-    //   });
+      //*FB
+      // messaging()
+      //   .sendMulticast(message)
+      //   .then((response) => {
+      //     console.log(response.successCount + ' messages were sent successfully');
+      //   });
 
-    console.log('acceptedNoti has been sent.');
-    console.log('Noti message', notiMessage);
-    console.log('host', room.ownerId);
-    console.log('member', room.memberList);
+      console.log('acceptedNoti has been sent.');
+      console.log('Noti message', notiMessage);
+      console.log('host', room.ownerId);
+      console.log('member', room.memberList);
+    });
+    // const message = {
+    //   title: 'FoodHelpr',
+    //   to: targetNoti,
+    //   body: notiMessage,
+    //   data: {
+    //     action: 'accept',
+    //     userId: joinerId,
+    //   },
+    // };
+
+    // console.log(
+    //   '*******************************************notiMessage',
+    //   notiMessage,
+    // );
+
+    // await this.httpService.axiosRef.post(
+    //   'https://exp.host/--/api/v2/push/send',
+    //   message,
+    // );
+
+    // //*FB
+    // // messaging()
+    // //   .sendMulticast(message)
+    // //   .then((response) => {
+    // //     console.log(response.successCount + ' messages were sent successfully');
+    // //   });
+
+    // console.log('acceptedNoti has been sent.');
+    // console.log('Noti message', notiMessage);
+    // console.log('host', room.ownerId);
+    // console.log('member', room.memberList);
     return msg;
   }
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { RESTAURANT_URI } from "@env";
 import IRestaurantViewModel from "../models/RestaurantViewModel";
 
@@ -49,13 +49,19 @@ export interface IGetRestaurantInRangeResponse
 export interface IGetRestaurantViewModel extends IRestaurantViewModel {}
 
 export default class RestaurantService {
-  constructor() {}
+  private client: AxiosInstance;
+  private accessToken: string;
+  constructor(accessToken: string) {
+    this.client = axios.create({
+      //baseURL: "http://10.0.2.2:3000/",
+      baseURL: RESTAURANT_URI,
+      timeout: 10000,
+    });
+    this.accessToken = accessToken;
+  }
 
-  static GetRandomRestaurant = (
-    accessToken: string,
-    requestParams: IGetRandomRestaurantRequest
-  ) => {
-    const request = restaurantService.get<IGetRandomRestaurantResponse[]>(
+  GetRandomRestaurant(requestParams: IGetRandomRestaurantRequest) {
+    return restaurantService.get<IGetRandomRestaurantResponse[]>(
       "get-random-restaurant",
       {
         params: {
@@ -66,27 +72,22 @@ export default class RestaurantService {
           delivery_platforms: requestParams.delivery_platforms.join(","),
           tags: requestParams.tags.join(","),
         },
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${this.accessToken}` },
       }
     );
-    return request;
-  };
+  }
 
-  static GetRestaurantViewModel = (accessToken: string) => {
-    const request = restaurantService.get<IGetRestaurantViewModel>(
+  GetRestaurantViewModel() {
+    return restaurantService.get<IGetRestaurantViewModel>(
       "get-random-restaurant-view-model",
       {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${this.accessToken}` },
       }
     );
-    return request;
-  };
+  }
 
-  static GetRestaurantInRange = (
-    accessToken: string,
-    requestParams: IGetRestaurantInRangeRequest
-  ) => {
-    const request = restaurantService.get<IGetRestaurantInRangeResponse[]>(
+  GetRestaurantInRange(requestParams: IGetRestaurantInRangeRequest) {
+    return restaurantService.get<IGetRestaurantInRangeResponse[]>(
       "get-restaurant-in-range",
       {
         params: {
@@ -94,9 +95,8 @@ export default class RestaurantService {
           lng: requestParams.longitude,
           range: requestParams.range,
         },
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${this.accessToken}` },
       }
     );
-    return request;
-  };
+  }
 }
