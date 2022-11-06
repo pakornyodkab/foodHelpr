@@ -16,7 +16,11 @@ export default class AuthService {
     });
   }
 
-  GetToken(googleToken: string) {
-    return this.client.get<IGetTokenResponse>(`user-jwt-token/${googleToken}`);
+  async GetToken(googleToken: string) {
+    const token = await this.client.get<IGetTokenResponse>(
+      `user-jwt-token/${googleToken}`
+    );
+    console.log("GetTokenFromBackend", token);
+    return token;
   }
 }

@@ -15,6 +15,7 @@ export default class UserService {
       timeout: 5000,
     });
     this.accessToken = accessToken;
+    console.log("user_uri", USER_URI);
   }
 
   GetMyUser() {

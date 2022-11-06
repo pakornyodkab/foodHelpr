@@ -65,7 +65,9 @@ export default function HomeScreen({ navigation }) {
   const getFoodHelprToken = async (googleToken: string) => {
     try {
       const authService = new AuthService();
-      return await authService.GetToken(googleToken);
+      const token = await authService.GetToken(googleToken);
+      console.log("jwtToken", token);
+      return token;
     } catch (error) {
       console.error(error);
       throw error;
@@ -97,12 +99,15 @@ export default function HomeScreen({ navigation }) {
   };
 
   const handleSignInResponse = async () => {
+    console.log("Response", response);
     try {
       if (response?.type === "success") {
         setStealChickenToken(response.authentication.accessToken);
+        console.log("After Set Steal Chicken");
         const tokenResponse = await getFoodHelprToken(
           response.authentication.accessToken
         );
+        console.log("fhpToken", tokenResponse);
         const token = tokenResponse.data.access_token;
         setAccessToken(token);
         await saveToken(token);
