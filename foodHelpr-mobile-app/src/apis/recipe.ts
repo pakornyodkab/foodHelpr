@@ -1,12 +1,12 @@
 import axios from "axios";
-import { RECIPE_URI } from "@env";
+import { RECIPE_URI, TIMEOUT } from "@env";
 import IIngredient from "../models/Ingredient";
 import IRecipeViewModel from "../models/RecipeViewModel";
 import IRecipe from "../models/Recipe";
 
 const recipeService = axios.create({
   baseURL: RECIPE_URI,
-  timeout: 10000,
+  timeout: TIMEOUT,
 });
 
 export interface IGetRandomRecipeRequest {

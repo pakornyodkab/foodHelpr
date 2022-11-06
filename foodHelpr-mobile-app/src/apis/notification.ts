@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { NOTIFICATION_URI } from "@env";
+import { NOTIFICATION_URI, TIMEOUT } from "@env";
 
 export interface IGetTokenResponse {
   message: string;
@@ -14,7 +14,7 @@ export default class NotificationService {
     this.client = axios.create({
       baseURL: NOTIFICATION_URI,
       //baseURL: "http://10.0.2.2:3000/notification/",
-      timeout: 10000,
+      timeout: TIMEOUT,
     });
     this.accessToken = accessToken;
   }

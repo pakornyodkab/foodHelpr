@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { FOOD_FRIEND_URI } from "@env";
+import { FOOD_FRIEND_URI, TIMEOUT } from "@env";
 import IRestaurant from "../models/Restaurant";
 import IParty from "../models/Party";
 
@@ -47,7 +47,7 @@ export default class FoodFriendService {
     this.client = axios.create({
       baseURL: FOOD_FRIEND_URI,
       //baseURL: "http://10.0.2.2:3000/party/",
-      timeout: 10000,
+      timeout: TIMEOUT,
     });
     this.accessToken = accessToken;
   }

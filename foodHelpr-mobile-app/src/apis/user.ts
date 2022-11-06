@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { USER_URI } from "@env";
+import { USER_URI, TIMEOUT } from "@env";
 import IUser from "../models/User";
 import { getUser } from "../libs/user";
 
@@ -12,7 +12,7 @@ export default class UserService {
     this.client = axios.create({
       //baseURL: "http://10.0.2.2:3000/",
       baseURL: USER_URI,
-      timeout: 5000,
+      timeout: TIMEOUT,
     });
     this.accessToken = accessToken;
     console.log("user_uri", USER_URI);
