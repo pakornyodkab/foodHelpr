@@ -136,6 +136,7 @@ const WaitingList = ({ navigation }) => {
             party.pendingMemberList
               .map((user) => (
                 <HostAcceptDenyCard
+                  key={user.user_id}
                   party={party}
                   guest={user}
                   onAction={deleteHostAcceptDenyPartyCard}

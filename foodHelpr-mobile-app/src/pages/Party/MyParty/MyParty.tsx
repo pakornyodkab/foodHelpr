@@ -128,13 +128,12 @@ const MyParty = ({ navigation }) => {
         >
           {partyList.map((party) => {
             return (
-              //<MyPartyPendingCard party={party} />
               <MyPartyCard
+                key={party._id}
                 navigation={navigation}
                 party={party}
                 refreshRoom={getMyPartyList}
               ></MyPartyCard>
-              //<HostAcceptDenyCard partyName={party.name} guestName="test" />
             );
           })}
         </ScrollView>

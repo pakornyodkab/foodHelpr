@@ -4,7 +4,7 @@ import { LONGDOMAP_KEY } from "@env";
 
 const longdoMapApi = axios.create({
   baseURL: "https://api.longdo.com/map/services/",
-  timeout: 5000,
+  timeout: Number(process.env.TIMEOUT),
 });
 
 export default class LongdoMapApi {

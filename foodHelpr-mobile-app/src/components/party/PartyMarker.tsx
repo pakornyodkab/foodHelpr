@@ -34,6 +34,7 @@ const PartyMarker = ({ restaurant, parties }: PartyMarkerProp) => {
         </Text>
       </View>
       <PartyModal
+        key={restaurant._id}
         parties={parties}
         restaurant={restaurant}
         isVisible={modalVisible}

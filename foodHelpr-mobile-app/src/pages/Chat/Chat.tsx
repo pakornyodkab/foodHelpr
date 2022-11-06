@@ -168,6 +168,8 @@ const Chat = ({ route, navigation }) => {
 
   const getMyUser = async () => {
     userRef.current = await getUser();
+    console.log("userRef", userRef.current);
+    
   };
 
   useEffect(() => {

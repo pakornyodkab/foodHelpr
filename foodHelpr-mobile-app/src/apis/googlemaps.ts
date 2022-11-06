@@ -7,7 +7,7 @@ export default class GoogleMapsApi {
   constructor() {
     this.client = axios.create({
       baseURL: "https://maps.googleapis.com/maps/api/",
-      timeout: 5000,
+      timeout: Number(process.env.TIMEOUT),
     });
   }
 

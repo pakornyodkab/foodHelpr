@@ -421,7 +421,7 @@ export default function SearchParty({ navigation }) {
             const { restaurantData, partyList } = restaurantMapPartyData;
             return (
               <PartyMarker
-                // key={restaurantData._id}
+                key={restaurantData._id}
                 restaurant={restaurantData}
                 parties={partyList}
               />

@@ -4,7 +4,7 @@ import { GEOAPIFY_KEY } from "@env";
 
 const geoapifyApi = axios.create({
   baseURL: "https://api.geoapify.com/v1/geocode/",
-  timeout: 5000,
+  timeout: Number(process.env.TIMEOUT),
 });
 
 export default class GeoapifyAPI {

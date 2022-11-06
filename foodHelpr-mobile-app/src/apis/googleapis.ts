@@ -6,7 +6,7 @@ export default class GoogleApis {
   constructor() {
     this.client = axios.create({
       baseURL: "https://www.googleapis.com/",
-      timeout: 5000,
+      timeout: Number(process.env.TIMEOUT),
     });
   }
 
