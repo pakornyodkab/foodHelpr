@@ -1,7 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { USER_URI, TIMEOUT } from "@env";
 import IUser from "../models/User";
-import { getUser } from "../libs/user";
 
 export interface IGetMyUserResponse extends IUser {}
 
@@ -10,12 +8,10 @@ export default class UserService {
   private accessToken: string;
   constructor(accessToken: string) {
     this.client = axios.create({
-      //baseURL: "http://10.0.2.2:3000/",
-      baseURL: USER_URI,
-      timeout: TIMEOUT,
+      baseURL: process.env.USER_URI,
+      timeout: Number(process.env.TIMEOUT),
     });
     this.accessToken = accessToken;
-    console.log("user_uri", USER_URI);
   }
 
   GetMyUser() {

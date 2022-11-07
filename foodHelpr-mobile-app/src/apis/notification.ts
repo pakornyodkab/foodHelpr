@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from "axios";
-import { NOTIFICATION_URI, TIMEOUT } from "@env";
 
 export interface IGetTokenResponse {
   message: string;
@@ -12,14 +11,13 @@ export default class NotificationService {
 
   constructor(accessToken: string) {
     this.client = axios.create({
-      baseURL: NOTIFICATION_URI,
-      //baseURL: "http://10.0.2.2:3000/notification/",
-      timeout: TIMEOUT,
+      baseURL: process.env.NOTIFICATION_URI,
+      timeout: Number(process.env.TIMEOUT),
     });
     this.accessToken = accessToken;
   }
 
-  sendExpotoken(expoToken: string) {
+  SendExpotoken(expoToken: string) {
     return this.client.post(
       `save-expo-token/${expoToken}`,
       {},
@@ -29,7 +27,7 @@ export default class NotificationService {
     );
   }
 
-  removeExpoToken(expoToken: string) {
+  RemoveExpoToken(expoToken: string) {
     return this.client.post(
       `remove-expo-token/${expoToken}`,
       {},

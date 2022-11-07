@@ -76,7 +76,8 @@ function RandomRecipes({ navigation }) {
   const getFilterList = async () => {
     try {
       const accessToken = await getToken();
-      const response = await RecipeService.GetRecipeViewModel(accessToken);
+      const recipeService = new RecipeService(accessToken);
+      const response = await recipeService.GetRecipeViewModel();
       setRecipeViewModel(response.data);
       setIsGenFilterListFinished(true);
     } catch (error) {

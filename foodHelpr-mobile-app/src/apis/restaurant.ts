@@ -1,12 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { RESTAURANT_URI, TIMEOUT } from "@env";
 import IRestaurantViewModel from "../models/RestaurantViewModel";
-
-const restaurantService = axios.create({
-  //baseURL: "http://10.0.2.2:3000/restaurant/",
-  baseURL: RESTAURANT_URI,
-  timeout: TIMEOUT,
-});
 
 export interface IGetRandomRestaurantRequest {
   latitude: number;
@@ -53,15 +46,14 @@ export default class RestaurantService {
   private accessToken: string;
   constructor(accessToken: string) {
     this.client = axios.create({
-      //baseURL: "http://10.0.2.2:3000/",
-      baseURL: RESTAURANT_URI,
-      timeout: 10000,
+      baseURL: process.env.RESTAURANT_URI,
+      timeout: Number(process.env.TIMEOUT),
     });
     this.accessToken = accessToken;
   }
 
   GetRandomRestaurant(requestParams: IGetRandomRestaurantRequest) {
-    return restaurantService.get<IGetRandomRestaurantResponse[]>(
+    return this.client.get<IGetRandomRestaurantResponse[]>(
       "get-random-restaurant",
       {
         params: {
@@ -78,7 +70,7 @@ export default class RestaurantService {
   }
 
   GetRestaurantViewModel() {
-    return restaurantService.get<IGetRestaurantViewModel>(
+    return this.client.get<IGetRestaurantViewModel>(
       "get-random-restaurant-view-model",
       {
         headers: { Authorization: `Bearer ${this.accessToken}` },
@@ -87,7 +79,7 @@ export default class RestaurantService {
   }
 
   GetRestaurantInRange(requestParams: IGetRestaurantInRangeRequest) {
-    return restaurantService.get<IGetRestaurantInRangeResponse[]>(
+    return this.client.get<IGetRestaurantInRangeResponse[]>(
       "get-restaurant-in-range",
       {
         params: {

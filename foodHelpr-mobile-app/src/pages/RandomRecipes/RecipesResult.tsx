@@ -115,16 +115,15 @@ function RecipesResult({ navigation }) {
   }, []);
 
   async function getRecipes () {
-    // do query
     try {
       const accessToken = await getToken();
-      const response = await RecipeService.GetRandomRecipe(accessToken, randRecipeFilterDetail);
+      const recipeService = new RecipeService(accessToken);
+      const response = await recipeService.GetRandomRecipe(randRecipeFilterDetail);
       setRecipeList(response.data)
     } catch (error) {
       console.error(error);
       throw error;
     }
-    // setRecipeList(mockRecipes)
   }
 
   function genRecipes() {

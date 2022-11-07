@@ -1,13 +1,6 @@
-import axios from "axios";
-import { RECIPE_URI, TIMEOUT } from "@env";
-import IIngredient from "../models/Ingredient";
+import axios, { AxiosInstance } from "axios";
 import IRecipeViewModel from "../models/RecipeViewModel";
 import IRecipe from "../models/Recipe";
-
-const recipeService = axios.create({
-  baseURL: RECIPE_URI,
-  timeout: TIMEOUT,
-});
 
 export interface IGetRandomRecipeRequest {
   tags: string[];
@@ -23,37 +16,37 @@ export interface IGetRandomRecipeResponse extends IRecipe {}
 export interface IGetRecipeViewModelResponse extends IRecipeViewModel {}
 
 export default class RecipeService {
-  constructor() {}
+  private client: AxiosInstance;
+  private accessToken: string;
+  constructor(accessToken: string) {
+    this.client = axios.create({
+      baseURL: process.env.RESTAURANT_URI,
+      timeout: Number(process.env.TIMEOUT),
+    });
+    this.accessToken = accessToken;
+  }
 
-  static GetRandomRecipe = (
-    accessToken: string,
-    requestParams: IGetRandomRecipeRequest
-  ) => {
-    const request = recipeService.get<IGetRandomRecipeResponse[]>(
-      "get-random-recipe",
-      {
-        params: {
-          tags: requestParams.tags.join(","),
-          include_ingredients: requestParams.include_ingredients.join(","),
-          exclude_ingredients: requestParams.exclude_ingredients.join(","),
-          exclude_utensils: requestParams.exclude_utensils.join(","),
-          calories_min: requestParams.calories_min,
-          calories_max: requestParams.calories_max,
-          random_amount: requestParams.random_amount,
-        },
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }
-    );
-    return request;
-  };
+  GetRandomRecipe(requestParams: IGetRandomRecipeRequest) {
+    return this.client.get<IGetRandomRecipeResponse[]>("get-random-recipe", {
+      params: {
+        tags: requestParams.tags.join(","),
+        include_ingredients: requestParams.include_ingredients.join(","),
+        exclude_ingredients: requestParams.exclude_ingredients.join(","),
+        exclude_utensils: requestParams.exclude_utensils.join(","),
+        calories_min: requestParams.calories_min,
+        calories_max: requestParams.calories_max,
+        random_amount: requestParams.random_amount,
+      },
+      headers: { Authorization: `Bearer ${this.accessToken}` },
+    });
+  }
 
-  static GetRecipeViewModel = (accessToken: string) => {
-    const request = recipeService.get<IGetRecipeViewModelResponse>(
+  GetRecipeViewModel() {
+    return this.client.get<IGetRecipeViewModelResponse>(
       "get-recipe-view-model",
       {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${this.accessToken}` },
       }
     );
-    return request;
-  };
+  }
 }

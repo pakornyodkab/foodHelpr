@@ -29,19 +29,6 @@ const PartyModal = ({
   parties,
   restaurant,
 }: PartyModalType) => {
-  //const [partyList, setPartyList] = useState([]);
-
-  // async function getAllPartyCard() {
-  //   try {
-  //     const accessToken = await getToken();
-  //     const response = await RecipeService.GetRandomRecipe(accessToken, randRecipeFilterDetail);
-  //     setRecipeList(response.data)
-  //   } catch (error) {
-  //     console.error(error);
-  //     throw error;
-  //   }
-  // }
-
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View style={styles.centeredView}>

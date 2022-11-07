@@ -1,19 +1,9 @@
 import * as React from "react";
 import { View, Text, Image, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as Google from "expo-auth-session/providers/google";
-import * as WebBrowser from "expo-web-browser";
-import {
-  ANDROID_CLIENT_ID,
-  EXPO_CLIENT_ID,
-  MY_SECURE_AUTH_STATE_KEY,
-  IOS_CLIENT_ID,
-} from "@env";
-import * as AuthSession from "expo-auth-session";
+import * as Google from "expo-auth-session/providers/google"; 
 import GoogleApis from "../../apis/googleapis";
 import { saveToken, getToken } from "../../libs/token";
-import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
-import * as Linking from "expo-linking";
 import AuthService from "../../apis/auth";
 import MainRoutes from "../../routes/main";
 import AgeModal from "../../components/party/AgeModal";
@@ -43,9 +33,9 @@ export default function HomeScreen({ navigation }) {
   // </Text>
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: ANDROID_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-    expoClientId: EXPO_CLIENT_ID,
+    androidClientId: process.env.ANDROID_CLIENT_ID,
+    iosClientId: process.env.IOS_CLIENT_ID,
+    expoClientId: process.env.EXPO_CLIENT_ID,
   });
 
   // const [request, response, promptAsync] = useAuthRequest(
@@ -79,7 +69,7 @@ export default function HomeScreen({ navigation }) {
     const accessToken = await getToken();
     const notificationService = new NotificationService(accessToken);
     try {
-      await notificationService.sendExpotoken(expoToken.data);
+      await notificationService.SendExpotoken(expoToken.data);
     } catch (error) {
       console.error(error);
       throw error;
@@ -91,7 +81,7 @@ export default function HomeScreen({ navigation }) {
     const accessToken = await getToken();
     const notificationService = new NotificationService(accessToken);
     try {
-      await notificationService.removeExpoToken(expoToken.data);
+      await notificationService.RemoveExpoToken(expoToken.data);
     } catch (error) {
       console.error(error);
       throw error;
