@@ -12,14 +12,6 @@ export default async (serviceName: string) => {
   const serviceList = await consul.agent.service.list();
   let service = serviceList[serviceName];
 
-  if (!service) {
-    Object.keys(serviceList).forEach((key) => {
-      if (key.includes(serviceName)) {
-        service = serviceList[key];
-      }
-    });
-  }
-
   return {
     host: service.Address,
     port: service.Port,
