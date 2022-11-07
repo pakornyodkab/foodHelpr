@@ -9,10 +9,11 @@ import { saveToken, getToken } from "../../libs/token";
 import { useNavigation } from "@react-navigation/native";
 import FoodFriendRoutes from "../../routes/foodFriend";
 
-type PartyCardProp = { party: IParty; key?: string };
+type PartyCardProp = { party: IParty };
 
-const navigation = useNavigation();
-export default function PartyCard({ party, key }: PartyCardProp) {
+export default function PartyCard({ party }: PartyCardProp) {
+  const navigation = useNavigation();
+
   function navigate(name, params = {}) {
     navigation.navigate(name as never, params as never);
   }
@@ -25,10 +26,7 @@ export default function PartyCard({ party, key }: PartyCardProp) {
   };
 
   return (
-    <View
-      key={key}
-      className="mb-4 flex max-w-sm rounded-lg border-2 border-green-500 bg-transparent p-4 shadow-lg "
-    >
+    <View className="mb-4 flex max-w-sm rounded-lg border-2 border-green-500 bg-transparent p-4 shadow-lg ">
       <View className="flex-row space-x-2">
         <View className="flex-row space-x-1">
           <Ionicons name="people" size={20} />

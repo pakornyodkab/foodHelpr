@@ -54,7 +54,7 @@ const PartyModal = ({
             className="rounded-lg border-2 border-gray-200 p-3"
           >
             {parties.map((party) => (
-              <PartyCard key={party._id} party={party}/>
+              <PartyCard party={party}></PartyCard>
             ))}
           </ScrollView>
           <View className="mt-3">
