@@ -313,6 +313,7 @@ export default function RandomRestaurantsScreen({ navigation }) {
             address={restaurant.address}
             coordinate={restaurant.coordinate}
             deliveryInfo={restaurant.deliveryInfo}
+            isRandomRestaurant={true}
           />
         ))}
       </MapView>

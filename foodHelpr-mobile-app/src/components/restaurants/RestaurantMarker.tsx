@@ -18,6 +18,7 @@ type RestaurantMarkerProp = {
     platform: string;
     link: string;
   }[];
+  isRandomRestaurant: boolean;
 };
 
 const RestaurantMarker = ({
@@ -30,6 +31,7 @@ const RestaurantMarker = ({
   address,
   coordinate,
   deliveryInfo,
+  isRandomRestaurant
 }: RestaurantMarkerProp) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -52,6 +54,7 @@ const RestaurantMarker = ({
         deliveryInfo={deliveryInfo}
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
+        isRandomRestaurant={isRandomRestaurant}
       />
     </Marker>
   );

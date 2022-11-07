@@ -28,6 +28,7 @@ type RestaurantModalProp = {
     platform: string;
     link: string;
   }[];
+  isRandomRestaurant: boolean;
 };
 
 const RestaurantModal = ({
@@ -41,6 +42,7 @@ const RestaurantModal = ({
   recommendedDishes,
   address,
   deliveryInfo,
+  isRandomRestaurant,
 }: RestaurantModalProp) => {
   const dispatch = useDispatch();
 
@@ -126,7 +128,7 @@ const RestaurantModal = ({
             ))}
           </View>
 
-          {true ? (
+          {!isRandomRestaurant ? (
             <View className="flex-row">
               <Button
                 className="mt-4 h-10 w-16"

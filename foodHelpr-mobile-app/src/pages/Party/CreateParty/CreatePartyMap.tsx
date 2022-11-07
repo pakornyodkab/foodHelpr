@@ -292,6 +292,7 @@ export default function CreatePartyMap({ navigation, setRestaurant }) {
               address={restaurant.address}
               coordinate={restaurant.coordinate}
               deliveryInfo={restaurant.deliveryInfo}
+              isRandomRestaurant={false}
             />
           ))}
         </MapView>

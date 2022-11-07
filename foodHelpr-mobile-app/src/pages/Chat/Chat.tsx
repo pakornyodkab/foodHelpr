@@ -129,7 +129,7 @@ const Chat = ({ route, navigation }) => {
   const connectSocket = async () => {
     await getMyUser();
     console.log("Run connectSocket");
-    socketRef.current = io(`${process.env.CHAT_URI}`, {
+    socketRef.current = io(process.env.CHAT_URI, {
       transports: ["websocket"],
       extraHeaders: {
         Authorization: `Bearer ${await getToken()}`,
@@ -169,7 +169,6 @@ const Chat = ({ route, navigation }) => {
   const getMyUser = async () => {
     userRef.current = await getUser();
     console.log("userRef", userRef.current);
-    
   };
 
   useEffect(() => {
