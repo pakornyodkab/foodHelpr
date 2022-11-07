@@ -59,8 +59,7 @@ export default function HomeScreen({ navigation }) {
       console.log("jwtToken", token);
       return token;
     } catch (error) {
-      console.error(error);
-      throw error;
+      console.error(error.message);
     }
   };
 
@@ -71,8 +70,7 @@ export default function HomeScreen({ navigation }) {
     try {
       await notificationService.SendExpotoken(expoToken.data);
     } catch (error) {
-      console.error(error);
-      throw error;
+      console.error(error.message);
     }
   };
 
@@ -83,8 +81,7 @@ export default function HomeScreen({ navigation }) {
     try {
       await notificationService.RemoveExpoToken(expoToken.data);
     } catch (error) {
-      console.error(error);
-      throw error;
+      console.error(error.message);
     }
   };
 
@@ -114,7 +111,6 @@ export default function HomeScreen({ navigation }) {
       }
     } catch (error) {
       console.error(error.message);
-      throw error;
     }
   };
 
