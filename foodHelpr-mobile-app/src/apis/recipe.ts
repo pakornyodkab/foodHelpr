@@ -20,7 +20,7 @@ export default class RecipeService {
   private accessToken: string;
   constructor(accessToken: string) {
     this.client = axios.create({
-      baseURL: process.env.RESTAURANT_URI,
+      baseURL: process.env.RECIPE_URI,
       timeout: Number(process.env.TIMEOUT),
     });
     this.accessToken = accessToken;
