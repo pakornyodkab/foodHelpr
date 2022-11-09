@@ -1,4 +1,4 @@
-import * as Consul from 'utils/consul';
+import Consul from 'consul';
 import { config } from 'dotenv';
 
 config();
