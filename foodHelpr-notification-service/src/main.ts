@@ -56,7 +56,7 @@ async function bootstrap() {
   });
   LOGGER.log('Consul registered');
 
-  const {host, port} = await consul('rabbitmq:rabbitmq');
+  const {host, port} = await Consul('rabbitmq:rabbitmq');
 
   const app = await NestFactory.create(AppModule);
   const microservice = app.connectMicroservice({
