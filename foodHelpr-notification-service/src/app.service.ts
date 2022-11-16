@@ -390,7 +390,7 @@ export class AppService {
     return { msg: 'Add successful' };
   }
 
-  async partyGoBoom(msg: PartyGoBoom) {
+  async destroyParty(msg: PartyGoBoom) {
     const { room, hostId } = msg;
     const roomMemberNoHost = room.memberList.filter((element) => {
       return element !== hostId.toString();

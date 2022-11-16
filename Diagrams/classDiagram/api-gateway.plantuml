@@ -1,0 +1,185 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+hide circle
+
+AuthController ..> AuthService
+
+class  AuthController {
+  ----
+  + googleAuth()
+  + googleAuthRedirect(req, res)
+  + getUserId(req)
+}
+
+class  AuthService {
+  - oauthClient: Auth.OAuth2Client
+  ----
+  + generateJwt(payload)
+  + getUserId(req)
+  + verifyJwt(token)
+  + googleLogin(googleToken, res)
+  + googleRegister(email, picture_url, firstname, lastname, res)
+}
+
+ChatGateway ..> ChatService
+
+class  ChatGateway {
+  ----
+  +  afterInit(server)
+  +  handleConnection(socket)
+  +  handleDisconnect(socket)
+  +  handleNewMessage(chat, socket)
+  -  sendNewChatData(chatDto, socket)
+}
+
+class  ChatService <<Adapter>> {
+  ----
+  + handleConnection(handleConnectionDto)
+  + handleDisconnect(handleDisconnectDto)
+  + getChats(roomId)
+  + saveChat(chat)
+}
+
+class  IngredientController <<gRPC Client>> {
+  ----
+  + onModuleInit()
+  + getIngredients()
+  + getIngredientById(ingredientId)
+  + createIngredient(ingredient)
+  + deleteIngredient(ingredientId)
+  + updateIngredient(ingredient)
+}
+
+class  NotificationController {
+  ----
+  + testNotification(message)
+  + saveExpoToken(userId, token)
+  + removeExpoToken(userId, token)
+}
+
+class  NotificationService <<Adapter>> {
+  ----
+  + testNotification(message)
+  + saveExpoToken(userId, token)
+  + removeExpoToken(userId, token)
+}
+
+PartyController ..> PartyService
+PartyController ..> AuthService
+PartyService ..> RestaurantService
+
+class  PartyController {
+  ----
+  + getAllParty()
+  + getHostParty()
+  + getPartyById(id)
+  + getPartyListByUserId(userId)
+  + createHostParty(userId, createHostPartyDto)
+  + deleteHostParty(id, userId)
+  + deleteAllHostParty()
+  + getHostPartyViewModel()
+  + getGuestFindParty(userId, distance, lat, lng)
+  + guestJoinParty(userId, Partial)
+  + guestLeaveParty(userId, guestLeavePartyDto)
+  + hostPartyAction(hostPartyActionDto)
+  + getGuestPartyViewModel()
+}
+
+class  PartyService <<Adapter>> {
+  ----
+  + getAllParty()
+  + getHostParty()
+  + getPartyById(id)
+  + getPartyListByUserId(userId)
+  - populateRestaurantInPartyList(party[])
+  + createHostParty(userId, createHostPartyDto)
+  + deleteHostParty(id, userId)
+  + deleteAllHostParty()
+  + getHostPartyViewModel()
+  + guestJoinParty(userId, Partial)
+  + guestLeaveParty(userId, guestLeavePartyDto)
+  + hostPartyAction(hostPartyActionDto)
+  + getGuestFindParty(userId, distance, lat, lng)
+  - populateMemberInPartyList(party[])
+  + getGuestPartyViewModel()
+}
+
+RecipeController ..> RecipeService
+
+class  RecipeController <<gRPC Client>>{
+  ----
+  + getRecipes()
+  + getRecipeById(id)
+  + createRecipe(recipe)
+  + updateRecipeById(id, recipe)
+  + deleteRecipeById(id)
+  + getRecipeViewModel()
+  + getRandomRecipe(tags, includeIngredients, excludeIngredients, excludeUtensils, caloriesMin, caloriesMax, recipeNumber)
+  - convertTag(tag)
+  - convertNameToTagNumber(names)
+  - convertRecipeViewModel(recipe)
+  - convertRandomRecipeResult(recipe)
+  - convertMethod(method)
+  - convertIngredients(ingredients)
+}
+
+RestaurantController ..> RestaurantService
+
+class RestaurantController {
+  ---
+  + getRestaurants()
+  + getRestaurantById(id)
+  + createRestaurant(createRestaurantDto)
+  + deleteRestaurant(id)
+  + updateRestaurant(id, updateRestaurantDto)
+  + calculateDistances(coordinate1, coordinate2)
+  + getRandomRestaurant(userId, lat, lng, randomNumber, range, tagsUse, deliveryUse)
+  + getRestaurantInRange(lat, lng, range)
+  + getRandomRestaurantViewModel()
+}
+
+class RestaurantService {
+  ---
+  + getRestaurants()
+  + getRestaurantById(id)
+  + createRestaurant(createRestaurantDto)
+  + deleteRestaurant(id)
+  + updateRestaurant(id, updateRestaurantDto)
+  + calculateDistances(coordinate1, coordinate2)
+  + getRandomRestaurant(userId, lat, lng, randomNumber, range, tagsUse, deliveryUse)
+  + getRestaurantInRange(lat, lng, range)
+  + getRandomRestaurantViewModel()
+}
+
+AppController ..> AppService
+AppService ..> AuthService
+
+class AppController {
+  ---
+  + createUser(createUserDto)
+  + getUsers()
+  + getUserById(id)
+  + getUserJwtToken(googleToken)
+  + getMyUser()
+  + editUserById(id, updateUserDto)
+  + editMyUser(updateUserDto)
+  + deleteUserById(id)
+  + deleteMyUser()
+}
+
+class AppService {
+  ---
+  + createUser(CreateUserDto)
+  + getUsers()
+  + getUserById(id)
+  + editUserById(id, UpdateUserDto)
+  + deleteUserById(id)
+}
+
+class  NotificationToken {
+  + userId: string
+  + expoToken: string
+  ----
+}
+@enduml

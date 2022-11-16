@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { AppService } from '../app.service';
 import { CreateHostPartyDto } from '../dto/createHostParty.dto';
 import { forkJoin } from 'rxjs';
 import IGuestFindPartyRequest from './model/guestFindParty.model';
@@ -18,7 +17,6 @@ export class PartyService {
     @Inject('NOTIFICATION_SERVICE')
     private readonly notificationClient: ClientProxy,
     private readonly restaurantService: RestaurantService,
-    private readonly appService: AppService,
   ) {}
 
   getAllParty() {

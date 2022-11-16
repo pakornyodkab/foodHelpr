@@ -10,7 +10,6 @@
   Req,
   Query,
 } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
 import { GetCurrentUserId } from 'src/auth/decorator/get-current-user-id.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { Coordinate } from 'src/dto/coordinate.dto';
@@ -23,7 +22,6 @@ import { RestaurantService } from './restaurant.service';
 export class RestaurantController {
   constructor(
     private readonly restaurantService: RestaurantService,
-    private readonly authService: AuthService,
   ) {}
 
   @Get('get-restaurants')

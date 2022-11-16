@@ -24,7 +24,7 @@ export class AppController {
   }
 
   @EventPattern('wannaJoin_noti')
-  async wannaJoineNoti(msg: WannaJoinRequest) {
+  async wannaJoinNoti(msg: WannaJoinRequest) {
     return await this.appService.wannaJoinNoti(msg);
   }
 
@@ -59,7 +59,7 @@ export class AppController {
   }
 
   @EventPattern('party_go_boom')
-  async partyGoBoom(msg: PartyGoBoom) {
-    return await this.appService.partyGoBoom(msg);
+  async destroyParty(msg: PartyGoBoom) {
+    return await this.appService.destroyParty(msg);
   }
 }
