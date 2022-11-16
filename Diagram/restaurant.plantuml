@@ -1,0 +1,61 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+RestaurantController ..>  RestaurantService 
+
+RestaurantService -->  Restaurant
+
+Restaurant *-- Coordinate
+Restaurant *-- DeliveryInfo
+
+
+
+class RestaurantController {
+  +getRestautantsById(id) 
+  +getRestaurants()
+  +creatRestaurant(createRestaurantDto)
+  +updateRestaurant(updateRestaurantRequest)
+  +deleteRestaurantById(id)
+  +calculateDist(coordinate)
+  +getRandomRestaurant(randomRequest)
+  +getRandomRestaurantViewModel()
+  +getRestaurantInRange(randomRequest) 
+  +getRestaurantsFromCoordinate(restaurantNameRequest)
+}
+
+class RestaurantService {
+  +getRestaurantById(id)
+  +getRestaurants()
+  +getRestaurantsFromCoordinate(coordinate) 
+  +deleteRestaurant(id) 
+  +updateRestaurant(id, updateRestaurantDto)
+  +createRestaurant(createRestaurantDto)
+  +calculateDistance(coordinate1, coordinate2)
+  +getRandomRestaurant(coordinate,randomNumber,userBanListId,range,tags,deliveryPlatforms) 
+  +getRandomRestaurantViewModel()
+  +getRestaurantInRange(coordinate, range)
+}
+
+class Restaurant {
+  id: String
+  name: String
+  address: String
+  restaurantPictureLink: String[]
+  recommendedDish: String[]
+  tag: String[]
+  coordinate: Coordinate
+  rating: Number
+  deliveryInfo: DeliveryInfo[]
+}
+
+class DeliveryInfo {
+    platform: String
+    link: String
+}
+
+class Coordinate {
+  Latitude: Number,
+  Longitude: Number
+}
+
+@enduml

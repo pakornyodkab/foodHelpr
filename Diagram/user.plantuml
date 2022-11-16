@@ -1,0 +1,37 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+UserController ..>  UserService 
+
+UserService -->  User
+
+
+class UserController {
+  +createUser(createUserDto) 
+  +getUsers() 
+  +getUser(id) 
+  +getUserByEmail(email)
+  +editUser(updateUserRequest) 
+  +deleteUser(id) 
+}
+
+class UserService {
+  +create(createUserDto)
+  +findAll() 
+  +findOne(id)
+  +findOneByEmail(inputEmail)
+  +update(id, updateUserDto)
+  +remove(id)
+}
+
+class User {
+  user_id: Number
+  firstname: String
+  lastname: String
+  profile_picture: String
+  birthdate: Date
+  nickname: String
+  job: String
+}
+
+@enduml
