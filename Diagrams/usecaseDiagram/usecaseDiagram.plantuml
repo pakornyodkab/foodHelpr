@@ -1,0 +1,37 @@
+@startuml Usecase Diagram
+left to right direction
+actor "User" as u
+actor "Guest" as g
+actor "Host" as h
+
+u <|- h
+' u <|-- g
+g -|> u
+
+package "FoodHelpr System" {
+  usecase "Login" as UC1
+  usecase "Random Restaurant" as UC2
+  usecase "Random Recipe" as UC3
+  usecase "Create Party" as UC4
+  usecase "Find Party" as UC5
+  usecase "Guest want to Join Party" as UC6
+  usecase "Host Accept Guest" as UC7
+  usecase "Host Decline Guest" as UC8
+  usecase "Join Chat" as UC9
+  usecase "Send Message" as UC10
+  usecase "Guest Leave Party" as UC11
+  usecase "Host Delete Party" as UC12
+}
+u --> UC1
+u --> UC2
+u --> UC3
+u --> UC4
+u --> UC5
+g --> UC6
+u --> UC9
+u --> UC10
+g --> UC11
+h --> UC7
+h --> UC8
+h --> UC12
+@enduml
