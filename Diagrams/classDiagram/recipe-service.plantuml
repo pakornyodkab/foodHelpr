@@ -1,0 +1,92 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+RecipeController ..>  RecipeService 
+
+RecipeService -->  Recipe
+
+IngredientController ..> IngredientService
+
+IngredientService --> Ingredient
+
+Recipe *-- IngredientInRestaurant
+Recipe *-- Method
+
+Ingredient *-- DeliveryInfo
+
+
+class RecipeController {
+  +createRecipe(recipe)
+  +getRecipes()
+  +getRecipeById(recipeId)
+  +updateRecipeById(recipe)
+  +deleteRecipeById(recipeId) 
+  +getRandomRecipe(randomRecipeReq) 
+  +getRecipeViewModel()
+}
+
+class RecipeService {
+  +createRecipe(newRecipe) 
+  +getRecipes()
+  +getRecipeById(id)
+  +updateRecipeById(updatedRecipe)
+  +deleteRecipeById(id)
+  +getRandomRecipe(tags,includeIngredients,excludeIngredients,excludeUtensils,caloriesMin,caloriesMax,recipeNumber) 
+  +getRecipeViewModel()
+}
+
+class Recipe {
+  name: String
+  tags: Enum
+  kcal: Number
+  ingredients:IngredientInRestaurant[]
+  method: Method[]
+  kitchenTools: String[]
+  tutorialLinks: String[]
+  pictureUrl: String[]
+}
+
+class Method {
+    step: Number
+    title: String
+    subStep: String[]
+}
+
+class IngredientInRestaurant {
+    ingredientId:ObjectId
+    quantity: Number,
+    unit: String,
+}
+
+class IngredientController {
+  +createIngredient(ingredient)
+  +getIngredients()
+  +getIngredientById(ingredientId)
+  +updateIngredientById(ingredient)
+  +deleteIngredientById(ingredientId)
+  +updateIngredientByName(ingredient)
+  +getIngredientByName(ingredient)
+}
+
+class IngredientService {
+  +createIngredient(newIngredient)
+  +getIngredients()
+  +getIngredientById(id)
+  +updateIngredientById(updatedIngredient)
+  +deleteIngredientById(id)
+  +updateIngredientByName(ingredient)
+  +getIngredientByName(ingredient)
+}
+
+class Ingredient {
+  name: String,
+  pictureUrl: String[],
+  deliveryInfo: DeliveryInfo[]
+}
+
+class DeliveryInfo {
+    deliveryType:Enum,
+    url: String
+}
+
+@enduml

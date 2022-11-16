@@ -1,0 +1,29 @@
+@startuml
+actor "Guest User" as u
+participant "FoodHelpr Mobile App" as fe
+participant "API Gateway" as gateway
+participant "Restaurant Service" as restaurant
+participant MongoDB as mongo
+
+mainframe Random Restaurant
+skinparam style strictuml
+
+u -> fe: Get Random Restaurant(lat,lng,randomNumber,range,tags,deliveryPlatforms)
+activate u
+activate fe
+fe -> gateway: Get Random Restaurant(lat,lng,randomNumber,range,tags,deliveryPlatforms)
+activate gateway
+gateway -> restaurant: getRandomRestaurant(lat,lng,randomNumber,range,tags,deliveryPlatforms)
+activate restaurant
+restaurant -> mongo: restaurant.find(tags,deliveryPlatforms)
+activate mongo
+mongo -->  restaurant: List of Filtered Restaurants
+deactivate mongo
+restaurant --> gateway: List of Random Restaurants
+deactivate restaurant
+gateway --> fe: List of Random Restaurants
+deactivate gateway
+fe --> u: List of Random Restaurants
+deactivate fe
+deactivate u 
+@enduml

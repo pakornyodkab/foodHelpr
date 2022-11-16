@@ -1,0 +1,39 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide circle
+
+NotificationController .> NotificationService
+NotificationService -> NotificationToken
+
+class  NotificationController {
+  ----
+  + getHello()
+  + testNoti()
+  + wannaJoinNoti(msg)
+  + acceptedNoti(msg)
+  + rejectedNoti(msg)
+  + leaveNoti(msg)
+  + destroyParty(msg)
+  + addNotiToken(msg)
+  + removeNotiToken(msg)
+}
+
+class  NotificationService {
+  ----
+  + getHello()
+  + testNoti()
+  + wannaJoinNoti(msg)
+  + acceptedNoti(msg)
+  + rejectedNoti(msg)
+  + leaveNoti(msg)
+  + destroyParty(msg)
+  + addNotiToken(msg)
+  + removeNotiToken(msg)
+}
+
+class  NotificationToken {
+  + userId: string
+  + expoToken: string
+  ----
+}
+@enduml

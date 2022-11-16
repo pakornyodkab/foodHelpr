@@ -1,0 +1,139 @@
+version: "3.7"
+
+services:
+    
+  user-service:
+    build: ./foodHelpr-user-service
+    container_name: foodHelpr-user-service
+    ports:
+      - "3001:3001"
+      - "4001:4001"
+    env_file:
+      - ./foodHelpr-user-service/.env
+    depends_on:
+      consul:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:4001/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  foodfriend-service:
+    build: ./foodHelpr-foodFriend-service
+    container_name: foodHelpr-foodfriend-service
+    ports:
+      - "4090:4090"
+    env_file:
+      - ./foodHelpr-foodFriend-service/.env
+    depends_on:
+      consul:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:4090/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+
+  restaurant-service:
+    build: ./foodHelpr-restaurant-service
+    container_name: foodHelpr-restaurant-service
+    ports:
+      - "4002:4002"
+    env_file:
+      - ./foodHelpr-restaurant-service/.env
+    depends_on:
+      consul:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:4002/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  recipe-service:
+    build: ./foodHelpr-recipe-service
+    container_name: foodHelpr-recipe-service
+    ports:
+      - "4003:4003"
+    env_file:
+      - ./foodHelpr-recipe-service/.env
+    volumes:
+      - ./proto:/app/proto
+    depends_on:
+      consul:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:4003/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  notification-service:
+    build: ./foodHelpr-notification-service
+    container_name: foodHelpr-notification-service
+    ports:
+      - "4080:4080"
+    env_file:
+      - ./foodHelpr-notification-service/.env
+    depends_on:
+      consul:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:4080/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  api-gateway:
+    build: ./foodHelpr-api-gateway
+    container_name: foodHelpr-api-gateway
+    ports:
+      - "3000:3000"
+      - "3010:3010"
+    env_file:
+      - ./foodHelpr-api-gateway/.env
+    depends_on:
+      user-service:
+        condition: service_healthy
+      restaurant-service:
+        condition: service_healthy
+      recipe-service:
+        condition: service_healthy
+      notification-service:
+        condition: service_healthy
+      foodfriend-service:
+        condition: service_healthy
+  
+  consul:
+    image: consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/tcp"
+      - "8600:8600/udp"
+    command: "consul agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0 -bind=0.0.0.0 -data-dir /consul/data"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8500/v1/agent/services"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    build: ./foodHelpr-rabbitmq
+    container_name: foodHelpr-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  default:
+    driver: bridge

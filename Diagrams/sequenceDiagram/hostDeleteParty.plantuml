@@ -1,0 +1,69 @@
+@startuml
+mainframe Host Delete Party
+skinparam style strictuml
+
+actor "Host User" as u
+participant "FoodHelpr Mobile App" as fe
+participant "API Gateway" as gateway
+participant "FoodFriend Service" as ff
+participant "Notification Service" as noti
+' participant "Recipe Service" as recipe
+' participant "Restaurant Service" as restaurant
+participant "User Service" as user
+participant "MongoDB" as mongo
+participant "RabbitMQ" as rmq
+participant "MySQL" as sql
+participant "Expo Notification Service" as expo
+
+u -> fe: deleteHostParty(partyId)
+activate u
+activate fe
+fe -> gateway: deleteHostParty(partyId)
+deactivate fe
+activate gateway
+gateway -> user: getUserById(userId)
+activate user
+user -> sql: findOne(userId)
+activate sql
+sql --> user: userData
+deactivate sql
+user --> gateway: userData
+deactivate user
+gateway -> ff: getPartyById(partyId)
+activate ff
+ff -> mongo: party.findOne(partyId)
+activate mongo
+mongo --> ff: partyData
+deactivate mongo
+ff --> gateway: partyData
+deactivate ff
+gateway -> rmq: emit('destroyParty', sendMessage)
+activate rmq
+rmq -> noti: consumeEventPattern('party_go_boom')
+deactivate rmq
+activate noti
+noti -> mongo: notificationToken.find(room.ownerId)
+activate mongo
+mongo --> noti: memberIds
+deactivate mongo
+noti -> expo: POST('https://exp.host/--/api/v2/push/send')
+activate expo
+noti --> ff: msg
+deactivate noti
+activate ff
+gateway -> ff: deleteHostParty(id)
+ff -> mongo: party.findOne(partyId)
+activate mongo
+mongo --> ff: partyData
+deactivate mongo
+ff -> mongo: party.deleteOne(partyId)
+activate mongo
+mongo --> ff: updateResult
+deactivate mongo
+ff --> gateway: hostDeletePartyResult
+deactivate ff
+gateway --> u: hostDeletePartyResult
+deactivate gateway
+deactivate u
+
+@enduml

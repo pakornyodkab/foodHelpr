@@ -1,0 +1,90 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide circle
+
+AppController ..> AppService
+
+ChatController ..> ChatService
+ChatService --> Chat
+
+PartyController ..> PartyService
+PartyService --> Party
+
+class  AppController {
+  ----
+  + getHello()
+}
+
+class  AppService {
+  ----
+  + getHello()
+}
+
+class  ChatController {
+  ----
+  + userConnected(userConnectedDto)
+  + userDisconnected(userDisconnectedDto)
+  + getChats(roomId)
+  + saveChat(saveChatDto)
+}
+
+class  ChatService {
+  ----
+  + userConnected(userConnectedDto)
+  + userDisconnected(userDisconnectedDto)
+  + getChats(roomId)
+  + saveChat(saveChatDto)
+}
+
+class Chat {
+  roomId: string
+  senderId: string
+  message: string
+  ----
+}
+
+class  PartyController {
+  ----
+  + getAllParty()
+  + getPartyListByUserId(id)
+  + getPartyById(id)
+  + createHostParty(createHostPartyDto)
+  + deleteHostParty(id)
+  + deleteAllHostParty()
+  + getHostPartyViewModel()
+  + getGuestFindParty(guestFindPartyDto)
+  + guestJoinParty(guestJoinPartyDto)
+  + guestLeaveParty(guestLeavePartyDto)
+  + hostPartyAction(hostPartyActionDto)
+  + getGuestPartyViewModel()
+}
+
+class  PartyService {
+  ----
+  + getAllParty()
+  + getPartyListByUserId(id)
+  + getPartyById(id)
+  + createHostParty(createHostPartyDto)
+  + deleteHostParty(id)
+  + deleteAllHostParty()
+  + getHostPartyViewModel()
+  + guestFindParty(guestFindPartyDto)
+  + guestJoinParty(guestJoinPartyDto)
+  + guestLeaveParty(guestLeavePartyDto)
+  + hostPartyAction(hostPartyActionDto)
+  + getGuestPartyViewModel()
+  + getAge(dateString)
+}
+
+class  Party {
+  + name: string
+  + restaurant: string
+  + apptDate: Date
+  + memberList: string[]
+  + pendingMemberList: string[]
+  + ageRestriction: number
+  + maxGuests: number
+  + ownerId: string
+  ----
+}
+@enduml

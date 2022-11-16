@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "expo-secure-store": "^11.3.0",
+    "googleapis": "^108.0.0"
+  }
+}
