@@ -1,0 +1,29 @@
+@startuml
+mainframe Random Recipes
+skinparam style strictuml
+
+actor "User" as user
+participant "FoodHelpr Mobile App" as fe
+participant "API Gateway" as gateway
+participant "Recipe Service" as recipe
+participant "MongoDB" as mongo
+
+activate user
+user -> fe: FindRandomRecipes(filter)
+activate fe
+fe -> gateway: getRandomRecipe(filter)
+activate gateway
+gateway -> recipe: <<GrpcMethod>> GetRandomRecipes(filter)
+activate recipe
+recipe -> mongo: RecipeModel.find(filter)
+activate mongo
+mongo --> recipe: RecipeList
+deactivate mongo
+recipe --> gateway: response
+deactivate recipe
+gateway --> fe: response
+deactivate gateway
+fe --> user: response
+deactivate fe
+
+@enduml

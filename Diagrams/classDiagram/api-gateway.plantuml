@@ -51,6 +51,8 @@ class  IngredientController <<gRPC Client>> {
   + updateIngredient(ingredient)
 }
 
+NotificationController --> NotificationService
+
 class  NotificationController {
   ----
   + testNotification(message)
@@ -104,8 +106,6 @@ class  PartyService <<Adapter>> {
   - populateMemberInPartyList(party[])
   + getGuestPartyViewModel()
 }
-
-RecipeController ..> RecipeService
 
 class  RecipeController <<gRPC Client>>{
   ----
@@ -175,11 +175,5 @@ class AppService {
   + getUserById(id)
   + editUserById(id, UpdateUserDto)
   + deleteUserById(id)
-}
-
-class  NotificationToken {
-  + userId: string
-  + expoToken: string
-  ----
 }
 @enduml

@@ -1,0 +1,107 @@
+@startuml
+mainframe Guest Join Party
+skinparam style strictuml
+
+actor "Guest User" as u
+participant "FoodHelpr Mobile App" as fe
+participant "API Gateway" as gateway
+participant "FoodFriend Service" as ff
+participant "Notification Service" as noti
+' participant "Recipe Service" as recipe
+' participant "Restaurant Service" as restaurant
+participant "User Service" as user
+participant "MongoDB" as mongo@startuml
+mainframe Send Chat Message
+skinparam style strictuml
+
+actor "User" as u
+participant "FoodHelpr Mobile App" as fe
+participant "API Gateway" as gateway
+participant "FoodFriend Service" as ff
+' participant "Notification Service" as noti
+' participant "Recipe Service" as recipe
+' participant "Restaurant Service" as restaurant
+participant "User Service" as user
+participant "MongoDB" as mongo
+' participant "RabbitMQ" as rmq
+participant "MySQL" as sql
+' participant "Expo Notification Service" as expo
+
+u -> fe: sendMessage(partyId)
+activate u
+activate fe
+fe -> gateway: handleNewMessage(chat, socket)
+activate gateway
+gateway -> ff: saveChat(saveChatDto)
+activate ff
+ff -> mongo: chat.save(newChat)
+activate mongo
+mongo --> ff: saveChatResult
+deactivate mongo
+ff --> gateway: saveChatResult
+deactivate ff
+gateway -> user: getUserById(userId)
+activate user
+user -> sql: findOne(userId)
+activate sql
+sql --> user: userData
+deactivate sql
+user --> gateway: userData
+deactivate user
+gateway -> gateway: populateUser()
+activate gateway
+gateway --> gateway: populatedUser
+deactivate gateway
+gateway --> fe: chatResult
+deactivate gateway
+fe --> u: chatResult
+deactivate u
+deactivate fe
+
+
+@enduml
+participant "RabbitMQ" as rmq
+participant "MySQL" as sql
+participant "Expo Notification Service" as expo
+
+u -> fe: guestJoinParty(partyId)
+activate u
+fe -> gateway: guestJoinParty(partyId)
+activate gateway
+gateway -> user: getUserById(userId)
+activate user
+user -> sql: findOne(userId)
+activate sql
+sql --> user: userData
+deactivate sql
+user --> gateway: userData
+deactivate user
+gateway -> ff: getPartyById(partyId)
+activate ff
+ff -> mongo: party.findOne(partyId)
+activate mongo
+mongo --> ff: partyData
+deactivate mongo
+ff --> gateway: partyData
+deactivate ff
+gateway -> rmq: emit('wannaJoin_noti', sendMessage)
+rmq -> noti: consumeEventPattern('wannaJoin_noti')
+noti -> mongo: notificationToken.findOnr(room.ownerId)
+noti -> expo: POST('https://exp.host/--/api/v2/push/send') 
+gateway -> ff: guestJoinParty(guestJoinPartyDto)
+activate ff
+ff -> mongo: party.findOne(partyId)
+activate mongo
+mongo --> ff: partyData
+deactivate mongo
+ff -> mongo: party.updateOne(partyId, pendingMemberList)
+activate mongo
+mongo --> ff: updateResult
+deactivate mongo
+ff --> gateway: guestJoinPartyResult
+deactivate ff
+gateway --> u: guestJoinPartyResult
+deactivate gateway
+deactivate u
+
+@enduml
