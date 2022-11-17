@@ -1,0 +1,107 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+skinparam linetype polyline
+skinparam linetype ortho
+
+pre_layer .d.> gateway
+' chat_gateway .u.> chat_logic
+
+gateway .d..> restaurant
+gateway .d...> user
+gateway .d.> recipe
+gateway .d...> foodfriend
+gateway .d...> notification
+
+restaurant_logic .l.> restaurant_odm
+user_logic .l.> user_orm
+chat_logic .l.> chat_odm
+party_logic ..> party_odm
+recipe_logic ..> recipe_odm
+notification_logic ..> notification_odm
+
+
+
+
+package "FoodHelpr System" as system {
+    package "Presentation Layer" as pre_layer {  
+        package "Presentation Logic" as pre_logic {
+        }
+        package "User Interface" as ui {
+        }
+    }
+
+    
+    package "Service Layer" as service {
+        package "API Gateway" as gateway {
+            package "Chat Gateway" as chat_gateway {
+            }
+           package "Authentication Logic" as authen {
+           }  
+        }
+           
+    }   
+    
+    package "Restaurant Service" as restaurant {
+        package "Business Layer" as restaurant_bl {
+            package "Restaurant Logic" as restaurant_logic {
+
+            }
+        }   
+        package "Data Layer" as restaurant_dl {
+            package "Restaurant ODM" as restaurant_odm {
+            }
+        }
+    }    
+    
+    package "Recipe Service" as recipe { 
+        package "Business Layer" as recipe_bl {
+            package "Recipe Logic" as recipe_logic {
+            }
+        }   
+        package "Data Layer" as recipe_dl {
+            package "Recipe ODM" as recipe_odm {
+            }
+        }  
+    }   
+    
+    package "FoodFriend Service" as foodfriend {   
+        package "Business Layer" as foodfriend_bl {
+            package "Party Logic" as party_logic {
+            }
+            package "Chat Logic" as chat_logic {
+            }
+        }   
+        package "Data Layer" as foodfriend_dl {
+            package "Party ODM" as party_odm {
+            }
+            package "Chat ODM" as chat_odm {
+            }
+        }
+    }   
+
+    package "User Service" as user {   
+        package "Business Layer" as user_bl {
+            package "User Logic" as user_logic {
+            }
+        }   
+        package "Data Layer" as user_dl {
+            package "User ORM" as user_orm {
+            }
+        }
+    }   
+
+    package "Notification Service" as notification {   
+        package "Business Layer" as notification_bl {
+            package "Notification Logic" as notification_logic {
+            }
+        }   
+        package "Data Layer" as notification_dl {
+            package "Notification ODM" as notification_odm {
+            }
+        }
+    }           
+}   
+
+
+@enduml
