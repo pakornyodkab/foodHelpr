@@ -10,14 +10,13 @@ Restaurant *-- Coordinate
 Restaurant *-- DeliveryInfo
 
 
-
 class RestaurantController {
   +getRestautantsById(id) 
   +getRestaurants()
-  +creatRestaurant(createRestaurantDto)
+  +createRestaurant(createRestaurantDto)
   +updateRestaurant(updateRestaurantRequest)
   +deleteRestaurantById(id)
-  +calculateDist(coordinate)
+  +calculateDist(coordinateDto)
   +getRandomRestaurant(randomRequest)
   +getRandomRestaurantViewModel()
   +getRestaurantInRange(randomRequest) 

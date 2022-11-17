@@ -43,6 +43,10 @@ class  ChatService <<Adapter>> {
 
 class  IngredientController <<gRPC Client>> {
   ----
+<<<<<<< Updated upstream
+=======
+  ' + onModuleInit()
+>>>>>>> Stashed changes
   + getIngredients()
   + getIngredientById(ingredientId)
   + createIngredient(ingredient)
@@ -81,7 +85,7 @@ class  PartyController {
   + deleteAllHostParty()
   + getHostPartyViewModel()
   + getGuestFindParty(userId, distance, lat, lng)
-  + guestJoinParty(userId, Partial)
+  + guestJoinParty(userId, guestJoinPartyDto)
   + guestLeaveParty(userId, guestLeavePartyDto)
   + hostPartyAction(hostPartyActionDto)
   + getGuestPartyViewModel()
@@ -98,7 +102,7 @@ class  PartyService <<Adapter>> {
   + deleteHostParty(id, userId)
   + deleteAllHostParty()
   + getHostPartyViewModel()
-  + guestJoinParty(userId, Partial)
+  + guestJoinParty(userId, guestJoinPartyDto)
   + guestLeaveParty(userId, guestLeavePartyDto)
   + hostPartyAction(hostPartyActionDto)
   + getGuestFindParty(userId, distance, lat, lng)
