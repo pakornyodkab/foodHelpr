@@ -1,0 +1,89 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+skinparam linetype polyline
+skinparam linetype ortho
+top to bottom direction
+' left to right direction
+
+node Client <<mobile>> as client {
+    artifact "FoodHelpr Mobile App" <<Mobile Application>>    
+}
+
+node AWS <<cloud instance>> {
+    together {
+        node "API Gateway" <<container>> as gw {
+            artifact "API Gateway" <<image>> 
+        }
+        node "Consul" <<container>> as consul {
+            artifact "Consul" <<image>>
+        }
+    together {
+        node "Notification Service" <<container>> as noti {
+            artifact "Notification Service" <<image>>
+        }
+        node "RabbitMQ" <<container>> as rmq {
+            artifact "RabbitMQ" <<image>>
+        }
+    }
+    }
+    together {
+        node "Restaurant Service" <<container>> as restaurant {
+            artifact "Restaurant Service" <<image>> 
+        }
+        node "Recipe Service" <<container>> as recipe {
+        artifact "Recipe Service" <<image>>
+        }
+        node "FoodFriend Service" <<container>> as ff {
+        artifact "FoodFriend Service" <<image>>
+        }
+        node "User Service" <<container>> as user {
+        artifact "User Service" <<image>>
+        }
+    }
+}
+cloud "MongoDB Cloud" {
+    database "MongoDB Atlas" {
+        database "Restaurant Database" {
+        }
+        database "Recipe Database" {
+        }
+        database "FoodFriend Database" {
+        }
+        database "Notification Database" {
+        }
+    }
+}
+cloud "Azure Cloud" {
+    database "MySQL" {
+        database "User Table" {
+        }
+    }
+}
+
+
+' gw -[hidden]- ff
+' ff -[hidden]- rmq
+
+client -[hidden]--- gw : REST API/SocketIO
+gw -[hidden]-- restaurant : TCP 
+gw -[hidden]-- recipe : gRPC 
+gw -[hidden]-- ff : TCP
+gw -[hidden]-- user : TCP
+gw -[hidden]--- rmq : AMQP
+' rmq -[hidden]--- noti : AMQP
+
+' gw -[hidden]--- consul : REST API
+' consul -[hidden]--- restaurant : REST API
+' consul -[hidden]--- recipe : REST API
+' consul -[hidden]--- ff : REST API
+' consul -[hidden]--- user : REST API
+' consul -[hidden]--- rmq : REST API\
+
+restaurant -[hidden]- recipe
+recipe -[hidden]- ff
+ff -[hidden]- user
+rmq -[hidden]- noti
+
+
+@enduml

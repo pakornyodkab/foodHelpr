@@ -1,0 +1,20 @@
+@startuml
+left to right direction
+
+package "Component Diagram" {
+component "API Gateway" << component >> as gateway 
+component "Restaurant Service" << component >> as restaurant
+component "Recipe Service" << component >> as recipe
+component "FoodFriend Service" << component >> as ff
+component "Notification Service" << component >> as noti
+component "User Service" << component >> as user
+}
+
+restaurant -(0- gateway : "Random Restaurant"
+gateway -0)- recipe : "Random Recipe"
+gateway -0)- ff : "Find Party"
+gateway -0)- noti : "Send Notification"
+gateway -0)- user : "Get user information"
+
+
+@enduml

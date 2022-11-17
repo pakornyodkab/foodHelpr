@@ -43,7 +43,6 @@ class  ChatService <<Adapter>> {
 
 class  IngredientController <<gRPC Client>> {
   ----
-  + onModuleInit()
   + getIngredients()
   + getIngredientById(ingredientId)
   + createIngredient(ingredient)
