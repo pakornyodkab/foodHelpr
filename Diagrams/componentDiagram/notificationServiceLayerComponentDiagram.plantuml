@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+
+component "API Gateway" << component >> as gateway 
+component "Notification Database" << component >> as db
+component "RabbitMQ" <<component>> as rmq
+component "Expo Notification Service" << external component >> as expoNoti
+package "Notification Service Layer Component Diagram" {
+    component "Notification Controller" << component >> as notiC 
+    component "Notification Service" << component >> as notiS 
+}
+
+' gateway -(0- rmq : "wannaJoin"
+rmq -(0- gateway : "wannaJoin"
+rmq -(0- notiC : "wannaJoin event"
+' notiC -(0- rmq : "wannaJoin event"
+notiC -0)- notiS : "getRandomRestaurant"
+notiS -0)- db : "find"
+notiS -0)- expoNoti : "POST request"
+' expoNoti -0)- notiS : "POST request"
+@enduml

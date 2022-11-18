@@ -1,0 +1,14 @@
+@startuml
+left to right direction
+
+component "API Gateway" << component >> as gateway 
+component "Restaurant Database" << component >> as db
+package "Restaurant Service Layer Component Diagram" {
+    component "Restaurant Controller" << component >> as ResC 
+    component "Restaurant Service" << component >> as ResS 
+}
+
+gateway -0)- ResC: "getRandomRestaurant"
+ResC -0)- ResS: "getRandomRestaurant"
+ResS -0)- db: "find"
+@enduml

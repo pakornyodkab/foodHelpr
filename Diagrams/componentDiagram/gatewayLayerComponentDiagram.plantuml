@@ -1,0 +1,24 @@
+@startuml
+left to right direction
+
+component "FoodHelpr Application" << component >> as ui
+component "Restaurant Service" << component >> as restaurant
+component "Recipe Service" << component >> as recipe
+component "FoodFriend Service" << component >> as ff
+component "Notification Service" << component >> as noti
+component "User Service" << component >> as user
+
+package "Gateway Layer Component Diagram" {
+component "API Gateway Controller" << component >> as gatewayC
+component "API Gateway Service" << component >> as gatewayS
+}
+
+gatewayS -0)- restaurant : "Random Restaurant"
+gatewayS -0)- recipe : "Random Recipe"
+gatewayS -0)- ff : "Find Party"
+gatewayS -0)- noti : "Send Notification"
+gatewayS -0)- user : "Get user information"
+gatewayC -0)- gatewayS : "Send Request"
+ui -0)- gatewayC : "Send Request"
+
+@enduml
