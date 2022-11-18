@@ -8,13 +8,24 @@ component "Recipe Service" << component >> as recipe
 component "FoodFriend Service" << component >> as ff
 component "Notification Service" << component >> as noti
 component "User Service" << component >> as user
+component "FoodHelpr Application" << component >> as ui
+component "Restaurant Service Database" << component >> as restaurantDB
+component "Recipe Service Database" << component >> as recipeDB
+component "FoodFriend Service Database" << component >> as ffDB
+component "Notification Service Database" << component >> as notiDB
+component "User Service Database" << component >> as userDB
 }
 
-restaurant -(0- gateway : "Random Restaurant"
+ui -0)- gateway : "Send Request"
+gateway -0)- restaurant : "Random Restaurant"
 gateway -0)- recipe : "Random Recipe"
 gateway -0)- ff : "Find Party"
 gateway -0)- noti : "Send Notification"
 gateway -0)- user : "Get user information"
-
+restaurant -0)- restaurantDB: "Find Restaurant"
+recipe -0)- recipeDB: "Find Recipes"
+ff -0)- ffDB: "Find Party"
+noti -0)- notiDB: "Find User Notification Token"
+user -0)- userDB: "Find User Information"
 
 @enduml
